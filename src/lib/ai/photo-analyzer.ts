@@ -1,0 +1,309 @@
+/**
+ * Photo Analyzer for AI Visualizations
+ * GPT Vision analysis specialized for renovation visualization prompts
+ */
+
+import { generateObject } from 'ai';
+import { z } from 'zod';
+import { openai } from './providers';
+import { AI_CONFIG } from './config';
+import type { RoomType } from '@/lib/schemas/visualization';
+
+/**
+ * Extended room analysis schema for visualization
+ * More detailed than basic room analysis - optimized for prompt building
+ */
+export const VisualizationRoomAnalysisSchema = z.object({
+  roomType: z.enum([
+    'kitchen',
+    'bathroom',
+    'living_room',
+    'bedroom',
+    'basement',
+    'dining_room',
+    'exterior',
+  ]),
+  currentCondition: z.enum(['excellent', 'good', 'dated', 'needs_renovation']),
+  /**
+   * Structural elements that MUST be preserved
+   * e.g., "load-bearing wall on left", "window on north wall"
+   */
+  structuralElements: z.array(z.string()),
+  /**
+   * Identified fixtures and features
+   * e.g., "island with seating", "corner sink", "bay window"
+   */
+  identifiedFixtures: z.array(z.string()),
+  /**
+   * Layout type description
+   * e.g., "galley", "L-shaped", "open concept", "ensuite"
+   */
+  layoutType: z.string(),
+  /**
+   * Lighting conditions analysis
+   * e.g., "natural light from left, afternoon sun", "overhead fluorescent"
+   */
+  lightingConditions: z.string(),
+  /**
+   * Camera perspective notes
+   * e.g., "shot from doorway, wide angle", "elevated corner view"
+   */
+  perspectiveNotes: z.string(),
+  /**
+   * Elements that cannot/should not change
+   * e.g., "plumbing locations", "window positions", "ceiling height constraint"
+   */
+  preservationConstraints: z.array(z.string()),
+  /**
+   * Analysis confidence (0-1)
+   */
+  confidenceScore: z.number().min(0).max(1),
+  /**
+   * Existing style assessment (nullable for OpenAI JSON schema compatibility)
+   */
+  currentStyle: z.string().nullable(),
+  /**
+   * Approximate dimensions if determinable (nullable for OpenAI JSON schema compatibility)
+   */
+  estimatedDimensions: z.string().nullable(),
+  /**
+   * Notable elements that could be design focal points (nullable for OpenAI JSON schema compatibility)
+   */
+  potentialFocalPoints: z.array(z.string()).nullable(),
+});
+
+export type RoomAnalysis = z.infer<typeof VisualizationRoomAnalysisSchema>;
+
+/**
+ * Analyze a room photo for visualization purposes
+ * Returns detailed structural, lighting, and perspective information
+ * to improve prompt construction for image generation
+ */
+export async function analyzeRoomPhotoForVisualization(
+  imageBase64: string,
+  hintedRoomType?: RoomType
+): Promise<RoomAnalysis> {
+  const roomTypeHint = hintedRoomType
+    ? `The user has indicated this is a ${hintedRoomType.replace('_', ' ')}.`
+    : '';
+
+  try {
+    const result = await generateObject({
+      model: openai(AI_CONFIG.openai.vision),
+      schema: VisualizationRoomAnalysisSchema,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: `You are analyzing a room photo for an AI renovation visualization system. Your analysis will be used to construct prompts for image generation, so accuracy is critical.
+
+${roomTypeHint}
+
+Analyze this room photo and provide:
+
+1. **Room Type**: Identify the room type precisely.
+
+2. **Current Condition**: Rate as excellent/good/dated/needs_renovation.
+
+3. **Structural Elements**: List all architectural elements that MUST be preserved:
+   - Walls and their positions (note any that appear load-bearing)
+   - Windows (positions, sizes, types)
+   - Doors (positions, swing direction if visible)
+   - Ceiling features (height, beams, soffits)
+   - Any columns or structural supports
+
+4. **Identified Fixtures**: List major fixtures and features:
+   - Counters, islands, vanities
+   - Built-in appliances
+   - Sinks, tubs, showers
+   - Fireplaces, built-in shelving
+   - Flooring type visible
+
+5. **Layout Type**: Describe the layout pattern:
+   - For kitchens: galley, L-shaped, U-shaped, open concept, island layout
+   - For bathrooms: full, 3/4, half, ensuite, jack-and-jill
+   - For living spaces: open plan, defined, loft, etc.
+
+6. **Lighting Conditions**: Analyze carefully:
+   - Natural light direction (where are windows casting light from?)
+   - Time of day estimation (morning/afternoon/evening based on shadows)
+   - Artificial light sources visible
+   - Shadow patterns that should be maintained
+
+7. **Perspective Notes**: Describe the camera position:
+   - Where is the photo taken from? (doorway, corner, center)
+   - Approximate height (standing, elevated, low angle)
+   - Focal length estimation (wide angle, normal, telephoto)
+   - What's in foreground vs background
+
+8. **Preservation Constraints**: What CANNOT change:
+   - Plumbing fixture rough-in locations
+   - Electrical panel locations
+   - Window/door positions
+   - Any visible structural constraints
+   - Ceiling height limitations
+
+9. **Confidence Score**: How confident are you in this analysis (0-1)?
+
+10. **Current Style** (optional): What design style is currently present?
+
+11. **Estimated Dimensions** (optional): Approximate room size if determinable.
+
+12. **Potential Focal Points** (optional): Elements that could be highlighted in renovation.
+
+Be specific and technical. This analysis directly impacts visualization quality.`,
+            },
+            {
+              type: 'image',
+              image: imageBase64,
+            },
+          ],
+        },
+      ],
+      maxOutputTokens: 1500,
+      temperature: 0.3, // Low temperature for more consistent, accurate analysis
+    });
+
+    return result.object;
+  } catch (error) {
+    console.error('Failed to analyze room photo for visualization:', error);
+    throw new Error(
+      `Photo analysis failed: ${error instanceof Error ? error.message : 'Unable to analyze photo. Please try again.'}`
+    );
+  }
+}
+
+/**
+ * Quick analysis for validation/room type detection
+ * Faster than full analysis, used for early validation
+ */
+export async function quickPhotoAnalysis(imageBase64: string): Promise<{
+  roomType: RoomType | 'exterior' | 'other';
+  isValid: boolean;
+  issues?: string[];
+  confidence: number;
+}> {
+  try {
+    const result = await generateObject({
+      model: openai(AI_CONFIG.openai.vision),
+      schema: z.object({
+        roomType: z.enum([
+          'kitchen',
+          'bathroom',
+          'living_room',
+          'bedroom',
+          'basement',
+          'dining_room',
+          'exterior',
+          'other',
+        ]),
+        isValid: z.boolean(),
+        issues: z.array(z.string()).nullable(),
+        confidence: z.number().min(0).max(1),
+      }),
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: `Quickly analyze this image for renovation visualization:
+
+1. What room type is this?
+2. Is this a valid room photo for visualization? (not a screenshot, not blurry, shows actual room interior)
+3. Any issues? (poor lighting, too much clutter, partial view only)
+4. Your confidence level (0-1)`,
+            },
+            {
+              type: 'image',
+              image: imageBase64,
+            },
+          ],
+        },
+      ],
+      maxOutputTokens: 200,
+      temperature: 0.2,
+    });
+
+    return result.object as {
+      roomType: RoomType | 'exterior' | 'other';
+      isValid: boolean;
+      issues?: string[];
+      confidence: number;
+    };
+  } catch (error) {
+    console.error('Failed quick photo analysis:', error);
+    return {
+      roomType: 'other' as RoomType,
+      isValid: false,
+      issues: ['Unable to analyze photo. Please try uploading again.'],
+      confidence: 0,
+    };
+  }
+}
+
+/**
+ * Extract design intent from a natural language description
+ * Used when user provides text description of what they want
+ */
+export async function extractDesignIntent(
+  userDescription: string,
+  roomType?: RoomType
+): Promise<{
+  desiredChanges: string[];
+  constraintsToPreserve: string[];
+  stylePreference?: string;
+  materialPreferences: string[];
+  budgetIndicators: string[];
+  confidence: number;
+}> {
+  try {
+    const result = await generateObject({
+      model: openai(AI_CONFIG.openai.chat),
+      schema: z.object({
+        desiredChanges: z.array(z.string()).describe('Specific changes the user wants'),
+        constraintsToPreserve: z.array(z.string()).describe('Elements they want to keep'),
+        stylePreference: z.string().nullable().describe('Overall style if mentioned'),
+        materialPreferences: z.array(z.string()).describe('Specific materials mentioned'),
+        budgetIndicators: z.array(z.string()).describe('Budget-related mentions'),
+        confidence: z.number().min(0).max(1),
+      }),
+      messages: [
+        {
+          role: 'system',
+          content: `You are analyzing a user's renovation description to extract design intent for a ${roomType || 'room'} visualization. Extract specific, actionable design preferences.`,
+        },
+        {
+          role: 'user',
+          content: userDescription,
+        },
+      ],
+      maxOutputTokens: 500,
+      temperature: 0.3,
+    });
+
+    // Handle exactOptionalPropertyTypes by conditionally including optional fields
+    const base = {
+      desiredChanges: result.object.desiredChanges,
+      constraintsToPreserve: result.object.constraintsToPreserve,
+      materialPreferences: result.object.materialPreferences,
+      budgetIndicators: result.object.budgetIndicators,
+      confidence: result.object.confidence,
+    };
+
+    return result.object.stylePreference
+      ? { ...base, stylePreference: result.object.stylePreference }
+      : base;
+  } catch (error) {
+    console.error('Failed to extract design intent:', error);
+    return {
+      desiredChanges: [],
+      constraintsToPreserve: [],
+      materialPreferences: [],
+      budgetIndicators: [],
+      confidence: 0,
+    };
+  }
+}

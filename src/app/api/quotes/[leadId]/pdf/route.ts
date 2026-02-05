@@ -1,0 +1,115 @@
+/**
+ * Quote PDF Generation API
+ * GET /api/quotes/[leadId]/pdf - Generate and return PDF quote
+ * [DEV-057]
+ */
+
+import { NextRequest, NextResponse } from 'next/server';
+import { renderToBuffer } from '@react-pdf/renderer';
+import { createServiceClient } from '@/lib/db/server';
+import { QuotePdfDocument } from '@/lib/pdf/quote-template';
+
+type RouteContext = { params: Promise<{ leadId: string }> };
+
+/**
+ * GET /api/quotes/[leadId]/pdf
+ * Generate a PDF quote for a lead
+ */
+export async function GET(
+  request: NextRequest,
+  context: RouteContext
+) {
+  try {
+    const { leadId } = await context.params;
+
+    if (!leadId) {
+      return NextResponse.json(
+        { error: 'Lead ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const supabase = createServiceClient();
+
+    // Fetch lead
+    const { data: lead, error: leadError } = await supabase
+      .from('leads')
+      .select('*')
+      .eq('id', leadId)
+      .single();
+
+    if (leadError || !lead) {
+      console.error('Error fetching lead:', leadError);
+      return NextResponse.json(
+        { error: 'Lead not found' },
+        { status: 404 }
+      );
+    }
+
+    // Fetch the most recent quote draft
+    const { data: quote, error: quoteError } = await supabase
+      .from('quote_drafts')
+      .select('*')
+      .eq('lead_id', leadId)
+      .order('version', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (quoteError || !quote) {
+      console.error('Error fetching quote:', quoteError);
+      return NextResponse.json(
+        { error: 'No quote found for this lead. Please create a quote first.' },
+        { status: 404 }
+      );
+    }
+
+    // Check if quote has line items
+    const lineItems = quote.line_items;
+    if (!Array.isArray(lineItems) || lineItems.length === 0) {
+      return NextResponse.json(
+        { error: 'Quote has no line items. Please add items before generating PDF.' },
+        { status: 400 }
+      );
+    }
+
+    // Generate PDF
+    const pdfBuffer = await renderToBuffer(
+      QuotePdfDocument({ lead, quote })
+    );
+
+    // Create filename
+    const quoteDate = new Date(quote.created_at);
+    const quoteNumber = `ARD-${quoteDate.getFullYear()}-${String(lead.id).slice(0, 8).toUpperCase()}`;
+    const filename = `${quoteNumber}-Quote-${lead.name.replace(/[^a-zA-Z0-9]/g, '-')}.pdf`;
+
+    // Log the PDF generation
+    await supabase.from('audit_log').insert({
+      lead_id: leadId,
+      action: 'pdf_generated',
+      new_values: {
+        quote_id: quote.id,
+        quote_version: quote.version,
+        total: quote.total,
+      },
+    });
+
+    // Convert buffer to Uint8Array for Response
+    const pdfArray = new Uint8Array(pdfBuffer);
+
+    // Return PDF as binary response
+    return new NextResponse(pdfArray, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${filename}"`,
+        'Content-Length': pdfArray.length.toString(),
+      },
+    });
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    return NextResponse.json(
+      { error: 'Failed to generate PDF' },
+      { status: 500 }
+    );
+  }
+}
