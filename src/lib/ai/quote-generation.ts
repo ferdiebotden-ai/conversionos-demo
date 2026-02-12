@@ -23,7 +23,7 @@ import {
 /**
  * System prompt for quote generation
  */
-const QUOTE_GENERATION_SYSTEM_PROMPT = `You are an expert renovation cost estimator for AI Reno Demo, a home renovation company in Ontario, Canada.
+const QUOTE_GENERATION_SYSTEM_PROMPT = `You are an expert renovation cost estimator for AI Reno Demo, a home renovation company in Greater Ontario Area, Canada.
 
 Your task is to generate specific, project-appropriate line items for renovation quotes based on the customer's conversation and project details.
 

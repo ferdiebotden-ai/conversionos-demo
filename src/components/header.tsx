@@ -140,6 +140,8 @@ export function Header() {
 
 function Logo() {
   return (
-    <span className="text-xl font-bold text-primary">AI Reno Demo</span>
+    <span className="text-xl font-bold tracking-tight text-foreground">
+      AI Reno <span className="text-primary">Demo</span>
+    </span>
   )
 }

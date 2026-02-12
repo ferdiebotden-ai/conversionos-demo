@@ -5,7 +5,9 @@
  * Card-based selection for room type
  */
 
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
 import {
   UtensilsCrossed,
   Bath,
@@ -14,10 +16,12 @@ import {
   Bed,
   TreeDeciduous,
   Lamp,
+  PenLine,
   type LucideIcon,
 } from 'lucide-react';
 
 export type RoomType = 'kitchen' | 'bathroom' | 'living_room' | 'basement' | 'bedroom' | 'exterior' | 'dining_room';
+export type RoomTypeSelection = RoomType | 'other';
 
 interface RoomOption {
   id: RoomType;
@@ -72,16 +76,37 @@ const ROOM_OPTIONS: RoomOption[] = [
 ];
 
 interface RoomTypeSelectorProps {
-  value: RoomType | null;
-  onChange: (value: RoomType) => void;
+  value: RoomTypeSelection | null;
+  onChange: (value: RoomTypeSelection) => void;
+  allowCustom?: boolean;
+  customValue?: string;
+  onCustomChange?: (value: string) => void;
   className?: string;
 }
 
 export function RoomTypeSelector({
   value,
   onChange,
+  allowCustom = false,
+  customValue = '',
+  onCustomChange,
   className,
 }: RoomTypeSelectorProps) {
+  const [showCustomInput, setShowCustomInput] = useState(value === 'other');
+
+  const handleSelect = (id: RoomTypeSelection) => {
+    if (id === 'other') {
+      setShowCustomInput(true);
+    } else {
+      setShowCustomInput(false);
+    }
+    onChange(id);
+  };
+
+  const allOptions = allowCustom
+    ? [...ROOM_OPTIONS, { id: 'other' as const, label: 'Other', icon: PenLine, description: 'Describe your space' }]
+    : ROOM_OPTIONS;
+
   return (
     <div className={cn('space-y-4', className)}>
       <div>
@@ -92,7 +117,7 @@ export function RoomTypeSelector({
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {ROOM_OPTIONS.map((option) => {
+        {allOptions.map((option) => {
           const Icon = option.icon;
           const isSelected = value === option.id;
 
@@ -100,7 +125,7 @@ export function RoomTypeSelector({
             <button
               key={option.id}
               type="button"
-              onClick={() => onChange(option.id)}
+              onClick={() => handleSelect(option.id as RoomTypeSelection)}
               className={cn(
                 'flex flex-col items-center p-4 rounded-lg border-2 transition-all',
                 'min-h-[120px] hover:border-primary/50 hover:bg-muted/50',
@@ -126,6 +151,23 @@ export function RoomTypeSelector({
           );
         })}
       </div>
+
+      {/* Custom room type input */}
+      {showCustomInput && value === 'other' && (
+        <div className="mt-3">
+          <Input
+            value={customValue}
+            onChange={(e) => onCustomChange?.(e.target.value)}
+            placeholder="e.g., Sunroom, Home office, Laundry room..."
+            className="max-w-md"
+            maxLength={100}
+            autoFocus
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Describe your space so we can tailor the design
+          </p>
+        </div>
+      )}
     </div>
   );
 }

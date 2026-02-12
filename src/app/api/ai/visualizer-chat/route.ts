@@ -1,6 +1,10 @@
 /**
  * Visualizer Chat API Route
  * Conversational design intent gathering for enhanced visualizations
+ *
+ * Two modes:
+ * 1. Initial photo analysis (isInitial=true) → returns JSON
+ * 2. Chat messages → streams via toUIMessageStreamResponse()
  */
 
 import { streamText, generateObject } from 'ai';
@@ -21,16 +25,15 @@ import {
   shouldTransitionState,
   buildVisualizerSystemPrompt,
 } from '@/lib/ai/visualizer-conversation';
-import { designStyleSchema } from '@/lib/schemas/visualization';
+import { buildDynamicSystemPrompt } from '@/lib/ai/personas/prompt-assembler';
 
 export const maxDuration = 60;
 
-// Request schema
-const chatRequestSchema = z.object({
+// Request schema for initial photo analysis
+const initialRequestSchema = z.object({
   message: z.string().min(1),
-  context: z.record(z.string(), z.unknown()).optional(),
   imageBase64: z.string().optional(),
-  isInitial: z.boolean().optional().default(false),
+  isInitial: z.literal(true),
 });
 
 // Extraction schema for user messages
@@ -41,123 +44,106 @@ const userMessageExtractionSchema = z.object({
   materialPreferences: z.array(z.string()).describe('Specific materials mentioned'),
 });
 
+interface MessagePart {
+  type: 'text';
+  text?: string;
+}
+
+interface IncomingMessage {
+  role: 'user' | 'assistant' | 'system';
+  content?: string;
+  parts?: MessagePart[];
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const parseResult = chatRequestSchema.safeParse(body);
 
-    if (!parseResult.success) {
-      return Response.json(
-        { error: 'Invalid request', details: parseResult.error.issues },
-        { status: 400 }
-      );
+    // Mode 1: Initial photo analysis (returns JSON, not streamed)
+    if (body.isInitial) {
+      const parseResult = initialRequestSchema.safeParse(body);
+      if (!parseResult.success) {
+        return Response.json(
+          { error: 'Invalid request', details: parseResult.error.issues },
+          { status: 400 }
+        );
+      }
+
+      const { imageBase64 } = parseResult.data;
+      let context = createInitialContext();
+
+      if (imageBase64) {
+        try {
+          const analysis = await analyzeRoomPhotoForVisualization(imageBase64);
+          context = addPhotoAnalysis(context, analysis);
+          const initialResponse = await generateInitialResponse(analysis);
+          context = addMessage(context, 'assistant', initialResponse);
+
+          return Response.json({
+            message: initialResponse,
+            context,
+            photoAnalysis: analysis,
+            readiness: checkGenerationReadiness(context),
+          });
+        } catch (error) {
+          console.error('Photo analysis failed:', error);
+          context = updateState(context, 'intent_gathering');
+        }
+      }
+
+      // Fallback if no image or analysis failed
+      return Response.json({
+        message: "I've received your photo! What kind of changes would you like to see in this space?",
+        context,
+        readiness: checkGenerationReadiness(context),
+      });
     }
 
-    const { message, context: providedContext, imageBase64, isInitial } = parseResult.data;
+    // Mode 2: Streaming chat (useChat compatible)
+    const { messages: rawMessages, data } = body;
 
-    // Initialize or restore context
-    let context: VisualizerConversationContext = providedContext
-      ? (providedContext as unknown as VisualizerConversationContext)
+    // Extract text from messages (handles both old and new formats)
+    const getMessageContent = (msg: IncomingMessage): string => {
+      if (msg.parts && msg.parts.length > 0) {
+        return msg.parts
+          .filter((part): part is MessagePart & { text: string } => part.type === 'text' && !!part.text)
+          .map(part => part.text)
+          .join('');
+      }
+      return msg.content || '';
+    };
+
+    const formattedMessages = (rawMessages || [])
+      .filter((msg: IncomingMessage) => msg.role === 'user' || msg.role === 'assistant')
+      .map((msg: IncomingMessage) => ({
+        role: msg.role as 'user' | 'assistant',
+        content: getMessageContent(msg),
+      }));
+
+    // Restore context from client data (passed via useChat body)
+    const context: VisualizerConversationContext = data?.context
+      ? (data.context as VisualizerConversationContext)
       : createInitialContext();
 
-    // If initial message with image, perform photo analysis
-    if (isInitial && imageBase64) {
-      try {
-        console.log('Analyzing uploaded photo...');
-        const analysis = await analyzeRoomPhotoForVisualization(imageBase64);
-        context = addPhotoAnalysis(context, analysis);
-
-        // Generate initial response describing what we see
-        const initialResponse = await generateInitialResponse(analysis);
-
-        context = addMessage(context, 'assistant', initialResponse);
-
-        return Response.json({
-          message: initialResponse,
-          context,
-          photoAnalysis: analysis,
-          readiness: checkGenerationReadiness(context),
-        });
-      } catch (error) {
-        console.error('Photo analysis failed:', error);
-        // Continue without analysis
-        context = updateState(context, 'intent_gathering');
-      }
-    }
-
-    // Extract design intent from user message
-    const extraction = await extractFromMessage(message);
-
-    // Add user message with extracted data
-    context = addMessage(context, 'user', message, {
-      desiredChanges: extraction.desiredChanges,
-      constraintsToPreserve: extraction.constraintsToPreserve,
-      stylePreference: extraction.stylePreference,
-      materialPreferences: extraction.materialPreferences,
-    });
-
-    // Check for style preference specifically
-    if (extraction.stylePreference) {
-      const validStyles = ['modern', 'traditional', 'farmhouse', 'industrial', 'minimalist', 'contemporary'] as const;
-      const normalizedStyle = extraction.stylePreference.toLowerCase();
-      if (validStyles.includes(normalizedStyle as typeof validStyles[number])) {
-        const validatedStyle = normalizedStyle as typeof validStyles[number];
-        // Build extractedData with explicit stylePreference assignment
-        const updatedExtractedData = {
-          desiredChanges: context.extractedData.desiredChanges,
-          constraintsToPreserve: context.extractedData.constraintsToPreserve,
-          materialPreferences: context.extractedData.materialPreferences,
-          confidenceScore: context.extractedData.confidenceScore,
-          stylePreference: validatedStyle,
-          ...(context.extractedData.roomType && { roomType: context.extractedData.roomType }),
-        };
-        context = {
-          ...context,
-          extractedData: updatedExtractedData,
-        };
-      }
-    }
-
-    // Check if state should transition
-    const newState = shouldTransitionState(context);
-    if (newState) {
-      context = updateState(context, newState);
-    }
-
-    // Check readiness
-    const readiness = checkGenerationReadiness(context);
-
-    // Generate response
-    const systemPrompt = buildVisualizerSystemPrompt(context);
+    // Build system prompt — uses dynamic knowledge injection from Phase 3
+    const lastUserMessage = formattedMessages.filter((m: { role: string }) => m.role === 'user').pop();
+    const visualizerBase = buildVisualizerSystemPrompt(context);
+    const dynamicAdditions = lastUserMessage
+      ? buildDynamicSystemPrompt('design-consultant', lastUserMessage.content)
+      : '';
+    const systemPrompt = dynamicAdditions
+      ? `${visualizerBase}\n\n---\n\n${dynamicAdditions}`
+      : visualizerBase;
 
     const result = streamText({
       model: openai(AI_CONFIG.openai.chat),
       system: systemPrompt,
-      messages: context.conversationHistory.map((msg) => ({
-        role: msg.role as 'user' | 'assistant',
-        content: msg.content,
-      })),
+      messages: formattedMessages,
       maxOutputTokens: 300,
       temperature: 0.7,
-      async onFinish({ text }) {
-        // Add assistant response to context
-        context = addMessage(context, 'assistant', text);
-      },
     });
 
-    // Return streaming response with context in headers
-    const stream = result.toTextStreamResponse();
-
-    // We need to return context separately since we can't modify the stream
-    // The client will need to make a follow-up call or we use a different approach
-    return new Response(stream.body, {
-      headers: {
-        ...Object.fromEntries(stream.headers.entries()),
-        'X-Conversation-Context': encodeURIComponent(JSON.stringify(context)),
-        'X-Generation-Ready': String(readiness.isReady),
-        'X-Confidence': String(readiness.qualityConfidence),
-      },
-    });
+    return result.toUIMessageStreamResponse();
   } catch (error) {
     console.error('Visualizer chat error:', error);
     return Response.json(
@@ -174,7 +160,7 @@ async function generateInitialResponse(analysis: RoomAnalysis): Promise<string> 
   const layout = analysis.layoutType;
   const fixtures = analysis.identifiedFixtures.slice(0, 4);
 
-  let response = `I can see this is ${/^[aeiou]/i.test(roomType) ? 'an' : 'a'} ${roomType} `;
+  let response = `Hi! I'm Mia, your design consultant at AI Reno Demo. I can see this is ${/^[aeiou]/i.test(roomType) ? 'an' : 'a'} ${roomType} `;
 
   if (layout) {
     response += `with a ${layout.toLowerCase()} layout. `;

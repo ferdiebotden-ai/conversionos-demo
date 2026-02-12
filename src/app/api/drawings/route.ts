@@ -1,0 +1,99 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { createServiceClient } from '@/lib/db/server';
+import { getSiteId, withSiteId } from '@/lib/db/site';
+import { DrawingCreateSchema } from '@/lib/schemas/drawing';
+import type { DrawingStatus } from '@/types/database';
+
+/**
+ * GET /api/drawings
+ * List drawings with optional filters
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get('status');
+    const leadId = searchParams.get('lead_id');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '20', 10);
+    const offset = (page - 1) * limit;
+
+    const supabase = createServiceClient();
+
+    let query = supabase
+      .from('drawings')
+      .select('*', { count: 'exact' })
+      .eq('site_id', getSiteId())
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (status) {
+      query = query.eq('status', status as DrawingStatus);
+    }
+    if (leadId) {
+      query = query.eq('lead_id', leadId);
+    }
+
+    const { data: drawings, count, error } = await query;
+
+    if (error) {
+      console.error('Error fetching drawings:', error);
+      return NextResponse.json({ error: 'Failed to fetch drawings' }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: drawings || [],
+      pagination: {
+        page,
+        limit,
+        total: count || 0,
+        totalPages: Math.ceil((count || 0) / limit),
+      },
+    });
+  } catch (error) {
+    console.error('Drawings list error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+/**
+ * POST /api/drawings
+ * Create a new drawing
+ */
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validation = DrawingCreateSchema.safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: validation.error.flatten() },
+        { status: 400 }
+      );
+    }
+
+    const supabase = createServiceClient();
+
+    const drawingData = {
+      name: validation.data.name,
+      description: validation.data.description ?? null,
+      lead_id: validation.data.lead_id ?? null,
+    };
+
+    const { data: drawing, error } = await supabase
+      .from('drawings')
+      .insert(withSiteId(drawingData))
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Error creating drawing:', error);
+      return NextResponse.json({ error: 'Failed to create drawing' }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true, data: drawing });
+  } catch (error) {
+    console.error('Drawing create error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

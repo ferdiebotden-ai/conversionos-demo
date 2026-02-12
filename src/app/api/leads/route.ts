@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId, withSiteId } from '@/lib/db/site';
 import { calculateEstimate } from '@/lib/pricing/engine';
 import { generateAIQuote, convertAIQuoteToLineItems, calculateAIQuoteTotals } from '@/lib/ai/quote-generation';
 import { sendEmail, getOwnerEmail } from '@/lib/email/resend';
 import { LeadConfirmationEmail } from '@/emails/lead-confirmation';
 import { NewLeadNotificationEmail } from '@/emails/new-lead-notification';
-import type { LeadInsert, LeadStatus, ProjectType, FinishLevel, Timeline, BudgetBand, Json } from '@/types/database';
+import type { LeadStatus, ProjectType, FinishLevel, Timeline, BudgetBand, Json } from '@/types/database';
 
 /**
  * Query params schema for GET /api/leads
@@ -46,7 +47,8 @@ export async function GET(request: NextRequest) {
     // Build query
     let query = supabase
       .from('leads')
-      .select('*', { count: 'exact' });
+      .select('*', { count: 'exact' })
+      .eq('site_id', getSiteId());
 
     // Apply filters
     if (status) {
@@ -199,7 +201,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create lead record
-    const leadData: LeadInsert = {
+    const leadData = {
       name: data.name,
       email: data.email,
       phone: data.phone || null,
@@ -221,15 +223,15 @@ export async function POST(request: NextRequest) {
       utm_source: data.utmSource || null,
       utm_medium: data.utmMedium || null,
       utm_campaign: data.utmCampaign || null,
-      status: quoteDraftJson ? 'draft_ready' : 'new',
-      source: 'ai_chat',
+      status: (quoteDraftJson ? 'draft_ready' : 'new') as LeadStatus,
+      source: 'ai_chat' as const,
     };
 
     // Insert into database
     const supabase = createServiceClient();
     const { data: lead, error } = await supabase
       .from('leads')
-      .insert(leadData)
+      .insert(withSiteId(leadData))
       .select('id, status, created_at')
       .single();
 
@@ -258,7 +260,8 @@ export async function POST(request: NextRequest) {
             estimate: quoteDraftJson,
           } as Json,
         })
-        .eq('id', data.sessionId);
+        .eq('id', data.sessionId)
+        .eq('site_id', getSiteId());
     }
 
     // Link visualization to lead if provided
@@ -266,7 +269,8 @@ export async function POST(request: NextRequest) {
       const { error: vizError } = await supabase
         .from('visualizations')
         .update({ lead_id: lead.id })
-        .eq('id', data.visualizationId);
+        .eq('id', data.visualizationId)
+        .eq('site_id', getSiteId());
 
       if (vizError) {
         console.error('Failed to link visualization to lead:', vizError);
@@ -275,7 +279,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the action
-    await supabase.from('audit_log').insert({
+    await supabase.from('audit_log').insert(withSiteId({
       lead_id: lead.id,
       action: 'lead_created',
       new_values: {
@@ -285,7 +289,7 @@ export async function POST(request: NextRequest) {
         has_ai_quote: !!aiGeneratedQuote,
         ai_confidence: aiGeneratedQuote?.overallConfidence,
       },
-    });
+    }));
 
     // Send email notifications (don't block on these)
     const emailPromises: Promise<unknown>[] = [];

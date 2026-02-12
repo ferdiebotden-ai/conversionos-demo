@@ -17,7 +17,7 @@ import {
 /**
  * System prompt for email generation
  */
-const EMAIL_GENERATION_SYSTEM_PROMPT = `You are a professional email writer for AI Reno Demo, a home renovation company in Ontario, Canada.
+const EMAIL_GENERATION_SYSTEM_PROMPT = `You are a professional email writer for AI Reno Demo, a home renovation company in Greater Ontario Area, Canada.
 
 Your task is to generate personalized, professional emails to accompany renovation quotes.
 
@@ -163,7 +163,7 @@ export function formatAIEmail(
 
   <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e5e5e5; font-size: 12px; color: #666;">
     <p style="margin: 0;"><strong style="color: #D32F2F;">AI Reno Demo</strong></p>
-    <p style="margin: 4px 0;">123 Main Street, Ontario, Canada</p>
+    <p style="margin: 4px 0;">123 Innovation Drive, Greater Ontario Area N0N 0N0</p>
     <p style="margin: 4px 0;">Tel: (555) 123-4567</p>
     <p style="margin: 4px 0;"><a href="https://www.airenodemo.com" style="color: #D32F2F;">www.airenodemo.com</a></p>
   </div>
@@ -190,7 +190,7 @@ ${aiEmail.closing}
 
 --
 AI Reno Demo
-123 Main Street, Ontario, Canada
+123 Innovation Drive, Greater Ontario Area N0N 0N0
 Tel: (555) 123-4567
 www.airenodemo.com
   `.trim();
@@ -247,7 +247,7 @@ export function generateDefaultEmail(
 
   <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e5e5e5; font-size: 12px; color: #666;">
     <p style="margin: 0;"><strong style="color: #D32F2F;">AI Reno Demo</strong></p>
-    <p style="margin: 4px 0;">123 Main Street, Ontario, Canada</p>
+    <p style="margin: 4px 0;">123 Innovation Drive, Greater Ontario Area N0N 0N0</p>
     <p style="margin: 4px 0;">Tel: (555) 123-4567</p>
     <p style="margin: 4px 0;"><a href="https://www.airenodemo.com" style="color: #D32F2F;">www.airenodemo.com</a></p>
   </div>
@@ -277,7 +277,7 @@ The AI Reno Demo Team
 
 --
 AI Reno Demo
-123 Main Street, Ontario, Canada
+123 Innovation Drive, Greater Ontario Area N0N 0N0
 Tel: (555) 123-4567
 www.airenodemo.com
   `.trim();

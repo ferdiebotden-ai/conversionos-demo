@@ -155,7 +155,7 @@ export function ContactForm() {
         <Input
           id="phone"
           type="tel"
-          placeholder="(555) 123-4567"
+          placeholder="(519) 555-1234"
           value={formData.phone}
           onChange={(e) => handleChange("phone", e.target.value)}
           className={errors.phone ? "border-destructive" : ""}

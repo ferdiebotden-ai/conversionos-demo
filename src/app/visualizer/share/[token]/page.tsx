@@ -6,6 +6,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 import { Button } from '@/components/ui/button';
 import { SharedVisualizationView } from './shared-view';
 import { Sparkles, MessageSquare, ArrowLeft } from 'lucide-react';
@@ -23,6 +24,7 @@ export default async function SharedVisualizationPage({ params }: PageProps) {
     .from('visualizations')
     .select('*')
     .eq('share_token', token)
+    .eq('site_id', getSiteId())
     .single();
 
   if (error || !visualization) {

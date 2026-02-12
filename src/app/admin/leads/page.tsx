@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 import { LeadsTable } from '@/components/admin/leads-table';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { LeadStatus, ProjectType } from '@/types/database';
@@ -29,7 +30,7 @@ async function getLeads(searchParams: LeadsPageProps['searchParams']) {
   const sortOrder = params.sortOrder || 'desc';
 
   // Build query
-  let query = supabase.from('leads').select('*', { count: 'exact' });
+  let query = supabase.from('leads').select('*', { count: 'exact' }).eq('site_id', getSiteId());
 
   // Apply filters
   if (params.status) {

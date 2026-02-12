@@ -13,6 +13,8 @@ import {
   LayoutDashboard,
   Users,
   FileText,
+  DollarSign,
+  Pencil,
   Settings,
   Sparkles,
   LogOut,
@@ -22,6 +24,8 @@ const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/leads', label: 'Leads', icon: Users },
   { href: '/admin/quotes', label: 'Quotes', icon: FileText },
+  { href: '/admin/invoices', label: 'Invoices', icon: DollarSign },
+  { href: '/admin/drawings', label: 'Drawings', icon: Pencil },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 

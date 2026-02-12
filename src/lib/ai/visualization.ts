@@ -3,7 +3,7 @@
  * AI-powered room transformation using Gemini 3 Pro Image generation
  */
 
-import { generateImageWithGemini, VISUALIZATION_CONFIG, type GeneratedImage } from './gemini';
+import { generateImageWithGemini, VISUALIZATION_CONFIG, type GeneratedImage, type ReferenceImage } from './gemini';
 import {
   type RoomType,
   type DesignStyle,
@@ -33,6 +33,20 @@ export interface VisualizationConfig {
   };
   /** Use enhanced prompt builder (default: true) */
   useEnhancedPrompts?: boolean;
+  /** Reference images for structural conditioning (Phase 2) */
+  referenceImages?: ReferenceImage[] | undefined;
+  /** Whether depth map is included */
+  hasDepthMap?: boolean | undefined;
+  /** Whether edge map is included */
+  hasEdgeMap?: boolean | undefined;
+  /** Depth range from depth estimation */
+  depthRange?: { min: number; max: number } | undefined;
+  /** Custom room type description (when user selected 'other') */
+  customRoomType?: string | undefined;
+  /** Custom style description (when user selected 'other') */
+  customStyle?: string | undefined;
+  /** AI-generated summary of voice consultation preferences */
+  voicePreferencesSummary?: string | undefined;
 }
 
 /**
@@ -69,6 +83,9 @@ export async function generateVisualizationConcept(
 ): Promise<GeneratedImage | null> {
   let prompt: string;
 
+  let referenceImages: ReferenceImage[] | undefined;
+  let analysisContext: string | undefined;
+
   // Handle both legacy and new signatures
   if (typeof roomTypeOrConfig === 'object') {
     // New config-based approach with enhanced prompts
@@ -77,7 +94,6 @@ export async function generateVisualizationConcept(
 
     if (useEnhanced && (config.photoAnalysis || config.designIntent)) {
       // Use full 6-part prompt with analysis/intent data
-      // Build promptData with spread for optional properties
       const promptData: RenovationPromptData = {
         roomType: config.roomType,
         style: config.style,
@@ -85,10 +101,12 @@ export async function generateVisualizationConcept(
         ...(config.constraints && { constraints: config.constraints }),
         ...(config.photoAnalysis && { photoAnalysis: config.photoAnalysis }),
         ...(config.designIntent && { designIntent: config.designIntent }),
+        ...(config.hasDepthMap && { hasDepthMap: true }),
+        ...(config.hasEdgeMap && { hasEdgeMap: true }),
+        ...(config.depthRange && { depthRange: config.depthRange }),
       };
       prompt = buildRenovationPrompt(promptData);
     } else {
-      // Use enhanced prompt without analysis (still better than legacy)
       const promptData: RenovationPromptData = {
         roomType: config.roomType,
         style: config.style,
@@ -96,6 +114,20 @@ export async function generateVisualizationConcept(
         ...(config.constraints && { constraints: config.constraints }),
       };
       prompt = buildRenovationPrompt(promptData);
+    }
+
+    // Pass through reference images for structural conditioning
+    referenceImages = config.referenceImages;
+
+    // Build analysis context for Gemini system instruction
+    if (config.photoAnalysis) {
+      const pa = config.photoAnalysis;
+      const parts: string[] = [];
+      parts.push(`Room: ${pa.roomType}, Layout: ${pa.layoutType}`);
+      if (pa.wallCount != null) parts.push(`Walls: ${pa.wallCount}`);
+      if (pa.estimatedCeilingHeight) parts.push(`Ceiling: ${pa.estimatedCeilingHeight}`);
+      if (pa.structuralElements.length) parts.push(`Structure: ${pa.structuralElements.join(', ')}`);
+      analysisContext = parts.join('. ');
     }
   } else {
     // Legacy signature - use quick mode prompt
@@ -106,11 +138,16 @@ export async function generateVisualizationConcept(
 
   try {
     // Use native Gemini 3 Pro image generation with the input photo
-    const result = await generateImageWithGemini(prompt, imageBase64, mimeType);
+    const result = await generateImageWithGemini(
+      prompt,
+      referenceImages ? undefined : imageBase64,
+      referenceImages ? undefined : mimeType,
+      analysisContext,
+      referenceImages
+    );
     return result;
   } catch (error) {
     console.error(`Visualization generation failed for concept ${conceptIndex}:`, error);
-    // Re-throw to allow caller to handle (no silent failures)
     throw error;
   }
 }

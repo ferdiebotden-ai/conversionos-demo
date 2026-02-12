@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId, withSiteId } from '@/lib/db/site';
 import type { Json } from '@/types/database';
 
 /**
@@ -20,6 +21,7 @@ export async function GET() {
     const { data: settings, error } = await supabase
       .from('admin_settings')
       .select('*')
+      .eq('site_id', getSiteId())
       .order('key');
 
     if (error) {
@@ -87,6 +89,7 @@ export async function PUT(request: NextRequest) {
       .from('admin_settings')
       .select('id')
       .eq('key', key)
+      .eq('site_id', getSiteId())
       .maybeSingle();
 
     if (fetchError) {
@@ -106,6 +109,7 @@ export async function PUT(request: NextRequest) {
           updated_at: new Date().toISOString(),
         })
         .eq('key', key)
+        .eq('site_id', getSiteId())
         .select('*')
         .single();
 
@@ -118,13 +122,13 @@ export async function PUT(request: NextRequest) {
       }
 
       // Log the update
-      await supabase.from('audit_log').insert({
+      await supabase.from('audit_log').insert(withSiteId({
         action: 'setting_updated',
         new_values: {
           key,
           value: JSON.stringify(value),
         } as Json,
-      });
+      }));
 
       return NextResponse.json({
         success: true,
@@ -134,10 +138,10 @@ export async function PUT(request: NextRequest) {
       // Insert new setting
       const { data: newSetting, error: insertError } = await supabase
         .from('admin_settings')
-        .insert({
+        .insert(withSiteId({
           key,
           value: value as Json,
-        })
+        }))
         .select('*')
         .single();
 
@@ -150,13 +154,13 @@ export async function PUT(request: NextRequest) {
       }
 
       // Log the creation
-      await supabase.from('audit_log').insert({
+      await supabase.from('audit_log').insert(withSiteId({
         action: 'setting_created',
         new_values: {
           key,
           value: JSON.stringify(value),
         } as Json,
-      });
+      }));
 
       return NextResponse.json({
         success: true,
@@ -210,8 +214,9 @@ export async function PATCH(request: NextRequest) {
             key,
             value: value as Json,
             updated_at: new Date().toISOString(),
+            site_id: getSiteId(),
           }, {
-            onConflict: 'key',
+            onConflict: 'site_id,key',
           })
           .select('*')
           .single();
@@ -230,13 +235,13 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Log the batch update
-    await supabase.from('audit_log').insert({
+    await supabase.from('audit_log').insert(withSiteId({
       action: 'settings_batch_updated',
       new_values: {
         keys: settings.map((s) => s.key),
         count: settings.length,
       },
-    });
+    }));
 
     return NextResponse.json({
       success: true,

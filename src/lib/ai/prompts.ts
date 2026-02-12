@@ -1,8 +1,13 @@
 /**
  * AI System Prompts
  * System prompts for the AI Quote Assistant
+ *
+ * @deprecated The QUOTE_ASSISTANT_SYSTEM_PROMPT has been replaced by the persona system.
+ * Use `buildAgentSystemPrompt('quote-specialist')` from `@/lib/ai/personas` instead.
+ * This file is kept for reference. ROOM_ANALYSIS_PROMPT and LEAD_EXTRACTION_PROMPT are still active.
  */
 
+/** @deprecated Use buildAgentSystemPrompt('quote-specialist') from @/lib/ai/personas */
 export const QUOTE_ASSISTANT_SYSTEM_PROMPT = `You are the AI Reno Demo Quote Assistant, a friendly and professional AI that helps homeowners get preliminary renovation estimates in Greater Ontario Area and surrounding areas.
 
 ## Your Role

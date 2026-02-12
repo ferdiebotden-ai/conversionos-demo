@@ -4,6 +4,7 @@
  * Chat Interface
  * Main container component for the AI Quote Assistant
  * Uses useChat hook from Vercel AI SDK for streaming
+ * Unified voice + text experience via ElevenLabs VoiceProvider
  */
 
 import { useChat, type UIMessage } from '@ai-sdk/react';
@@ -19,10 +20,13 @@ import { ProgressIndicator, detectProgressStep, type ProgressStep } from './prog
 import { SaveProgressModal } from './save-progress-modal';
 import { SubmitRequestModal } from './submit-request-modal';
 import { ProjectFormModal } from './project-form-modal';
-import { VoiceMode } from './voice-mode';
+import { VoiceProvider, useVoice } from '@/components/voice/voice-provider';
+import { VoiceIndicator } from '@/components/voice/voice-indicator';
+import { VoiceTranscriptMessage } from '@/components/voice/voice-transcript-message';
 import { compressImage, fileToBase64 } from '@/lib/utils/image';
-import { Save, FileText, Send, Headphones } from 'lucide-react';
-import type { TranscriptMessage } from '@/lib/realtime/config';
+import { readHandoffContext, clearHandoffContext, buildHandoffPromptPrefix, type HandoffContext } from '@/lib/chat/handoff';
+import { Save, FileText, Send } from 'lucide-react';
+import type { VoiceTranscriptEntry } from '@/lib/voice/config';
 
 // Helper to extract text content from UIMessage parts
 function getMessageContent(message: UIMessage): string {
@@ -39,6 +43,7 @@ interface ChatMessage {
   content: string;
   images?: string[] | undefined;
   createdAt?: Date | undefined;
+  source?: 'text' | 'voice' | undefined;
 }
 
 interface VisualizationContext {
@@ -55,7 +60,7 @@ interface ChatInterfaceProps {
   visualizationContext?: VisualizationContext | undefined;
 }
 
-const WELCOME_MESSAGE = "Hi! I'm your renovation assistant from AI Reno Demo. I'm here to help you get a preliminary estimate for your project.\n\nTo get started, you can upload a photo of your space, or just tell me what kind of renovation you're thinking about!";
+const WELCOME_MESSAGE = "Hey there! I'm Marcus, the budget and cost specialist here at AI Reno Demo. I help homeowners in the Greater Ontario Area understand what their renovation will cost — no surprises, no pressure.\n\nTell me about the space you're thinking of renovating, or snap a quick photo and I'll take a look!";
 
 // Map frontend timeline values to API enum values
 function mapTimelineToApi(timeline: string | undefined): string | undefined {
@@ -91,18 +96,75 @@ function getVisualizationWelcomeMessage(context: VisualizationContext): string {
   return `Hi! I see you've been exploring designs for your ${roomType} renovation in a ${style} style - it looks great! 🎨\n\nI'm your renovation assistant from AI Reno Demo. I can help turn that vision into a detailed estimate.\n\nTo get started, could you tell me a bit more about the space? For example:\n- What's the approximate size of the room?\n- When are you hoping to start the project?\n- Is there anything specific from your visualization you want to prioritize?`;
 }
 
-export function ChatInterface({ initialMessages, sessionId: initialSessionId, visualizationContext }: ChatInterfaceProps) {
+/**
+ * Inner component that uses VoiceProvider context
+ */
+function ChatInterfaceInner({ initialMessages, sessionId: initialSessionId, visualizationContext }: ChatInterfaceProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [sessionId, setSessionId] = useState<string | undefined>(initialSessionId);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
-  const [isVoiceMode, setIsVoiceMode] = useState(false);
+  const [voiceTranscriptMessages, setVoiceTranscriptMessages] = useState<ChatMessage[]>([]);
+  const [handoffContext, setHandoffContext] = useState<HandoffContext | null>(null);
+
+  // Read handoff context on mount (from persona navigation)
+  useEffect(() => {
+    const ctx = readHandoffContext();
+    if (ctx && ctx.toPersona === 'quote-specialist') {
+      setHandoffContext(ctx);
+      clearHandoffContext();
+    }
+  }, []);
+
+  // Subscribe to voice transcript from VoiceProvider
+  const { transcript: voiceTranscript } = useVoice();
+  const processedVoiceIdsRef = useRef<Set<string>>(new Set());
+
+  // Sync voice transcript entries into voiceTranscriptMessages (and parse estimate data)
+  useEffect(() => {
+    for (const entry of voiceTranscript) {
+      if (!processedVoiceIdsRef.current.has(entry.id)) {
+        processedVoiceIdsRef.current.add(entry.id);
+        const msg: ChatMessage = {
+          id: entry.id,
+          role: entry.role,
+          content: entry.content,
+          createdAt: entry.timestamp,
+          source: 'voice',
+        };
+        setVoiceTranscriptMessages((prev) => [...prev, msg]);
+        parseEstimateFromResponse(entry.content);
+      }
+    }
+  }, [voiceTranscript]);
 
   // Determine starting messages based on context
-  const welcomeMessage = visualizationContext
-    ? getVisualizationWelcomeMessage(visualizationContext)
-    : WELCOME_MESSAGE;
+  const getHandoffWelcome = (ctx: HandoffContext): string => {
+    const personaNames: Record<string, string> = {
+      receptionist: 'Emma',
+      'design-consultant': 'Mia',
+    };
+    const fromName = personaNames[ctx.fromPersona] || 'our team';
+
+    // Rich welcome when coming from visualizer with design preferences
+    if (ctx.fromPersona === 'design-consultant' && ctx.designPreferences) {
+      const dp = ctx.designPreferences;
+      const roomLabel = dp.customRoomType || dp.roomType.replace(/_/g, ' ');
+      const styleLabel = dp.customStyle || dp.style;
+      const conceptCount = ctx.visualizationData?.concepts.length || 0;
+      const conceptNote = conceptCount > 0 ? ` I can see you generated ${conceptCount} design concepts — they look great!` : '';
+      return `Hey there! I see you've been designing a ${roomLabel} renovation in a ${styleLabel} style with ${fromName}.${conceptNote}\n\nI'm Marcus, the budget and cost specialist here at AI Reno Demo. Let's turn that vision into real numbers.\n\nTo get you an accurate estimate, could you tell me about the size of the space and when you're hoping to start?`;
+    }
+
+    return `Hey! ${fromName} filled me in on what you've been discussing. I'm Marcus, the budget and cost specialist here at AI Reno Demo.\n\nLet's pick up where you left off and get you some solid numbers. What would you like to focus on first?`;
+  };
+
+  const welcomeMessage = handoffContext
+    ? getHandoffWelcome(handoffContext)
+    : visualizationContext
+      ? getVisualizationWelcomeMessage(visualizationContext)
+      : WELCOME_MESSAGE;
 
   const startingMessages: ChatMessage[] = initialMessages && initialMessages.length > 0
     ? initialMessages
@@ -110,12 +172,12 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
 
   const [localMessages, setLocalMessages] = useState<ChatMessage[]>(startingMessages);
 
-  // Initialize estimate data with visualization context if available
+  // Initialize estimate data with visualization context or handoff context
   const initialEstimateData: EstimateData = visualizationContext
-    ? {
-        projectType: mapRoomTypeToProjectType(visualizationContext.roomType),
-      }
-    : {};
+    ? { projectType: mapRoomTypeToProjectType(visualizationContext.roomType) }
+    : handoffContext?.designPreferences
+      ? { projectType: mapRoomTypeToProjectType(handoffContext.designPreferences.roomType) }
+      : {};
 
   const [estimateData, setEstimateData] = useState<EstimateData>(initialEstimateData);
   const [uploadedImages, setUploadedImages] = useState<Map<string, string[]>>(new Map());
@@ -123,10 +185,22 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
     visualizationContext ? 'photo' : 'welcome'
   );
 
-  // Create transport with memoization to avoid recreation on every render
+  // Create transport — includes handoff context and estimate data for pricing gate
+  // Note: body is intentionally recreated when dependencies change
   const transport = useMemo(() => new DefaultChatTransport({
     api: '/api/ai/chat',
-  }), []);
+    body: {
+      ...(handoffContext && { handoffContext }),
+      estimateData: {
+        projectType: estimateData.projectType,
+        areaSqft: estimateData.areaSqft,
+        finishLevel: estimateData.finishLevel,
+        timeline: estimateData.timeline,
+        goals: estimateData.goals,
+        hasPhoto: Array.from(uploadedImages.values()).some(imgs => imgs.length > 0),
+      },
+    },
+  }), [handoffContext, estimateData.projectType, estimateData.areaSqft, estimateData.finishLevel, estimateData.timeline, estimateData.goals, uploadedImages]);
 
   // Convert initial messages to UIMessage format for useChat
   const initialUIMessages = useMemo(() => {
@@ -161,7 +235,6 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
     setLocalMessages(messagesWithImages);
 
     // Parse estimate data from recent messages (both user and assistant)
-    // Check last few messages to extract project details
     const recentMessages = messagesWithImages.slice(-4);
     for (const msg of recentMessages) {
       parseEstimateFromResponse(msg.content);
@@ -173,7 +246,6 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
   }, [messages, uploadedImages]);
 
   // Auto-scroll to bottom on new messages with smooth animation
-  // Access Radix ScrollArea viewport for proper scrolling
   useEffect(() => {
     if (scrollRef.current) {
       requestAnimationFrame(() => {
@@ -186,7 +258,20 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
         }
       });
     }
-  }, [localMessages, isLoading]);
+  }, [localMessages, voiceTranscriptMessages, isLoading]);
+
+  // Handle voice transcript entries — parse estimate data in real-time
+  const handleVoiceMessage = useCallback((entry: VoiceTranscriptEntry) => {
+    const msg: ChatMessage = {
+      id: entry.id,
+      role: entry.role,
+      content: entry.content,
+      createdAt: entry.timestamp,
+      source: 'voice',
+    };
+    setVoiceTranscriptMessages((prev) => [...prev, msg]);
+    parseEstimateFromResponse(entry.content);
+  }, []);
 
   // Parse estimate data from AI response and user messages
   const parseEstimateFromResponse = useCallback((content: string) => {
@@ -234,7 +319,7 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
       }
     }
 
-    // Extract room size (e.g., "200 square feet", "150 sqft", "~180 sq ft")
+    // Extract room size
     const sizeMatch = content.match(/(?:about|around|approximately|~)?\s*(\d+)\s*(?:sq\.?\s*(?:ft|feet)|square\s*feet|sqft)/i);
     if (sizeMatch?.[1]) {
       const size = parseInt(sizeMatch[1], 10);
@@ -248,51 +333,27 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
 
     // Extract timeline from content
     if (lower.includes('asap') || lower.includes('as soon as possible') || lower.includes('right away') || lower.includes('immediately')) {
-      setEstimateData((prev) => ({
-        ...prev,
-        timeline: prev.timeline || 'asap',
-      }));
+      setEstimateData((prev) => ({ ...prev, timeline: prev.timeline || 'asap' }));
     } else if (lower.includes('1-3 month') || lower.includes('1 to 3 month') || lower.includes('few months') || lower.includes('couple months')) {
-      setEstimateData((prev) => ({
-        ...prev,
-        timeline: prev.timeline || '1-3mo',
-      }));
+      setEstimateData((prev) => ({ ...prev, timeline: prev.timeline || '1-3mo' }));
     } else if (lower.includes('3-6 month') || lower.includes('3 to 6 month') || lower.includes('half year') || lower.includes('summer') || lower.includes('spring')) {
-      setEstimateData((prev) => ({
-        ...prev,
-        timeline: prev.timeline || '3-6mo',
-      }));
+      setEstimateData((prev) => ({ ...prev, timeline: prev.timeline || '3-6mo' }));
     } else if (lower.includes('6-12 month') || lower.includes('6 to 12 month') || lower.includes('next year') || lower.includes('year from now')) {
-      setEstimateData((prev) => ({
-        ...prev,
-        timeline: prev.timeline || '6-12mo',
-      }));
+      setEstimateData((prev) => ({ ...prev, timeline: prev.timeline || '6-12mo' }));
     } else if (lower.includes('just planning') || lower.includes('just exploring') || lower.includes('no rush') || lower.includes('researching')) {
-      setEstimateData((prev) => ({
-        ...prev,
-        timeline: prev.timeline || 'planning',
-      }));
+      setEstimateData((prev) => ({ ...prev, timeline: prev.timeline || 'planning' }));
     }
 
     // Extract finish level
     if (lower.includes('premium') || lower.includes('high-end') || lower.includes('luxury') || lower.includes('top quality') || lower.includes('best quality')) {
-      setEstimateData((prev) => ({
-        ...prev,
-        finishLevel: prev.finishLevel || 'premium',
-      }));
+      setEstimateData((prev) => ({ ...prev, finishLevel: prev.finishLevel || 'premium' }));
     } else if (lower.includes('economy') || lower.includes('budget') || lower.includes('affordable') || lower.includes('basic') || lower.includes('low cost')) {
-      setEstimateData((prev) => ({
-        ...prev,
-        finishLevel: prev.finishLevel || 'economy',
-      }));
+      setEstimateData((prev) => ({ ...prev, finishLevel: prev.finishLevel || 'economy' }));
     } else if (lower.includes('standard') || lower.includes('mid-range') || lower.includes('middle') || lower.includes('average quality')) {
-      setEstimateData((prev) => ({
-        ...prev,
-        finishLevel: prev.finishLevel || 'standard',
-      }));
+      setEstimateData((prev) => ({ ...prev, finishLevel: prev.finishLevel || 'standard' }));
     }
 
-    // Extract goals/wants from user messages (look for patterns like "I want...", "We'd like...", "Looking to...")
+    // Extract goals/wants from user messages
     const goalPatterns = [
       /(?:i|we)(?:'d|'ll)?\s+(?:want|like|love)\s+(?:to\s+)?(.+?)(?:\.|,|$)/gi,
       /(?:looking|hoping)\s+(?:to|for)\s+(.+?)(?:\.|,|$)/gi,
@@ -308,7 +369,6 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
           setEstimateData((prev) => {
             const existingGoals = prev.goals || '';
             const newGoal = goalText.trim();
-            // Don't duplicate goals
             if (existingGoals.toLowerCase().includes(newGoal.toLowerCase())) {
               return prev;
             }
@@ -323,13 +383,11 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
   }, []);
 
   const handleSend = async (message: string, images: File[]) => {
-    // Process images if any
     let imageDataUrls: string[] = [];
     let imageDescriptions = '';
 
     if (images.length > 0) {
       try {
-        // Compress and convert images
         const processedImages = await Promise.all(
           images.map(async (file) => {
             const compressed = await compressImage(file);
@@ -343,10 +401,8 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
       }
     }
 
-    // Create the message content
     const fullMessage = message + imageDescriptions;
 
-    // Store images for display before sending
     const tempImageKey = `temp-${Date.now()}`;
     if (imageDataUrls.length > 0) {
       setUploadedImages((prev) => {
@@ -356,57 +412,18 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
       });
     }
 
-    // Send the message using the new API with text parameter
-    await sendMessage({
-      text: fullMessage,
-    });
+    await sendMessage({ text: fullMessage });
   };
-
-
-  // Handle voice mode toggle
-  const handleVoiceModeToggle = useCallback(() => {
-    setIsVoiceMode((prev) => !prev);
-  }, []);
-
-  // Handle voice transcript completion
-  const handleVoiceTranscriptComplete = useCallback((transcript: TranscriptMessage[]) => {
-    // Convert voice transcript to chat messages and add to conversation
-    const voiceMessages: ChatMessage[] = transcript.map((msg) => ({
-      id: msg.id,
-      role: msg.role,
-      content: msg.content,
-      createdAt: msg.timestamp,
-    }));
-
-    // Add voice transcript to local messages
-    setLocalMessages((prev) => [...prev, ...voiceMessages]);
-
-    // Parse estimate data from all transcript messages
-    for (const msg of transcript) {
-      parseEstimateFromResponse(msg.content);
-    }
-
-    // Switch back to text mode
-    setIsVoiceMode(false);
-
-    // Add a transitional message
-    const transitionMessage: ChatMessage = {
-      id: `voice-complete-${Date.now()}`,
-      role: 'assistant',
-      content: "Thanks for sharing that with me! I've captured your project details from our voice conversation. Would you like to continue chatting, or are you ready to submit your request?",
-      createdAt: new Date(),
-    };
-    setLocalMessages((prev) => [...prev, transitionMessage]);
-  }, [parseEstimateFromResponse]);
 
   // Handle save progress
   const handleSaveProgress = async (email: string) => {
+    const allMessages = [...localMessages, ...voiceTranscriptMessages];
     const response = await fetch('/api/sessions/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email,
-        messages: localMessages,
+        messages: allMessages,
         extractedData: estimateData,
         sessionId,
       }),
@@ -423,16 +440,12 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
     }
   };
 
-  // Handle sidebar data changes with chat acknowledgement and AI context injection
+  // Handle sidebar data changes with chat acknowledgement
   const handleEstimateDataChange = useCallback((changes: Partial<ProjectSummaryData>, changeInfo?: FieldChangeInfo) => {
     setEstimateData((prev) => ({ ...prev, ...changes }));
 
-    // Inject chat acknowledgement when user edits via sidebar
     if (changeInfo && changeInfo.displayValue) {
-      // Create a system message to provide context to AI (not visible but logged)
       const systemContext = `[SIDEBAR_EDIT] User updated ${changeInfo.field}: ${changeInfo.displayValue}`;
-
-      // Create visible acknowledgement message
       const acknowledgement = `Got it! I've updated your ${changeInfo.fieldLabel} to ${changeInfo.displayValue}.`;
       const ackMessage: ChatMessage = {
         id: `ack-${Date.now()}`,
@@ -440,16 +453,12 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
         content: acknowledgement,
         createdAt: new Date(),
       };
-
-      // Log the sidebar edit for transcript (included in system context)
       const editLogMessage: ChatMessage = {
         id: `edit-log-${Date.now()}`,
         role: 'user',
         content: systemContext,
         createdAt: new Date(),
       };
-
-      // Add both messages (edit log first, then acknowledgement)
       setLocalMessages((prev) => [...prev, editLogMessage, ackMessage]);
     }
   }, []);
@@ -457,31 +466,23 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
   // Handle submit request
   const handleSubmitRequest = useCallback(
     async (contactInfo: { name: string; email: string; phone?: string }) => {
-      // Prepare lead data matching API schema (flat structure, camelCase)
+      const allMessages = [...localMessages, ...voiceTranscriptMessages];
       const leadData = {
-        // Contact info (required)
         name: contactInfo.name,
         email: contactInfo.email,
         phone: contactInfo.phone || undefined,
-
-        // Project details (flat structure)
         projectType: estimateData.projectType || 'other',
         areaSqft: estimateData.areaSqft,
         finishLevel: estimateData.finishLevel,
         timeline: mapTimelineToApi(estimateData.timeline),
         goalsText: estimateData.goals,
-
-        // Chat transcript
-        chatTranscript: localMessages.map((m) => ({
+        chatTranscript: allMessages.map((m) => ({
           role: m.role as 'user' | 'assistant',
           content: m.content,
         })),
-
-        // Link visualization if from visualizer flow
         visualizationId: visualizationContext?.id,
       };
 
-      // Submit to API
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -493,7 +494,6 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
         throw new Error(data.error || 'Failed to submit request');
       }
 
-      // Update estimate data with contact info
       setEstimateData((prev) => ({
         ...prev,
         contactName: contactInfo.name,
@@ -501,10 +501,10 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
         ...(contactInfo.phone && { contactPhone: contactInfo.phone }),
       }));
     },
-    [estimateData, localMessages, visualizationContext]
+    [estimateData, localMessages, voiceTranscriptMessages, visualizationContext]
   );
 
-  // Handle form submission (from form modal)
+  // Handle form submission
   const handleFormSubmit = useCallback(
     async (formData: {
       name: string;
@@ -516,31 +516,23 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
       finishLevel: string;
       goals: string;
     }) => {
-      // Prepare lead data matching API schema (flat structure, camelCase)
+      const allMessages = [...localMessages, ...voiceTranscriptMessages];
       const leadData = {
-        // Contact info
         name: formData.name,
         email: formData.email,
         phone: formData.phone || undefined,
-
-        // Project details (flat structure)
         projectType: formData.projectType || 'other',
         areaSqft: formData.areaSqft ? parseInt(formData.areaSqft, 10) : undefined,
         finishLevel: formData.finishLevel || undefined,
         timeline: mapTimelineToApi(formData.timeline),
         goalsText: formData.goals || undefined,
-
-        // Chat transcript
-        chatTranscript: localMessages.map((m) => ({
+        chatTranscript: allMessages.map((m) => ({
           role: m.role as 'user' | 'assistant',
           content: m.content,
         })),
-
-        // Link visualization if from visualizer flow
         visualizationId: visualizationContext?.id,
       };
 
-      // Submit to API
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -552,7 +544,6 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
         throw new Error(data.error || 'Failed to submit form');
       }
 
-      // Update estimate data with form info
       const newData: Partial<EstimateData> = {
         contactName: formData.name,
         contactEmail: formData.email,
@@ -568,12 +559,11 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
 
       setEstimateData((prev) => ({ ...prev, ...newData }));
     },
-    [localMessages, visualizationContext]
+    [localMessages, voiceTranscriptMessages, visualizationContext]
   );
 
-
   // Show save button only after conversation has started
-  const showSaveButton = localMessages.length > 1;
+  const showSaveButton = localMessages.length > 1 || voiceTranscriptMessages.length > 0;
 
   // Count photos for sidebar
   const photosCount = Array.from(uploadedImages.values()).reduce(
@@ -587,36 +577,18 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
     photosCount,
   };
 
+  // All messages for display (text + voice transcript)
+  const allDisplayMessages = [...localMessages, ...voiceTranscriptMessages];
+
   return (
     <div className="flex flex-col lg:flex-row flex-1 min-h-0 overflow-hidden bg-background">
-      {/* Voice Mode Overlay */}
-      {isVoiceMode && (
-        <div className="absolute inset-0 z-50 bg-background md:p-4 lg:relative lg:flex-1">
-          <VoiceMode
-            onTranscriptComplete={handleVoiceTranscriptComplete}
-            onSwitchToText={() => setIsVoiceMode(false)}
-            className="h-full"
-          />
-        </div>
-      )}
-
       {/* Chat area */}
-      <div className={`flex-1 flex flex-col min-w-0 min-h-0 ${isVoiceMode ? 'hidden lg:flex' : ''}`}>
+      <div className="flex-1 flex flex-col min-w-0 min-h-0">
         {/* Progress indicator with save button */}
         <div className="border-b border-border px-4 py-3 flex-shrink-0">
           <div className="flex items-center justify-between gap-4">
             <ProgressIndicator currentStep={progressStep} hasPhoto={photosCount > 0} className="flex-1" />
             <div className="flex items-center gap-2 flex-shrink-0">
-              {/* Voice mode button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleVoiceModeToggle}
-                className="text-[#D32F2F] border-[#D32F2F]/30 hover:bg-[#D32F2F]/10"
-              >
-                <Headphones className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Talk to Expert</span>
-              </Button>
               {showSaveButton && (
                 <Button
                   variant="outline"
@@ -631,7 +603,7 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
             </div>
           </div>
 
-          {/* Switch to Form option - show after project type is detected */}
+          {/* Switch to Form option */}
           {estimateData.projectType && !estimateData.contactEmail && (
             <div className="flex items-center justify-center gap-2 mt-2 pt-2 border-t border-border">
               <span className="text-xs text-muted-foreground">Prefer a form?</span>
@@ -651,16 +623,28 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
         {/* Messages */}
         <ScrollArea ref={scrollRef} className="flex-1 min-h-0 p-4">
           <div className="max-w-3xl mx-auto space-y-1">
-            {localMessages.map((message) => (
-              <MessageBubble
-                key={message.id}
-                role={message.role}
-                content={message.content}
-                images={message.images}
-                timestamp={message.createdAt}
-                data-testid={`${message.role}-message`}
-              />
-            ))}
+            {allDisplayMessages.map((message) => {
+              if (message.source === 'voice') {
+                return (
+                  <VoiceTranscriptMessage
+                    key={message.id}
+                    role={message.role}
+                    content={message.content}
+                    agentName={message.role === 'assistant' ? 'Marcus' : undefined}
+                  />
+                );
+              }
+              return (
+                <MessageBubble
+                  key={message.id}
+                  role={message.role}
+                  content={message.content}
+                  images={message.images}
+                  timestamp={message.createdAt}
+                  data-testid={`${message.role}-message`}
+                />
+              );
+            })}
             {isLoading && <TypingIndicator />}
             {error && (
               <div className="px-4 py-3 text-sm text-destructive">
@@ -670,7 +654,10 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
           </div>
         </ScrollArea>
 
-        {/* Mobile estimate card - inline above quick replies */}
+        {/* Voice Indicator — inline when voice active */}
+        <VoiceIndicator persona="quote-specialist" />
+
+        {/* Mobile estimate card */}
         {(sidebarData.projectType || photosCount > 0) && (
           <div className="lg:hidden px-4 py-2 border-t border-border flex-shrink-0">
             <EstimateSidebar
@@ -687,14 +674,12 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
         <div className="flex-shrink-0">
           <ChatInput
             onSend={handleSend}
-            onVoiceModeToggle={handleVoiceModeToggle}
             disabled={isLoading}
             placeholder="Describe your renovation project..."
-            showVoiceButton={!isVoiceMode}
           />
         </div>
 
-        {/* Submit Request CTA - shown after minimum data collected, below chat input */}
+        {/* Submit Request CTA */}
         {sidebarData.projectType && !sidebarData.contactEmail ? (
           <div className="px-4 py-3 pb-6 border-t border-border bg-muted/30 flex-shrink-0">
             <Button
@@ -711,7 +696,6 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
             </p>
           </div>
         ) : (
-          /* Bottom spacer when no submit button */
           <div className="h-4 flex-shrink-0" />
         )}
       </div>
@@ -738,7 +722,7 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
         isOpen={showSubmitModal}
         onClose={() => setShowSubmitModal(false)}
         projectData={sidebarData}
-        messages={localMessages}
+        messages={allDisplayMessages}
         onSubmit={handleSubmitRequest}
       />
 
@@ -750,5 +734,16 @@ export function ChatInterface({ initialMessages, sessionId: initialSessionId, vi
         onSubmit={handleFormSubmit}
       />
     </div>
+  );
+}
+
+/**
+ * ChatInterface — wraps inner component with VoiceProvider
+ */
+export function ChatInterface(props: ChatInterfaceProps) {
+  return (
+    <VoiceProvider>
+      <ChatInterfaceInner {...props} />
+    </VoiceProvider>
   );
 }

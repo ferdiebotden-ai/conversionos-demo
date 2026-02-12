@@ -248,7 +248,7 @@ export function QuoteEmailTemplate({ lead, quote, customMessage }: QuoteEmailPro
   const expiresAt = quote.expires_at
     ? new Date(quote.expires_at)
     : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-  const quoteNumber = `ARD-${quoteDate.getFullYear()}-${String(lead.id).slice(0, 8).toUpperCase()}`;
+  const quoteNumber = `DEMO-${quoteDate.getFullYear()}-${String(lead.id).slice(0, 8).toUpperCase()}`;
   const lineItemCount = Array.isArray(quote.line_items) ? quote.line_items.length : 0;
 
   return (
@@ -396,8 +396,8 @@ export function QuoteEmailTemplate({ lead, quote, customMessage }: QuoteEmailPro
                 quotes@airenodemo.com
               </Link>
               {' '}&bull;{' '}
-              <Link href="tel:+15551234567" style={footerLink}>
-                (555) 123-4567
+              <Link href="tel:+15195550000" style={footerLink}>
+                (519) 555-RENO
               </Link>
             </Text>
             <Text style={{ ...footerText, marginTop: '16px', fontSize: '11px' }}>

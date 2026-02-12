@@ -51,8 +51,12 @@ const teamMembers = [
 ]
 
 const serviceAreas = [
+  "Toronto",
+  "Ottawa",
+  "Hamilton",
+  "London",
+  "Kitchener-Waterloo",
   "Greater Ontario Area",
-  "Surrounding Communities",
 ]
 
 export default function AboutPage() {
@@ -79,7 +83,7 @@ export default function AboutPage() {
               Building Trust With Quality Work
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              AI Reno Demo transforms homes across Ontario
+              AI Reno Demo transforms homes in the Greater Ontario Area
               with quality craftsmanship and modern building techniques.
               Taking care of our clients is what we do best.
             </p>

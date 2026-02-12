@@ -1,0 +1,73 @@
+/**
+ * ElevenLabs Voice Configuration
+ * Connection config, shared types, and utilities for ElevenLabs Conversational AI
+ */
+
+import type { PersonaKey } from '@/lib/ai/personas/types';
+
+// Agent ID env var mapping
+const AGENT_ENV_MAP: Record<PersonaKey, string> = {
+  receptionist: 'ELEVENLABS_AGENT_EMMA',
+  'quote-specialist': 'ELEVENLABS_AGENT_MARCUS',
+  'design-consultant': 'ELEVENLABS_AGENT_MIA',
+};
+
+/**
+ * Resolve the ElevenLabs agent env var key for a persona
+ */
+export function getAgentEnvKey(persona: PersonaKey): string {
+  return AGENT_ENV_MAP[persona];
+}
+
+// Voice connection statuses
+export type VoiceConnectionStatus = 'disconnected' | 'connecting' | 'connected';
+
+// Voice mode (speaking vs listening)
+export type VoiceMode = 'speaking' | 'listening' | 'idle';
+
+// Transcript entry from voice conversation
+export interface VoiceTranscriptEntry {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+  source: 'voice';
+}
+
+// Voice error types
+export type VoiceErrorCode =
+  | 'PERMISSION_DENIED'
+  | 'NOT_SUPPORTED'
+  | 'CONNECTION_FAILED'
+  | 'API_NOT_CONFIGURED'
+  | 'UNKNOWN';
+
+export const VOICE_ERROR_MESSAGES: Record<VoiceErrorCode, string> = {
+  PERMISSION_DENIED: 'Please allow microphone access in your browser settings.',
+  NOT_SUPPORTED: 'Voice mode requires a modern browser with WebRTC support.',
+  CONNECTION_FAILED: 'Could not connect to voice service. Please try again.',
+  API_NOT_CONFIGURED: 'Voice mode is not available right now. Please use text chat instead.',
+  UNKNOWN: 'An unexpected error occurred. Please try again.',
+};
+
+/**
+ * Check if the browser supports voice (WebRTC + AudioContext)
+ */
+export function isVoiceSupported(): boolean {
+  if (typeof window === 'undefined') return false;
+  return (
+    typeof navigator.mediaDevices?.getUserMedia === 'function' &&
+    typeof window.RTCPeerConnection === 'function' &&
+    typeof window.AudioContext === 'function'
+  );
+}
+
+/**
+ * Format duration in milliseconds to "M:SS"
+ */
+export function formatDuration(ms: number): string {
+  const seconds = Math.floor(ms / 1000);
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}

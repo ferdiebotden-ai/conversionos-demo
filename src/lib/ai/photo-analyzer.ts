@@ -70,6 +70,48 @@ export const VisualizationRoomAnalysisSchema = z.object({
    * Notable elements that could be design focal points (nullable for OpenAI JSON schema compatibility)
    */
   potentialFocalPoints: z.array(z.string()).nullable(),
+  /**
+   * Number of visible walls (0-6)
+   */
+  wallCount: z.number().int().min(0).max(6).nullable(),
+  /**
+   * Dimensions and features of each visible wall
+   */
+  wallDimensions: z.array(z.object({
+    wall: z.string(),
+    estimatedLength: z.string(),
+    hasWindow: z.boolean(),
+    hasDoor: z.boolean(),
+  })).nullable(),
+  /**
+   * Estimated ceiling height
+   */
+  estimatedCeilingHeight: z.string().nullable(),
+  /**
+   * Identified spatial zones within the room
+   */
+  spatialZones: z.array(z.object({
+    name: z.string(),
+    description: z.string(),
+    approximateLocation: z.string(),
+  })).nullable(),
+  /**
+   * Doors, windows, archways with positions and sizes
+   */
+  openings: z.array(z.object({
+    type: z.enum(['window', 'door', 'archway']),
+    wall: z.string(),
+    approximateSize: z.string(),
+    approximatePosition: z.string(),
+  })).nullable(),
+  /**
+   * Dominant architectural lines and perspective geometry
+   */
+  architecturalLines: z.object({
+    dominantDirection: z.string(),
+    vanishingPointDescription: z.string(),
+    symmetryAxis: z.string().nullable(),
+  }).nullable(),
 });
 
 export type RoomAnalysis = z.infer<typeof VisualizationRoomAnalysisSchema>;
@@ -153,6 +195,32 @@ Analyze this room photo and provide:
 
 12. **Potential Focal Points** (optional): Elements that could be highlighted in renovation.
 
+13. **Wall Count**: How many walls are visible in the photo? (0-6)
+
+14. **Wall Dimensions**: For each visible wall, estimate:
+   - Which wall (e.g., "left wall", "back wall", "right wall")
+   - Estimated length relative to other walls (e.g., "~12 feet", "~8 feet")
+   - Whether it has a window
+   - Whether it has a door
+
+15. **Estimated Ceiling Height**: Approximate ceiling height (e.g., "~8 feet standard", "~9 feet", "~10 feet vaulted")
+
+16. **Spatial Zones**: Identify distinct functional zones:
+   - Zone name (e.g., "cooking zone", "prep area", "dining nook")
+   - Brief description
+   - Approximate location (e.g., "left third of room", "center", "near window")
+
+17. **Openings**: Catalog all doors, windows, and archways:
+   - Type: window, door, or archway
+   - Which wall it's on
+   - Approximate size (e.g., "36x48 inches", "standard 32-inch door")
+   - Position on the wall (e.g., "centered", "left third", "right corner")
+
+18. **Architectural Lines**: Describe the dominant geometry:
+   - Dominant line direction (e.g., "strong horizontal lines from countertops and cabinets")
+   - Vanishing point description (e.g., "single vanishing point centered, moderate depth")
+   - Symmetry axis if any (e.g., "near-symmetric around center island", null if asymmetric)
+
 Be specific and technical. This analysis directly impacts visualization quality.`,
             },
             {
@@ -162,7 +230,7 @@ Be specific and technical. This analysis directly impacts visualization quality.
           ],
         },
       ],
-      maxOutputTokens: 1500,
+      maxOutputTokens: 2500,
       temperature: 0.3, // Low temperature for more consistent, accurate analysis
     });
 

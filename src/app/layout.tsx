@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { ReceptionistWidgetLoader } from "@/components/receptionist/receptionist-widget-loader";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,7 +25,6 @@ export const metadata: Metadata = {
   keywords: [
     "renovation",
     "contractor",
-    "Greater Ontario Area",
     "Ontario",
     "kitchen renovation",
     "bathroom renovation",
@@ -51,6 +51,7 @@ export default function RootLayout({
         <Header />
         <main className="min-h-[calc(100vh-4rem)]">{children}</main>
         <Footer />
+        <ReceptionistWidgetLoader />
       </body>
     </html>
   );

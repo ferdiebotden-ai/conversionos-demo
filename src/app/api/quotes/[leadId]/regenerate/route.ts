@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId, withSiteId } from '@/lib/db/site';
 import { regenerateAIQuote, generateAIQuote } from '@/lib/ai/quote-generation';
 import type { Json } from '@/types/database';
 
@@ -55,6 +56,7 @@ export async function POST(
       .from('leads')
       .select('*')
       .eq('id', leadId)
+      .eq('site_id', getSiteId())
       .single();
 
     if (leadError) {
@@ -113,7 +115,8 @@ export async function POST(
         quote_draft_json: updatedDraftJson as Json,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', leadId);
+      .eq('id', leadId)
+      .eq('site_id', getSiteId());
 
     if (updateError) {
       console.error('Error updating lead with regenerated quote:', updateError);
@@ -124,7 +127,7 @@ export async function POST(
     }
 
     // Log the regeneration
-    await supabase.from('audit_log').insert({
+    await supabase.from('audit_log').insert(withSiteId({
       lead_id: leadId,
       action: 'ai_quote_regenerated',
       new_values: {
@@ -132,7 +135,7 @@ export async function POST(
         line_items_count: aiQuote.lineItems.length,
         overall_confidence: aiQuote.overallConfidence,
       },
-    });
+    }));
 
     return NextResponse.json({
       success: true,

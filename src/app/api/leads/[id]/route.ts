@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId, withSiteId } from '@/lib/db/site';
 import type { LeadStatus, LeadUpdate } from '@/types/database';
 
 /**
@@ -45,6 +46,7 @@ export async function GET(
       .from('leads')
       .select('*')
       .eq('id', id)
+      .eq('site_id', getSiteId())
       .single();
 
     if (error) {
@@ -110,6 +112,7 @@ export async function PATCH(
       .from('leads')
       .select('*')
       .eq('id', id)
+      .eq('site_id', getSiteId())
       .single();
 
     if (fetchError) {
@@ -172,6 +175,7 @@ export async function PATCH(
       .from('leads')
       .update(leadUpdate)
       .eq('id', id)
+      .eq('site_id', getSiteId())
       .select('*')
       .single();
 
@@ -184,12 +188,12 @@ export async function PATCH(
     }
 
     // Log the update
-    await supabase.from('audit_log').insert({
+    await supabase.from('audit_log').insert(withSiteId({
       lead_id: id,
       action: 'lead_updated',
       old_values: existingLead,
       new_values: updatedLead,
-    });
+    }));
 
     return NextResponse.json({
       success: true,

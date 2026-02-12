@@ -15,10 +15,12 @@ interface MessageBubbleProps {
   content: string;
   images?: string[] | undefined;
   timestamp?: Date | undefined;
+  agentName?: string | undefined;
+  agentIcon?: React.ReactNode | undefined;
   'data-testid'?: string;
 }
 
-export function MessageBubble({ role, content, images, timestamp, 'data-testid': dataTestId }: MessageBubbleProps) {
+export function MessageBubble({ role, content, images, timestamp, agentName, agentIcon, 'data-testid': dataTestId }: MessageBubbleProps) {
   const isUser = role === 'user';
 
   return (
@@ -37,7 +39,7 @@ export function MessageBubble({ role, content, images, timestamp, 'data-testid':
         <AvatarFallback className={cn(
           isUser ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
         )}>
-          {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+          {isUser ? <User className="h-4 w-4" /> : (agentIcon || <Bot className="h-4 w-4" />)}
         </AvatarFallback>
       </Avatar>
 
@@ -48,6 +50,10 @@ export function MessageBubble({ role, content, images, timestamp, 'data-testid':
           isUser ? 'items-end' : 'items-start'
         )}
       >
+        {/* Agent name label */}
+        {agentName && !isUser && (
+          <span className="text-xs font-medium text-muted-foreground">{agentName}</span>
+        )}
         {/* Images (if any) */}
         {images && images.length > 0 && (
           <div className="flex flex-wrap gap-2">

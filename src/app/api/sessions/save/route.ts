@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId, withSiteId } from '@/lib/db/site';
 import { sendEmail } from '@/lib/email/resend';
 import { SessionResumeEmail } from '@/emails/session-resume';
 import type { Json } from '@/types/database';
@@ -55,7 +56,8 @@ export async function POST(request: NextRequest) {
           state: 'active',
           expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
         })
-        .eq('id', sessionId);
+        .eq('id', sessionId)
+        .eq('site_id', getSiteId());
 
       if (updateError) {
         console.error('Error updating session:', updateError);
@@ -68,7 +70,7 @@ export async function POST(request: NextRequest) {
       // Create new session
       const { data: newSession, error: insertError } = await supabase
         .from('chat_sessions')
-        .insert({
+        .insert(withSiteId({
           email: data.email,
           messages: data.messages as unknown as Json,
           extracted_data: (data.extractedData || null) as Json,
@@ -76,7 +78,7 @@ export async function POST(request: NextRequest) {
           started_from: data.startedFrom || null,
           state: 'active',
           expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        })
+        }))
         .select('id')
         .single();
 
@@ -92,7 +94,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate resume URL
-    const baseUrl = process.env['NEXT_PUBLIC_APP_URL'] || '#';
+    const baseUrl = process.env['NEXT_PUBLIC_APP_URL'] || 'https://leadquoteenginev2.vercel.app';
     const resumeUrl = `${baseUrl}/estimate/resume?session=${sessionId}`;
 
     // Send magic link email

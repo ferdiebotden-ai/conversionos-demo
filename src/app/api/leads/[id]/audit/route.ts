@@ -6,6 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -34,6 +35,7 @@ export async function GET(
       .from('leads')
       .select('id')
       .eq('id', id)
+      .eq('site_id', getSiteId())
       .single();
 
     if (leadError) {
@@ -60,6 +62,7 @@ export async function GET(
       .from('audit_log')
       .select('*', { count: 'exact' })
       .eq('lead_id', id)
+      .eq('site_id', getSiteId())
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 

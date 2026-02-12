@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { renderToBuffer } from '@react-pdf/renderer';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId, withSiteId } from '@/lib/db/site';
 import { QuotePdfDocument } from '@/lib/pdf/quote-template';
 
 type RouteContext = { params: Promise<{ leadId: string }> };
@@ -36,6 +37,7 @@ export async function GET(
       .from('leads')
       .select('*')
       .eq('id', leadId)
+      .eq('site_id', getSiteId())
       .single();
 
     if (leadError || !lead) {
@@ -51,6 +53,7 @@ export async function GET(
       .from('quote_drafts')
       .select('*')
       .eq('lead_id', leadId)
+      .eq('site_id', getSiteId())
       .order('version', { ascending: false })
       .limit(1)
       .single();
@@ -79,11 +82,11 @@ export async function GET(
 
     // Create filename
     const quoteDate = new Date(quote.created_at);
-    const quoteNumber = `ARD-${quoteDate.getFullYear()}-${String(lead.id).slice(0, 8).toUpperCase()}`;
+    const quoteNumber = `DEMO-${quoteDate.getFullYear()}-${String(lead.id).slice(0, 8).toUpperCase()}`;
     const filename = `${quoteNumber}-Quote-${lead.name.replace(/[^a-zA-Z0-9]/g, '-')}.pdf`;
 
     // Log the PDF generation
-    await supabase.from('audit_log').insert({
+    await supabase.from('audit_log').insert(withSiteId({
       lead_id: leadId,
       action: 'pdf_generated',
       new_values: {
@@ -91,7 +94,7 @@ export async function GET(
         quote_version: quote.version,
         total: quote.total,
       },
-    });
+    }));
 
     // Convert buffer to Uint8Array for Response
     const pdfArray = new Uint8Array(pdfBuffer);

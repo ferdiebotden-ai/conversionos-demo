@@ -81,10 +81,10 @@ const DEFAULT_SETTINGS: Settings = {
   },
   business_info: {
     name: 'AI Reno Demo',
-    address: '123 Main Street',
+    address: '123 Innovation Drive',
     city: 'Ontario',
     province: 'ON',
-    postal: 'N5A 1E3',
+    postal: 'N0N 0N0',
     phone: '(555) 123-4567',
     email: 'info@airenodemo.com',
     website: 'www.airenodemo.com',

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 import { LeadDetailHeader } from '@/components/admin/lead-detail-header';
 import { LeadContactCard } from '@/components/admin/lead-contact-card';
 import { LeadProjectCard } from '@/components/admin/lead-project-card';
@@ -8,6 +9,7 @@ import { ChatTranscript } from '@/components/admin/chat-transcript';
 import { QuoteEditor } from '@/components/admin/quote-editor';
 import { AuditLogView } from '@/components/admin/audit-log';
 import { LeadVisualizationPanel } from '@/components/admin/lead-visualization-panel';
+import { LeadDrawingsPanel } from '@/components/admin/lead-drawings-panel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export const dynamic = 'force-dynamic';
@@ -24,6 +26,7 @@ async function getLeadData(id: string) {
     .from('leads')
     .select('*')
     .eq('id', id)
+    .eq('site_id', getSiteId())
     .single();
 
   if (leadError || !lead) {
@@ -35,6 +38,7 @@ async function getLeadData(id: string) {
     .from('quote_drafts')
     .select('*')
     .eq('lead_id', id)
+    .eq('site_id', getSiteId())
     .order('version', { ascending: false })
     .limit(1)
     .maybeSingle();
@@ -67,6 +71,7 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
           <TabsTrigger value="details">Details</TabsTrigger>
           <TabsTrigger value="visualizations">Visualizations</TabsTrigger>
           <TabsTrigger value="quote">Quote</TabsTrigger>
+          <TabsTrigger value="drawings">Drawings</TabsTrigger>
           <TabsTrigger value="transcript">Chat</TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
         </TabsList>
@@ -104,6 +109,11 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
             customerEmail={lead.email}
             customerName={lead.name}
           />
+        </TabsContent>
+
+        {/* Drawings Tab */}
+        <TabsContent value="drawings">
+          <LeadDrawingsPanel leadId={lead.id} />
         </TabsContent>
 
         {/* Chat Transcript Tab */}

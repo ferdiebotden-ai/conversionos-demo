@@ -1,7 +1,9 @@
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 import { MetricsCards } from '@/components/admin/metrics-cards';
 import { RecentLeads } from '@/components/admin/recent-leads';
 import { VisualizationMetricsWidget } from '@/components/admin/visualization-metrics-widget';
+import { InvoiceMetricsWidget } from '@/components/admin/invoice-metrics-widget';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +19,8 @@ async function getDashboardData() {
   monthAgo.setDate(monthAgo.getDate() - 30);
 
   // Fetch leads counts
+  const siteId = getSiteId();
+
   const [
     { count: todayCount },
     { count: weekCount },
@@ -28,26 +32,32 @@ async function getDashboardData() {
     supabase
       .from('leads')
       .select('*', { count: 'exact', head: true })
+      .eq('site_id', siteId)
       .gte('created_at', today.toISOString()),
     supabase
       .from('leads')
       .select('*', { count: 'exact', head: true })
+      .eq('site_id', siteId)
       .gte('created_at', weekAgo.toISOString()),
     supabase
       .from('leads')
       .select('*', { count: 'exact', head: true })
+      .eq('site_id', siteId)
       .gte('created_at', monthAgo.toISOString()),
     supabase
       .from('leads')
       .select('*')
+      .eq('site_id', siteId)
       .order('created_at', { ascending: false })
       .limit(5),
     supabase
       .from('leads')
-      .select('*', { count: 'exact', head: true }),
+      .select('*', { count: 'exact', head: true })
+      .eq('site_id', siteId),
     supabase
       .from('leads')
       .select('*', { count: 'exact', head: true })
+      .eq('site_id', siteId)
       .eq('status', 'sent'),
   ]);
 
@@ -60,6 +70,7 @@ async function getDashboardData() {
   const { data: quoteData } = await supabase
     .from('quote_drafts')
     .select('total')
+    .eq('site_id', siteId)
     .not('total', 'is', null)
     .gte('created_at', monthAgo.toISOString());
 
@@ -147,8 +158,8 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Empty placeholder for balance */}
-        <div />
+        {/* Invoice metrics */}
+        <InvoiceMetricsWidget />
       </div>
     </div>
   );

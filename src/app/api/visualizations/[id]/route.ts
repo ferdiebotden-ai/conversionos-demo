@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 import { z } from 'zod';
 
 // Schema for updating a visualization
@@ -31,6 +32,7 @@ export async function GET(
     .from('visualizations')
     .select('*')
     .eq('id', id)
+    .eq('site_id', getSiteId())
     .single();
 
   if (error) {
@@ -81,6 +83,7 @@ export async function PATCH(
       .from('visualizations')
       .update(updateData)
       .eq('id', id)
+      .eq('site_id', getSiteId())
       .select()
       .single();
 
@@ -112,6 +115,7 @@ export async function POST(
       .from('visualizations')
       .select('download_count')
       .eq('id', id)
+      .eq('site_id', getSiteId())
       .single();
 
     if (fetchError) {
@@ -129,6 +133,7 @@ export async function POST(
         download_count: (current.download_count || 0) + 1,
       })
       .eq('id', id)
+      .eq('site_id', getSiteId())
       .select()
       .single();
 

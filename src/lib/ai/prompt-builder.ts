@@ -27,6 +27,18 @@ export interface RenovationPromptData {
     constraintsToPreserve: string[];
     materialPreferences?: string[];
   };
+  /** Whether a depth map is included in reference images (Phase 2) */
+  hasDepthMap?: boolean;
+  /** Whether an edge map is included in reference images (Phase 2) */
+  hasEdgeMap?: boolean;
+  /** Depth range from depth estimation (Phase 2) */
+  depthRange?: { min: number; max: number };
+  /** Custom room type description when user selected 'other' */
+  customRoomType?: string;
+  /** Custom style description when user selected 'other' */
+  customStyle?: string;
+  /** AI-generated summary of voice consultation with Mia */
+  voicePreferencesSummary?: string;
 }
 
 /**
@@ -187,20 +199,34 @@ export function buildRenovationPrompt(data: RenovationPromptData): string {
     designIntent,
   } = data;
 
-  const styleDetails = DETAILED_STYLE_DESCRIPTIONS[style];
-  const roomDetails = DETAILED_ROOM_CONTEXTS[roomType];
-  const basicStyleDesc = STYLE_DESCRIPTIONS[style];
-  const basicRoomContext = ROOM_CONTEXTS[roomType];
+  // Handle custom room/style types — use lookup tables only for known types
+  const isCustomRoom = !!data.customRoomType;
+  const isCustomStyle = !!data.customStyle;
+  const styleDetails = isCustomStyle ? null : DETAILED_STYLE_DESCRIPTIONS[style];
+  const roomDetails = isCustomRoom ? null : DETAILED_ROOM_CONTEXTS[roomType];
+  const basicStyleDesc = isCustomStyle ? data.customStyle! : STYLE_DESCRIPTIONS[style];
+  const basicRoomContext = isCustomRoom ? data.customRoomType! : ROOM_CONTEXTS[roomType];
+
+  const displayRoomType = isCustomRoom ? data.customRoomType! : roomType.replace('_', ' ');
+  const displayStyle = isCustomStyle ? data.customStyle! : style;
 
   // Build the 6-part structured prompt
   const promptParts: string[] = [];
 
   // PART 1: Scene Description (narrative, not keyword list)
-  promptParts.push(`=== SCENE DESCRIPTION ===
-Transform this ${roomType.replace('_', ' ')} into a ${style} design renovation.
-${styleDetails.narrative}
+  if (isCustomStyle && styleDetails === null) {
+    promptParts.push(`=== SCENE DESCRIPTION ===
+Transform this ${displayRoomType} into a ${displayStyle} design renovation.
+The user has described a custom style: "${data.customStyle}". Interpret this style description creatively and apply it consistently throughout the space.
 
-The renovation should feel like a professional interior design transformation, maintaining the soul of the original space while elevating it to ${style} sophistication. Focus on: ${basicRoomContext}`);
+The renovation should feel like a professional interior design transformation, maintaining the soul of the original space while expressing the "${displayStyle}" aesthetic. Focus on: ${basicRoomContext}`);
+  } else {
+    promptParts.push(`=== SCENE DESCRIPTION ===
+Transform this ${displayRoomType} into a ${displayStyle} design renovation.
+${styleDetails!.narrative}
+
+The renovation should feel like a professional interior design transformation, maintaining the soul of the original space while elevating it to ${displayStyle} sophistication. Focus on: ${basicRoomContext}`);
+  }
 
   // PART 2: Structural Preservation (CRITICAL)
   let structuralSection = `=== STRUCTURAL PRESERVATION (CRITICAL) ===
@@ -221,14 +247,72 @@ ${photoAnalysis.preservationConstraints.map(c => `- ${c}`).join('\n')}`;
     }
   }
 
-  structuralSection += `\n\nRoom-Specific Preservation Priority:
+  if (roomDetails) {
+    structuralSection += `\n\nRoom-Specific Preservation Priority:
 ${roomDetails.preservationPriority.map(p => `- ${p}`).join('\n')}`;
+  } else {
+    structuralSection += `\n\nGeneral Preservation Priority:
+- Room dimensions and layout
+- Window and door positions
+- Ceiling height and features
+- Structural elements`;
+  }
+
+  // Add spatial analysis data when available
+  if (photoAnalysis) {
+    if (photoAnalysis.wallCount != null && photoAnalysis.wallDimensions?.length) {
+      structuralSection += `\n\nWall Dimensions (${photoAnalysis.wallCount} walls visible):
+${photoAnalysis.wallDimensions.map(w => `- ${w.wall}: ~${w.estimatedLength}${w.hasWindow ? ' [has window]' : ''}${w.hasDoor ? ' [has door]' : ''}`).join('\n')}`;
+    }
+
+    if (photoAnalysis.openings?.length) {
+      structuralSection += `\n\nDoor/Window Positions:
+${photoAnalysis.openings.map(o => `- ${o.type} on ${o.wall}: ${o.approximateSize}, ${o.approximatePosition}`).join('\n')}`;
+    }
+
+    if (photoAnalysis.spatialZones?.length) {
+      structuralSection += `\n\nSpatial Zone Arrangement:
+${photoAnalysis.spatialZones.map(z => `- ${z.name} (${z.approximateLocation}): ${z.description}`).join('\n')}`;
+    }
+
+    if (photoAnalysis.architecturalLines) {
+      const lines = photoAnalysis.architecturalLines;
+      structuralSection += `\n\nArchitectural Line Guidance:
+- Dominant lines: ${lines.dominantDirection}
+- Vanishing point: ${lines.vanishingPointDescription}`;
+      if (lines.symmetryAxis) {
+        structuralSection += `\n- Symmetry axis: ${lines.symmetryAxis}`;
+      }
+    }
+
+    if (photoAnalysis.estimatedCeilingHeight) {
+      structuralSection += `\n- Ceiling height: ${photoAnalysis.estimatedCeilingHeight}`;
+    }
+  }
 
   promptParts.push(structuralSection);
 
+  // PART 2.5: Structural Conditioning (when depth/edge maps are provided)
+  if (data.hasDepthMap || data.hasEdgeMap) {
+    let conditioningSection = `=== STRUCTURAL CONDITIONING ===`;
+    if (data.hasDepthMap) {
+      conditioningSection += `\nDEPTH MAP: Lighter areas = closer to camera, darker areas = farther away. Preserve these depth relationships exactly in the generated image.`;
+      if (data.depthRange) {
+        conditioningSection += ` Depth range: ${data.depthRange.min.toFixed(1)}m to ${data.depthRange.max.toFixed(1)}m.`;
+      }
+    }
+    if (data.hasEdgeMap) {
+      conditioningSection += `\nEDGE MAP: Lines represent architectural features (walls, counters, windows, doors). ALL major edges must appear in the same positions in the output.`;
+    }
+    conditioningSection += `\nCRITICAL: The structural conditioning maps take precedence over text descriptions for spatial accuracy.`;
+    promptParts.push(conditioningSection);
+  }
+
   // PART 3: Material & Finish Specifications
-  let materialsSection = `=== MATERIAL & FINISH SPECIFICATIONS ===
-Style: ${style.toUpperCase()}
+  let materialsSection: string;
+  if (styleDetails) {
+    materialsSection = `=== MATERIAL & FINISH SPECIFICATIONS ===
+Style: ${displayStyle.toUpperCase()}
 
 Primary Materials:
 ${styleDetails.materials.map(m => `- ${m}`).join('\n')}
@@ -241,6 +325,12 @@ ${styleDetails.finishes.map(f => `- ${f}`).join('\n')}
 
 Fixture Styles:
 ${styleDetails.fixtures.map(f => `- ${f}`).join('\n')}`;
+  } else {
+    materialsSection = `=== MATERIAL & FINISH SPECIFICATIONS ===
+Custom Style: "${data.customStyle}"
+
+Select materials, colors, finishes, and fixtures that best express the "${data.customStyle}" aesthetic described by the homeowner. Use your knowledge of interior design to choose cohesive, professional-grade options.`;
+  }
 
   if (designIntent?.materialPreferences && designIntent.materialPreferences.length > 0) {
     materialsSection += `\n\nUser Material Preferences:
@@ -251,7 +341,7 @@ ${designIntent.materialPreferences.map(m => `- ${m}`).join('\n')}`;
 
   // PART 4: Lighting Instructions
   let lightingSection = `=== LIGHTING INSTRUCTIONS ===
-${styleDetails.lighting}`;
+${styleDetails ? styleDetails.lighting : `Select lighting appropriate for a "${data.customStyle}" design aesthetic.`}`;
 
   if (photoAnalysis?.lightingConditions) {
     lightingSection += `\n\nOriginal Photo Lighting Analysis:
@@ -312,6 +402,15 @@ ${designIntent.constraintsToPreserve.map(c => `- ${c}`).join('\n')}`;
     promptParts.push(intentSection);
   }
 
+  // Add voice consultation context if available
+  if (data.voicePreferencesSummary) {
+    promptParts.push(`=== VOICE CONSULTATION CONTEXT ===
+The homeowner had a voice consultation with a design consultant. Here is a summary of their preferences:
+${data.voicePreferencesSummary}
+
+Incorporate these voiced preferences into the design, giving them equal weight to any text-based preferences above.`);
+  }
+
   // Add variation hints for multiple concepts
   if (variationIndex > 0) {
     const variations = [
@@ -327,7 +426,7 @@ ${variationHint}`);
 
   // Final instruction
   promptParts.push(`=== GENERATE ===
-Create a single photorealistic visualization showing this ${roomType.replace('_', ' ')} after a professional ${style} renovation. Output an image.`);
+Create a single photorealistic visualization showing this ${displayRoomType} after a professional ${displayStyle} renovation. Output an image.`);
 
   return promptParts.join('\n\n');
 }

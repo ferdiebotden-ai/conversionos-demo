@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 import { z } from 'zod';
 
 // Schema for updating a visualization (save with email)
@@ -27,6 +28,7 @@ export async function GET(request: NextRequest) {
       .from('visualizations')
       .select('*')
       .eq('share_token', shareToken)
+      .eq('site_id', getSiteId())
       .single();
 
     if (error || !data) {
@@ -43,6 +45,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase
     .from('visualizations')
     .select('*')
+    .eq('site_id', getSiteId())
     .order('created_at', { ascending: false })
     .limit(50);
 
@@ -77,6 +80,7 @@ export async function POST(request: NextRequest) {
         shared: share ?? false,
       })
       .eq('id', visualizationId)
+      .eq('site_id', getSiteId())
       .select()
       .single();
 

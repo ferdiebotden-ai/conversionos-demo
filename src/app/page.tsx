@@ -4,6 +4,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ServicesGrid } from "@/components/services-grid"
 import { Testimonials } from "@/components/testimonials"
 import {
+  FadeInUp,
+  FadeIn,
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/motion"
+import {
   MessageSquare,
   Sparkles,
   Clock,
@@ -18,53 +24,60 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-muted/50 to-background px-4 py-16 md:py-24 lg:py-32">
         <div className="container mx-auto">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Transform Your Home{" "}
-              <span className="text-primary">in Ontario</span>
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground md:text-xl">
-              Professional renovation services with AI-powered project
-              visualization. Get instant estimates and see your dream space
-              before construction begins.
-            </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button asChild size="lg" className="h-14 w-full px-8 text-lg sm:w-auto">
-                <Link href="/estimate">Get a Free Quote</Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="h-14 w-full px-8 text-lg sm:w-auto"
-              >
-                <Link href="/visualizer">Visualize Your Space</Link>
-              </Button>
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Award className="size-5 text-primary" />
-                <span>Quality Craftsmanship</span>
+          <StaggerContainer className="mx-auto max-w-3xl text-center">
+            <StaggerItem>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+                Transform Your Home{" "}
+                <span className="text-primary">in Ontario</span>
+              </h1>
+            </StaggerItem>
+            <StaggerItem>
+              <p className="mt-6 text-lg leading-8 text-muted-foreground md:text-xl">
+                Professional renovation services with AI-powered project
+                visualization. Get instant estimates and see your dream space
+                before construction begins.
+              </p>
+            </StaggerItem>
+            <StaggerItem>
+              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Button asChild size="lg" className="h-14 w-full px-8 text-lg sm:w-auto">
+                  <Link href="/estimate">Get a Free Quote</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="h-14 w-full px-8 text-lg sm:w-auto"
+                >
+                  <Link href="/visualizer">Visualize Your Space</Link>
+                </Button>
               </div>
-              <div className="flex items-center gap-2">
-                <Users className="size-5 text-primary" />
-                <span>Residential & Commercial</span>
+            </StaggerItem>
+            <StaggerItem>
+              {/* Trust Indicators */}
+              <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Award className="size-5 text-primary" />
+                  <span>Quality Craftsmanship</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="size-5 text-primary" />
+                  <span>Residential & Commercial</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="size-5 text-primary" />
+                  <span>On Time & On Budget</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Shield className="size-5 text-primary" />
-                <span>On Time & On Budget</span>
-              </div>
-            </div>
-          </div>
+            </StaggerItem>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* AI Features Section */}
       <section className="border-y border-border bg-muted/30 px-4 py-16 md:py-20">
         <div className="container mx-auto">
-          <div className="mx-auto max-w-2xl text-center">
+          <FadeInUp className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               AI-Powered Renovation Experience
             </h2>
@@ -72,53 +85,57 @@ export default function Home() {
               Get instant estimates and visualize your renovation before the
               first hammer swings.
             </p>
-          </div>
+          </FadeInUp>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:gap-8">
-            <Card className="relative overflow-hidden border-2 border-transparent transition-colors hover:border-primary/20">
-              <CardContent className="p-6 md:p-8">
-                <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
-                  <MessageSquare className="size-6 text-primary" />
-                </div>
-                <h3 className="mt-4 text-xl font-semibold text-foreground">
-                  Get Instant Estimates
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                  Chat with our AI assistant to describe your project. Get
-                  ballpark estimates in minutes instead of waiting days for a
-                  callback.
-                </p>
-                <Button asChild variant="link" className="mt-4 h-auto p-0">
-                  <Link href="/estimate">Start a conversation →</Link>
-                </Button>
-              </CardContent>
-            </Card>
+          <StaggerContainer className="mt-12 grid gap-6 md:grid-cols-2 lg:gap-8">
+            <StaggerItem>
+              <Card className="relative h-full overflow-hidden border-2 border-transparent transition-colors hover:border-primary/20">
+                <CardContent className="p-6 md:p-8">
+                  <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
+                    <MessageSquare className="size-6 text-primary" />
+                  </div>
+                  <h3 className="mt-4 text-xl font-semibold text-foreground">
+                    Get Instant Estimates
+                  </h3>
+                  <p className="mt-2 text-muted-foreground">
+                    Chat with our AI assistant to describe your project. Get
+                    ballpark estimates in minutes instead of waiting days for a
+                    callback.
+                  </p>
+                  <Button asChild variant="link" className="mt-4 h-auto p-0">
+                    <Link href="/estimate">Start a conversation →</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </StaggerItem>
 
-            <Card className="relative overflow-hidden border-2 border-transparent transition-colors hover:border-primary/20">
-              <CardContent className="p-6 md:p-8">
-                <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
-                  <Sparkles className="size-6 text-primary" />
-                </div>
-                <h3 className="mt-4 text-xl font-semibold text-foreground">
-                  See Your Renovation First
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                  Upload a photo of your space and watch AI transform it with
-                  your chosen finishes and fixtures. Make confident decisions.
-                </p>
-                <Button asChild variant="link" className="mt-4 h-auto p-0">
-                  <Link href="/visualizer">Try the visualizer →</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+            <StaggerItem>
+              <Card className="relative h-full overflow-hidden border-2 border-transparent transition-colors hover:border-primary/20">
+                <CardContent className="p-6 md:p-8">
+                  <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
+                    <Sparkles className="size-6 text-primary" />
+                  </div>
+                  <h3 className="mt-4 text-xl font-semibold text-foreground">
+                    See Your Renovation First
+                  </h3>
+                  <p className="mt-2 text-muted-foreground">
+                    Upload a photo of your space and watch AI transform it with
+                    your chosen finishes and fixtures. Make confident decisions.
+                  </p>
+                  <Button asChild variant="link" className="mt-4 h-auto p-0">
+                    <Link href="/visualizer">Try the visualizer →</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </StaggerItem>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Services Section */}
       <section className="px-4 py-16 md:py-20">
         <div className="container mx-auto">
-          <div className="mx-auto max-w-2xl text-center">
+          <FadeInUp className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Our Services
             </h2>
@@ -126,24 +143,24 @@ export default function Home() {
               From kitchens to basements, we handle every aspect of your home
               renovation with expertise and care.
             </p>
-          </div>
+          </FadeInUp>
 
           <div className="mt-12">
             <ServicesGrid />
           </div>
 
-          <div className="mt-10 text-center">
+          <FadeInUp className="mt-10 text-center">
             <Button asChild variant="outline" size="lg">
               <Link href="/services">View All Services</Link>
             </Button>
-          </div>
+          </FadeInUp>
         </div>
       </section>
 
       {/* Why Choose Us Section */}
       <section className="border-t border-border bg-muted/30 px-4 py-16 md:py-20">
         <div className="container mx-auto">
-          <div className="mx-auto max-w-2xl text-center">
+          <FadeInUp className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Why Choose AI Reno Demo?
             </h2>
@@ -151,32 +168,38 @@ export default function Home() {
               We combine traditional craftsmanship with modern technology to
               deliver exceptional results.
             </p>
-          </div>
+          </FadeInUp>
 
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <WhyUsCard
-              icon={<Clock className="size-6" />}
-              title="On-Time Delivery"
-              description="We respect your time. Our project management ensures work is completed on schedule, every time."
-            />
-            <WhyUsCard
-              icon={<Shield className="size-6" />}
-              title="Quality Guaranteed"
-              description="Every project comes with our satisfaction guarantee. We stand behind our workmanship."
-            />
-            <WhyUsCard
-              icon={<Award className="size-6" />}
-              title="Expert Craftsmen"
-              description="Our team includes certified professionals with decades of combined experience."
-            />
-          </div>
+          <StaggerContainer className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <StaggerItem>
+              <WhyUsCard
+                icon={<Clock className="size-6" />}
+                title="On-Time Delivery"
+                description="We respect your time. Our project management ensures work is completed on schedule, every time."
+              />
+            </StaggerItem>
+            <StaggerItem>
+              <WhyUsCard
+                icon={<Shield className="size-6" />}
+                title="Quality Guaranteed"
+                description="Every project comes with our satisfaction guarantee. We stand behind our workmanship."
+              />
+            </StaggerItem>
+            <StaggerItem>
+              <WhyUsCard
+                icon={<Award className="size-6" />}
+                title="Expert Craftsmen"
+                description="Our team includes certified professionals with decades of combined experience."
+              />
+            </StaggerItem>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Testimonials Section */}
       <section className="px-4 py-16 md:py-20">
         <div className="container mx-auto">
-          <div className="mx-auto max-w-2xl text-center">
+          <FadeInUp className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               What Our Clients Say
             </h2>
@@ -184,7 +207,7 @@ export default function Home() {
               Don&apos;t just take our word for it. Here&apos;s what Ontario
               homeowners have to say.
             </p>
-          </div>
+          </FadeInUp>
 
           <div className="mt-12">
             <Testimonials />
@@ -194,7 +217,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="border-t border-border bg-primary px-4 py-16 md:py-20">
-        <div className="container mx-auto text-center">
+        <FadeInUp className="container mx-auto text-center">
           <h2 className="text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
             Ready to Transform Your Home?
           </h2>
@@ -220,7 +243,7 @@ export default function Home() {
               <Link href="/contact">Contact Us</Link>
             </Button>
           </div>
-        </div>
+        </FadeInUp>
       </section>
     </div>
   )

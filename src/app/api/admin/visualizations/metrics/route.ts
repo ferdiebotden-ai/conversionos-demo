@@ -4,6 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,7 +17,7 @@ export async function GET(request: NextRequest) {
     // Using type assertion since the function is defined in migration
     const { data: summary, error: summaryError } = await (supabase.rpc as Function)(
       'get_visualization_summary',
-      { p_days: days }
+      { p_site_id: getSiteId(), p_days: days }
     );
 
     if (summaryError) {
@@ -26,6 +27,7 @@ export async function GET(request: NextRequest) {
       const { data: metrics, error: metricsError } = await supabase
         .from('visualization_metrics' as 'visualizations')
         .select('*')
+        .eq('site_id', getSiteId())
         .gte('created_at', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()) as { data: Array<{
           generation_time_ms: number;
           structure_validation_score: number | null;

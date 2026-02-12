@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 
 /**
  * Get Session API
@@ -30,6 +31,7 @@ export async function GET(
       .from('chat_sessions')
       .select('*')
       .eq('id', sessionId)
+      .eq('site_id', getSiteId())
       .single();
 
     if (error || !session) {
@@ -59,7 +61,8 @@ export async function GET(
     await supabase
       .from('chat_sessions')
       .update({ updated_at: new Date().toISOString() })
-      .eq('id', sessionId);
+      .eq('id', sessionId)
+      .eq('site_id', getSiteId());
 
     return NextResponse.json({
       success: true,

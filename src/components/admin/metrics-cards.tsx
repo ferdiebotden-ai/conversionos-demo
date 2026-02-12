@@ -20,7 +20,7 @@ interface MetricCardProps {
   title: string;
   value: string | number;
   description?: string | undefined;
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   trend?: {
     value: number;
     isPositive: boolean;

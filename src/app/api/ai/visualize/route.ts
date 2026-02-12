@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId, withSiteId } from '@/lib/db/site';
 import {
   visualizationRequestSchema,
   type VisualizationResponse,
@@ -19,7 +20,11 @@ import {
   generateVisualizationConcept,
   type VisualizationConfig,
 } from '@/lib/ai/visualization';
-import { VISUALIZATION_CONFIG, type GeneratedImage } from '@/lib/ai/gemini';
+import { VISUALIZATION_CONFIG, type GeneratedImage, type ReferenceImage } from '@/lib/ai/gemini';
+import { estimateDepth } from '@/lib/ai/depth-estimation';
+import { extractEdges } from '@/lib/ai/edge-detection';
+import { generateWithRefinement } from '@/lib/ai/iterative-generation';
+import { AI_CONFIG } from '@/lib/ai/config';
 import {
   analyzeRoomPhotoForVisualization,
   type RoomAnalysis,
@@ -27,22 +32,46 @@ import {
 import type { DesignIntent } from '@/lib/schemas/visualizer-extraction';
 
 // Extended request schema with optional photo analysis and design intent
-const enhancedVisualizationRequestSchema = visualizationRequestSchema.extend({
-  /** Skip photo analysis (for quick mode) */
-  skipAnalysis: z.boolean().optional().default(false),
-  /** Pre-analyzed photo data (from conversation mode) */
-  photoAnalysis: z.record(z.string(), z.unknown()).optional(),
-  /** Design intent from conversation */
-  designIntent: z.object({
-    desiredChanges: z.array(z.string()),
-    constraintsToPreserve: z.array(z.string()),
-    materialPreferences: z.array(z.string()).optional(),
-  }).optional(),
-  /** Conversation context for storage */
-  conversationContext: z.record(z.string(), z.unknown()).optional(),
-  /** Mode indicator */
-  mode: z.enum(['quick', 'conversation']).optional().default('quick'),
-});
+const enhancedVisualizationRequestSchema = visualizationRequestSchema
+  .omit({ roomType: true, style: true })
+  .extend({
+    /** Room type — accepts standard types or 'other' for custom */
+    roomType: z.union([
+      z.enum(['kitchen', 'bathroom', 'living_room', 'bedroom', 'basement', 'dining_room', 'exterior']),
+      z.literal('other'),
+    ]),
+    /** Custom room type description (when roomType === 'other') */
+    customRoomType: z.string().max(100).optional(),
+    /** Design style — accepts standard styles or 'other' for custom */
+    style: z.union([
+      z.enum(['modern', 'traditional', 'farmhouse', 'industrial', 'minimalist', 'contemporary']),
+      z.literal('other'),
+    ]),
+    /** Custom style description (when style === 'other') */
+    customStyle: z.string().max(100).optional(),
+    /** Skip photo analysis (for quick mode) */
+    skipAnalysis: z.boolean().optional().default(false),
+    /** Pre-analyzed photo data (from conversation mode) */
+    photoAnalysis: z.record(z.string(), z.unknown()).optional(),
+    /** Design intent from conversation */
+    designIntent: z.object({
+      desiredChanges: z.array(z.string()),
+      constraintsToPreserve: z.array(z.string()),
+      materialPreferences: z.array(z.string()).optional(),
+    }).optional(),
+    /** Voice transcript from Mia consultation */
+    voiceTranscript: z.array(z.object({
+      role: z.enum(['user', 'assistant']),
+      content: z.string(),
+      timestamp: z.coerce.date(),
+    })).optional(),
+    /** AI-generated summary of voice preferences */
+    voicePreferencesSummary: z.string().optional(),
+    /** Conversation context for storage */
+    conversationContext: z.record(z.string(), z.unknown()).optional(),
+    /** Mode indicator */
+    mode: z.enum(['quick', 'conversation', 'streamlined']).optional().default('quick'),
+  });
 
 // Maximum execution time for Vercel
 export const maxDuration = 90;
@@ -69,11 +98,15 @@ export async function POST(request: NextRequest) {
       image,
       roomType,
       style,
+      customRoomType,
+      customStyle,
       constraints,
       count,
       skipAnalysis,
       photoAnalysis: providedAnalysis,
       designIntent,
+      voiceTranscript,
+      voicePreferencesSummary,
       conversationContext,
       mode,
     } = parseResult.data;
@@ -110,6 +143,49 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Phase 2: Structural conditioning — run depth + edge extraction in parallel
+    const referenceImages: ReferenceImage[] = [];
+    let hasDepthMap = false;
+    let hasEdgeMap = false;
+    let depthRange: { min: number; max: number } | undefined;
+
+    // Always include source image as first reference
+    const sourceMimeType = image.match(/^data:([^;]+);/)?.[1] || 'image/jpeg';
+    referenceImages.push({ base64: image, mimeType: sourceMimeType, role: 'source' });
+
+    if (AI_CONFIG.pipeline.enableDepthEstimation || AI_CONFIG.pipeline.enableEdgeDetection) {
+      const pipelineStartTime = Date.now();
+      const pipelinePromises: Promise<unknown>[] = [];
+
+      if (AI_CONFIG.pipeline.enableDepthEstimation) {
+        pipelinePromises.push(
+          estimateDepth(image).then(result => {
+            if (result) {
+              referenceImages.push({ base64: result.depthMapBase64, mimeType: result.mimeType, role: 'depth' });
+              hasDepthMap = true;
+              depthRange = { min: result.minDepth, max: result.maxDepth };
+              console.log(`Depth estimation completed: ${result.minDepth.toFixed(1)}m - ${result.maxDepth.toFixed(1)}m`);
+            }
+          }).catch(err => console.warn('Depth estimation failed, continuing without:', err))
+        );
+      }
+
+      if (AI_CONFIG.pipeline.enableEdgeDetection) {
+        pipelinePromises.push(
+          extractEdges(image).then(result => {
+            if (result) {
+              referenceImages.push({ base64: result.edgeMapBase64, mimeType: result.mimeType, role: 'edges' });
+              hasEdgeMap = true;
+              console.log('Edge detection completed');
+            }
+          }).catch(err => console.warn('Edge detection failed, continuing without:', err))
+        );
+      }
+
+      await Promise.allSettled(pipelinePromises);
+      console.log(`Structural conditioning pipeline completed in ${Date.now() - pipelineStartTime}ms`);
+    }
+
     // Generate visualization concepts
     let concepts: GeneratedConcept[];
 
@@ -124,9 +200,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Build visualization config with enhanced data
+    // For custom room/style types, fall back to a reasonable default for type compatibility
+    const effectiveRoomType: RoomType = roomType === 'other' ? 'living_room' : roomType as RoomType;
+    const effectiveStyle: DesignStyle = style === 'other' ? 'contemporary' : style as DesignStyle;
+
     const visualizationConfig: VisualizationConfig = {
-      roomType: roomType as RoomType,
-      style: style as DesignStyle,
+      roomType: effectiveRoomType,
+      style: effectiveStyle,
       ...(constraints && { constraints }),
       ...(photoAnalysis && { photoAnalysis }),
       ...(designIntent && {
@@ -136,7 +216,15 @@ export async function POST(request: NextRequest) {
           ...(designIntent.materialPreferences && { materialPreferences: designIntent.materialPreferences }),
         },
       }),
+      // Pass custom types and voice data for prompt builder
+      ...(roomType === 'other' && customRoomType && { customRoomType }),
+      ...(style === 'other' && customStyle && { customStyle }),
+      ...(voicePreferencesSummary && { voicePreferencesSummary }),
       useEnhancedPrompts: true,
+      referenceImages: referenceImages.length > 1 ? referenceImages : undefined,
+      hasDepthMap,
+      hasEdgeMap,
+      ...(depthRange && { depthRange }),
     };
 
     // Use real Gemini 3 Pro image generation with enhanced config
@@ -156,14 +244,16 @@ export async function POST(request: NextRequest) {
     const shareToken = generateShareToken();
 
     // Save visualization to database with enhanced fields
-    // Map 'exterior' to 'living_room' for DB compatibility (DB enum doesn't include exterior)
-    const dbRoomType = roomType === 'exterior' ? 'living_room' : roomType;
+    // Map 'exterior'/'other' to 'living_room' for DB compatibility (DB enum doesn't include them)
+    const dbRoomType = (roomType === 'exterior' || roomType === 'other') ? 'living_room' : roomType;
+    // Map 'other' style to 'contemporary' for DB compatibility
+    const dbStyle = style === 'other' ? 'contemporary' : style;
     const { data: visualization, error: dbError } = await supabase
       .from('visualizations')
-      .insert({
+      .insert(withSiteId({
         original_photo_url: originalImageUrl,
         room_type: dbRoomType as 'kitchen' | 'bathroom' | 'living_room' | 'bedroom' | 'basement' | 'dining_room',
-        style: style,
+        style: dbStyle,
         constraints: constraints || null,
         generated_concepts: concepts,
         generation_time_ms: generationTimeMs,
@@ -174,7 +264,7 @@ export async function POST(request: NextRequest) {
         // Enhanced fields (will be ignored if columns don't exist yet)
         ...(photoAnalysis && { photo_analysis: photoAnalysis }),
         ...(conversationContext && { conversation_context: conversationContext }),
-      })
+      }))
       .select()
       .single();
 
@@ -194,17 +284,17 @@ export async function POST(request: NextRequest) {
       generationTimeMs,
       conceptsRequested: count,
       conceptsGenerated: concepts.length,
-      mode: mode || 'quick',
+      mode: (mode === 'streamlined' ? 'quick' : mode) || 'quick',
       photoAnalyzed: !!photoAnalysis,
       conversationTurns: (conversationContext as Record<string, unknown>)?.['turnCount'] as number || 0,
     }).catch((err) => console.error('Failed to record metrics:', err));
 
-    // Build response
+    // Build response — use effective types for schema compliance
     const response: VisualizationResponse = {
       id: visualization.id,
       originalImageUrl,
-      roomType,
-      style,
+      roomType: effectiveRoomType,
+      style: effectiveStyle,
       constraints: constraints || undefined,
       concepts,
       generationTimeMs,
@@ -337,15 +427,27 @@ async function generateConceptsWithGeminiEnhanced(
   const errors: Error[] = [];
 
   // Generate concepts in parallel for speed
+  // Concept 0 uses iterative refinement; concepts 1-3 are single-shot
   const promises = Array.from({ length: count }, async (_, i) => {
     try {
-      const result = await generateVisualizationConcept(
-        imageBase64,
-        config,
-        undefined,
-        undefined,
-        i
-      );
+      let result: GeneratedImage | null;
+
+      if (i === 0 && AI_CONFIG.pipeline.enableIterativeRefinement) {
+        // Primary concept gets iterative refinement
+        const refined = await generateWithRefinement(imageBase64, config);
+        result = refined.image;
+        if (refined.wasRefined) {
+          console.log(`Concept 0 was refined (validation score: ${refined.validationScore})`);
+        }
+      } else {
+        result = await generateVisualizationConcept(
+          imageBase64,
+          config,
+          undefined,
+          undefined,
+          i
+        );
+      }
 
       if (result) {
         // Upload to Supabase Storage and get URL
@@ -473,15 +575,16 @@ async function recordVisualizationMetrics(
   metrics: MetricsInput
 ): Promise<void> {
   // Estimate cost based on operations
-  // Photo analysis: ~$0.01, 4 concepts: ~$0.32, validation: ~$0.01
-  const analysisCost = metrics.photoAnalyzed ? 0.01 : 0;
-  const generationCost = metrics.conceptsGenerated * 0.08; // ~$0.08 per concept
+  // Photo analysis: ~$0.015, depth estimation: ~$0.002, edge detection: $0, 4 concepts: ~$0.40, validation: ~$0.01
+  const analysisCost = metrics.photoAnalyzed ? 0.015 : 0;
+  const depthCost = 0.002; // Replicate per-prediction cost
+  const generationCost = metrics.conceptsGenerated * 0.10; // ~$0.10 per concept (with conditioning)
   const validationCost = metrics.validationScore !== undefined ? 0.01 : 0;
-  const totalCost = analysisCost + generationCost + validationCost;
+  const totalCost = analysisCost + depthCost + generationCost + validationCost;
 
   // Insert metrics record (table may not exist until migration applied)
   // Using type assertion since visualization_metrics table is created by migration
-  const metricsData = {
+  const metricsData = withSiteId({
     visualization_id: metrics.visualizationId,
     generation_time_ms: metrics.generationTimeMs,
     retry_count: metrics.retryCount || 0,
@@ -499,7 +602,7 @@ async function recordVisualizationMetrics(
     error_occurred: metrics.errorOccurred || false,
     error_code: metrics.errorCode,
     error_message: metrics.errorMessage,
-  };
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await (supabase.from as any)('visualization_metrics').insert(metricsData);

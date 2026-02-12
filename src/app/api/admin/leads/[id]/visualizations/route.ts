@@ -4,6 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 
 export async function GET(
   request: NextRequest,
@@ -40,6 +41,7 @@ export async function GET(
           )
         `)
         .eq('lead_id', leadId)
+        .eq('site_id', getSiteId())
         .order('is_primary', { ascending: false });
 
       if (!linkError && linkedViz && linkedViz.length > 0) {
@@ -67,6 +69,7 @@ export async function GET(
       .from('visualizations')
       .select('*')
       .eq('lead_id', leadId)
+      .eq('site_id', getSiteId())
       .order('created_at', { ascending: false });
 
     if (directError) {
@@ -111,7 +114,8 @@ export async function POST(
     const { error: updateError } = await supabase
       .from('visualizations')
       .update({ lead_id: leadId })
-      .eq('id', visualizationId);
+      .eq('id', visualizationId)
+      .eq('site_id', getSiteId());
 
     if (updateError) {
       console.error('Error linking visualization:', updateError);

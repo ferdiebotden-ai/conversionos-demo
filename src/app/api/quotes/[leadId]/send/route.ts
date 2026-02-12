@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { renderToBuffer } from '@react-pdf/renderer';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId, withSiteId } from '@/lib/db/site';
 import { QuotePdfDocument } from '@/lib/pdf/quote-template';
 import { QuoteEmailTemplate } from '@/lib/email/quote-email';
 import { getResend } from '@/lib/email/resend';
@@ -65,6 +66,7 @@ export async function POST(
       .from('leads')
       .select('*')
       .eq('id', leadId)
+      .eq('site_id', getSiteId())
       .single();
 
     if (leadError || !lead) {
@@ -89,6 +91,7 @@ export async function POST(
       .from('quote_drafts')
       .select('*')
       .eq('lead_id', leadId)
+      .eq('site_id', getSiteId())
       .order('version', { ascending: false })
       .limit(1)
       .single();
@@ -125,7 +128,7 @@ export async function POST(
 
     // Create filename
     const quoteDate = new Date(quote.created_at);
-    const quoteNumber = `ARD-${quoteDate.getFullYear()}-${String(lead.id).slice(0, 8).toUpperCase()}`;
+    const quoteNumber = `DEMO-${quoteDate.getFullYear()}-${String(lead.id).slice(0, 8).toUpperCase()}`;
     const filename = `${quoteNumber}-Quote-${lead.name.replace(/[^a-zA-Z0-9]/g, '-')}.pdf`;
 
     // Get project type for subject
@@ -172,7 +175,7 @@ export async function POST(
 
   <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e5e5e5; font-size: 12px; color: #666;">
     <p style="margin: 0;"><strong style="color: #D32F2F;">AI Reno Demo</strong></p>
-    <p style="margin: 4px 0;">123 Main Street, Ontario, Canada</p>
+    <p style="margin: 4px 0;">123 Innovation Drive, Greater Ontario Area N0N 0N0</p>
     <p style="margin: 4px 0;">Tel: (555) 123-4567</p>
     <p style="margin: 4px 0;"><a href="https://www.airenodemo.com" style="color: #D32F2F;">www.airenodemo.com</a></p>
   </div>
@@ -221,7 +224,8 @@ export async function POST(
         sent_to_email: toEmail,
         updated_at: now,
       })
-      .eq('id', quote.id);
+      .eq('id', quote.id)
+      .eq('site_id', getSiteId());
 
     // Update lead status to 'sent'
     await supabase
@@ -231,10 +235,11 @@ export async function POST(
         updated_at: now,
         last_contacted_at: now,
       })
-      .eq('id', leadId);
+      .eq('id', leadId)
+      .eq('site_id', getSiteId());
 
     // Log the send action
-    await supabase.from('audit_log').insert({
+    await supabase.from('audit_log').insert(withSiteId({
       lead_id: leadId,
       action: 'quote_sent',
       new_values: {
@@ -245,7 +250,7 @@ export async function POST(
         email_id: emailResult.data?.id,
         custom_message: customMessage || null,
       },
-    });
+    }));
 
     return NextResponse.json({
       success: true,

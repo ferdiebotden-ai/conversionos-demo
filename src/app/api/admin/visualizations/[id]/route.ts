@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 
 const updateSchema = z.object({
   admin_notes: z.string().nullable().optional(),
@@ -46,6 +47,7 @@ export async function PATCH(
         updated_at: new Date().toISOString(),
       })
       .eq('id', visualizationId)
+      .eq('site_id', getSiteId())
       .select()
       .single();
 
@@ -79,6 +81,7 @@ export async function GET(
       .from('visualizations')
       .select('*')
       .eq('id', visualizationId)
+      .eq('site_id', getSiteId())
       .single();
 
     if (error) {

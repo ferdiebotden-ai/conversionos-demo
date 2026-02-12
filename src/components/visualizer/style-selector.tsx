@@ -5,8 +5,10 @@
  * Visual cards for selecting design style
  */
 
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Check, Palette } from 'lucide-react';
 
 export type DesignStyle =
   | 'modern'
@@ -15,6 +17,8 @@ export type DesignStyle =
   | 'industrial'
   | 'minimalist'
   | 'contemporary';
+
+export type DesignStyleSelection = DesignStyle | 'other';
 
 interface StyleOption {
   id: DesignStyle;
@@ -73,16 +77,33 @@ const STYLE_IMAGES: Record<DesignStyle, string> = {
 };
 
 interface StyleSelectorProps {
-  value: DesignStyle | null;
-  onChange: (value: DesignStyle) => void;
+  value: DesignStyleSelection | null;
+  onChange: (value: DesignStyleSelection) => void;
+  allowCustom?: boolean;
+  customValue?: string;
+  onCustomChange?: (value: string) => void;
   className?: string;
 }
 
 export function StyleSelector({
   value,
   onChange,
+  allowCustom = false,
+  customValue = '',
+  onCustomChange,
   className,
 }: StyleSelectorProps) {
+  const [showCustomInput, setShowCustomInput] = useState(value === 'other');
+
+  const handleSelect = (id: DesignStyleSelection) => {
+    if (id === 'other') {
+      setShowCustomInput(true);
+    } else {
+      setShowCustomInput(false);
+    }
+    onChange(id);
+  };
+
   return (
     <div className={cn('space-y-4', className)}>
       <div>
@@ -100,7 +121,7 @@ export function StyleSelector({
             <button
               key={option.id}
               type="button"
-              onClick={() => onChange(option.id)}
+              onClick={() => handleSelect(option.id)}
               className={cn(
                 'group relative rounded-xl overflow-hidden transition-all',
                 'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
@@ -137,7 +158,60 @@ export function StyleSelector({
             </button>
           );
         })}
+
+        {/* "Other" option */}
+        {allowCustom && (
+          <button
+            type="button"
+            onClick={() => handleSelect('other')}
+            className={cn(
+              'group relative rounded-xl overflow-hidden transition-all',
+              'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
+              'hover:ring-2 hover:ring-primary/50',
+              value === 'other' && 'ring-2 ring-primary'
+            )}
+          >
+            {/* Gradient placeholder */}
+            <div className="aspect-[4/3] relative bg-gradient-to-br from-primary/20 via-primary/10 to-muted flex items-center justify-center">
+              <Palette className="w-12 h-12 text-primary/40" />
+            </div>
+
+            {/* Content overlay */}
+            <div className="absolute inset-0 flex flex-col justify-end p-3 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
+              <span className="font-semibold text-white text-sm">
+                Other
+              </span>
+              <span className="text-xs text-white/80 line-clamp-2 mt-0.5">
+                Describe your preferred style
+              </span>
+            </div>
+
+            {/* Selection indicator */}
+            {value === 'other' && (
+              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                <Check className="w-4 h-4 text-primary-foreground" />
+              </div>
+            )}
+          </button>
+        )}
       </div>
+
+      {/* Custom style input */}
+      {showCustomInput && value === 'other' && (
+        <div className="mt-3">
+          <Input
+            value={customValue}
+            onChange={(e) => onCustomChange?.(e.target.value)}
+            placeholder="e.g., Mid-century modern, Japandi, Art Deco..."
+            className="max-w-md"
+            maxLength={100}
+            autoFocus
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Describe the design aesthetic you envision
+          </p>
+        </div>
+      )}
     </div>
   );
 }

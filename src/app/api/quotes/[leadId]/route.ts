@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createServiceClient } from '@/lib/db/server';
-import type { QuoteDraftInsert, QuoteDraftUpdate, Json } from '@/types/database';
+import { getSiteId, withSiteId } from '@/lib/db/site';
+import type { QuoteDraftUpdate, Json } from '@/types/database';
 
 /**
  * Line item schema
@@ -81,6 +82,7 @@ export async function GET(
       .from('leads')
       .select('id, name, email, project_type, quote_draft_json')
       .eq('id', leadId)
+      .eq('site_id', getSiteId())
       .single();
 
     if (leadError) {
@@ -102,6 +104,7 @@ export async function GET(
       .from('quote_drafts')
       .select('*')
       .eq('lead_id', leadId)
+      .eq('site_id', getSiteId())
       .order('version', { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -193,6 +196,7 @@ export async function PUT(
       .from('leads')
       .select('id')
       .eq('id', leadId)
+      .eq('site_id', getSiteId())
       .single();
 
     if (leadError) {
@@ -217,6 +221,7 @@ export async function PUT(
       .from('quote_drafts')
       .select('id, version')
       .eq('lead_id', leadId)
+      .eq('site_id', getSiteId())
       .order('version', { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -244,6 +249,7 @@ export async function PUT(
         .from('quote_drafts')
         .update(updateData)
         .eq('id', existingQuote.id)
+        .eq('site_id', getSiteId())
         .select('*')
         .single();
 
@@ -256,14 +262,14 @@ export async function PUT(
       }
 
       // Log the update
-      await supabase.from('audit_log').insert({
+      await supabase.from('audit_log').insert(withSiteId({
         lead_id: leadId,
         action: 'quote_updated',
         new_values: {
           total: totals.total,
           line_items_count: line_items.length,
         },
-      });
+      }));
 
       return NextResponse.json({
         success: true,
@@ -271,7 +277,7 @@ export async function PUT(
       });
     } else {
       // Create new quote
-      const insertData: QuoteDraftInsert = {
+      const insertData = {
         lead_id: leadId,
         version: 1,
         line_items: line_items as Json,
@@ -288,7 +294,7 @@ export async function PUT(
 
       const { data: newQuote, error: insertError } = await supabase
         .from('quote_drafts')
-        .insert(insertData)
+        .insert(withSiteId(insertData))
         .select('*')
         .single();
 
@@ -304,17 +310,18 @@ export async function PUT(
       await supabase
         .from('leads')
         .update({ status: 'draft_ready', updated_at: now.toISOString() })
-        .eq('id', leadId);
+        .eq('id', leadId)
+        .eq('site_id', getSiteId());
 
       // Log the creation
-      await supabase.from('audit_log').insert({
+      await supabase.from('audit_log').insert(withSiteId({
         lead_id: leadId,
         action: 'quote_created',
         new_values: {
           total: totals.total,
           line_items_count: line_items.length,
         },
-      });
+      }));
 
       return NextResponse.json({
         success: true,

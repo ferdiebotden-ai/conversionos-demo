@@ -2,37 +2,28 @@
 
 /**
  * Chat Input
- * Input field with image attachment button
+ * Input field with image attachment button and TalkButton for voice
  * Fixed at bottom for thumb zone accessibility on mobile
  */
 
 import { useState, useRef, type KeyboardEvent, type ChangeEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ImagePlus, Send, X, Headphones } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { ImagePlus, Send, X } from 'lucide-react';
+import { TalkButton } from '@/components/voice/talk-button';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface ChatInputProps {
   onSend: (message: string, images: File[]) => void;
-  onVoiceModeToggle?: () => void;
   disabled?: boolean;
   placeholder?: string;
-  showVoiceButton?: boolean;
 }
 
 export function ChatInput({
   onSend,
-  onVoiceModeToggle,
   disabled,
   placeholder = 'Type your message...',
-  showVoiceButton = true,
 }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [images, setImages] = useState<File[]>([]);
@@ -46,7 +37,6 @@ export function ChatInput({
       setMessage('');
       setImages([]);
       setImagePreviews([]);
-      // Reset textarea height
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
       }
@@ -62,7 +52,6 @@ export function ChatInput({
 
   const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
-    // Auto-resize textarea
     e.target.style.height = 'auto';
     e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
   };
@@ -74,17 +63,13 @@ export function ChatInput({
       return validTypes.includes(file.type);
     });
 
-    // Limit to 3 images total
     const newImages = [...images, ...validFiles].slice(0, 3);
     setImages(newImages);
 
-    // Generate previews
     const newPreviews = newImages.map(file => URL.createObjectURL(file));
-    // Clean up old previews
     imagePreviews.forEach(url => URL.revokeObjectURL(url));
     setImagePreviews(newPreviews);
 
-    // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -169,29 +154,12 @@ export function ChatInput({
           data-testid="chat-input"
         />
 
-        {/* Voice button — pill-shaped "Talk" */}
-        {showVoiceButton && onVoiceModeToggle && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onVoiceModeToggle}
-                  disabled={disabled}
-                  className="h-10 shrink-0 rounded-full px-3 text-[#D32F2F] border-[#D32F2F]/30 hover:text-[#B71C1C] hover:bg-[#D32F2F]/10"
-                  aria-label="Have a voice conversation with our renovation expert"
-                >
-                  <Headphones className="h-4 w-4 mr-1.5" />
-                  Talk
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Have a voice conversation with our renovation expert</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
+        {/* Talk to Marcus button */}
+        <TalkButton
+          persona="quote-specialist"
+          variant="inline"
+          disabled={disabled}
+        />
 
         {/* Send button */}
         <Button

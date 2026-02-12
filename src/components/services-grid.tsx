@@ -1,5 +1,8 @@
+'use client';
+
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
+import { StaggerContainer, StaggerItem } from "@/components/motion"
 import { ChefHat, Bath, Sofa, TreeDeciduous } from "lucide-react"
 
 const services = [
@@ -39,11 +42,13 @@ interface ServicesGridProps {
 
 export function ServicesGrid({ showLinks = true }: ServicesGridProps) {
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {services.map((service) => (
-        <ServiceCard key={service.slug} service={service} showLink={showLinks} />
+        <StaggerItem key={service.slug}>
+          <ServiceCard service={service} showLink={showLinks} />
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerContainer>
   )
 }
 

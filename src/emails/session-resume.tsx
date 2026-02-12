@@ -67,7 +67,7 @@ export function SessionResumeEmail({
           </Text>
 
           <Text style={footer}>
-            AI Reno Demo - Quality Renovations in Ontario, Canada
+            AI Reno Demo - Quality Renovations in Greater Ontario Area
             <br />
             <Link href="https://airenodemo.com" style={footerLink}>
               airenodemo.com

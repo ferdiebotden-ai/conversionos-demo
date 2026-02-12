@@ -81,7 +81,7 @@ export default function ContactPage() {
                           <strong className="block text-foreground">General Inquiries</strong>
                           Jordan Mitchell, Business Manager
                           <br />
-                          <a href="tel:(555) 123-4567" className="hover:text-primary">(555) 123-4567</a>
+                          <a href="tel:5551234567" className="hover:text-primary">(555) 123-4567</a>
                           <br />
                           <a href="mailto:info@airenodemo.com" className="hover:text-primary">info@airenodemo.com</a>
                         </span>
@@ -94,9 +94,9 @@ export default function ContactPage() {
                           <strong className="block text-foreground">Job Site Contact</strong>
                           Alex Thompson, Owner/Operator
                           <br />
-                          <a href="tel:(555) 987-6543" className="hover:text-primary">(555) 987-6543</a>
+                          <a href="tel:5551234568" className="hover:text-primary">(555) 123-4568</a>
                           <br />
-                          <a href="mailto:projects@airenodemo.com" className="hover:text-primary">projects@airenodemo.com</a>
+                          <a href="mailto:info@airenodemo.com" className="hover:text-primary">info@airenodemo.com</a>
                         </span>
                       </div>
                     </li>
@@ -104,7 +104,7 @@ export default function ContactPage() {
                       <MapPin className="mt-0.5 size-5 shrink-0 text-primary" />
                       <span>
                         <strong className="block text-foreground">Location</strong>
-                        Ontario, Canada
+                        Greater Ontario Area, Canada
                       </span>
                     </li>
                   </ul>

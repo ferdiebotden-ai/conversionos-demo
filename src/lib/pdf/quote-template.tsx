@@ -324,10 +324,10 @@ export function QuotePdfDocument({ lead, quote }: QuotePdfProps) {
           {/* Logo and Company Info */}
           <View style={styles.logoSection}>
             {/* Company Name */}
-            <Text style={{ fontSize: 20, fontFamily: 'Helvetica-Bold', color: COLORS.primary, marginRight: 15 }}>AI Reno Demo</Text>
+            <Text style={{ fontSize: 20, fontFamily: 'Helvetica-Bold', color: COLORS.primary }}>AI Reno Demo</Text>
             <View style={styles.companyInfo}>
-              <Text style={styles.companyAddress}>123 Main Street</Text>
-              <Text style={styles.companyAddress}>Ontario, Canada</Text>
+              <Text style={styles.companyAddress}>123 Innovation Drive</Text>
+              <Text style={styles.companyAddress}>Greater Ontario Area N0N 0N0</Text>
               <Text style={styles.companyPhone}>Tel: (555) 123-4567</Text>
               <Text style={styles.companyWebsite}>www.airenodemo.com</Text>
             </View>
@@ -446,7 +446,7 @@ export function QuotePdfDocument({ lead, quote }: QuotePdfProps) {
               supplies pricing will be guaranteed for only one week.
             </Text>
             <Text style={styles.termsText}>
-              Invoices payable upon receipt. Please make cheques payable to AI Reno Demo
+              Invoices payable upon receipt. Please make cheques payable to AI Reno Demo Inc.
               Finance Charges will be applied at a rate of 1.25% per month
             </Text>
           </View>

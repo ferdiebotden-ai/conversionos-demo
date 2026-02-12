@@ -1,48 +1,53 @@
+'use client';
+
 import { Card, CardContent } from "@/components/ui/card"
+import { StaggerContainer, StaggerItem } from "@/components/motion"
 import { Star } from "lucide-react"
 
 const testimonials = [
   {
     id: 1,
     quote:
-      "AI Reno Demo did an excellent job on the complete renovation of my bathroom. The team is extremely attentive to the smallest detail and provides excellent information along the way to assist in decision-making. They and their workers are friendly, intelligent and courteous. The work was excellent, timely and well-priced.",
-    author: "Justin O.",
+      "The team did an excellent job on the complete renovation of our bathroom. They were extremely attentive to the smallest detail and kept us informed every step of the way. The work was excellent, timely, and well-priced.",
+    author: "Sarah M.",
     projectType: "Bathroom Renovation",
     rating: 5,
   },
   {
     id: 2,
     quote:
-      "The crew organized and accomplished converting our unfinished basement into additional comfortable living space. The workmanship, care for detail, and suggestions were excellent, and coordination and cooperation with other contractors was generous. When we needed changes to our original plans, the work proceeded cheerfully and quickly!",
-    author: "Peter R.",
+      "They transformed our unfinished basement into a beautiful living space. The workmanship, attention to detail, and suggestions were outstanding. When we needed changes to our original plans, the work continued smoothly and quickly!",
+    author: "David L.",
     projectType: "Basement Finishing",
     rating: 5,
   },
   {
     id: 3,
     quote:
-      "We couldn't have been more happy with the work done by AI Reno Demo. Thoughtful planning and quoting, efficient timeline, mindful of budget, trustworthy and comfortable to have in our home amongst fantastic construction. We love our new space and know that it is so much more usable now, thanks to the team!",
-    author: "Kaleigh S.",
-    projectType: "Home Renovation",
+      "From the initial quote to the final walkthrough, the entire experience was fantastic. Thoughtful planning, efficient timeline, mindful of budget, and the quality of work exceeded our expectations. We love our new kitchen!",
+    author: "Emily R.",
+    projectType: "Kitchen Renovation",
     rating: 5,
   },
   {
     id: 4,
     quote:
-      "The team does amazing work. I would highly recommend AI Reno Demo.",
-    author: "Marcus N.",
-    projectType: "Renovation",
+      "Professional, reliable, and the quality speaks for itself. Would highly recommend to anyone looking for a renovation contractor.",
+    author: "James K.",
+    projectType: "Home Renovation",
     rating: 5,
   },
 ]
 
 export function Testimonials() {
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <StaggerContainer className="grid gap-6 md:grid-cols-2">
       {testimonials.map((testimonial) => (
-        <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+        <StaggerItem key={testimonial.id}>
+          <TestimonialCard testimonial={testimonial} />
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerContainer>
   )
 }
 

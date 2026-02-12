@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react"
+import { Mail, MapPin, Phone } from "lucide-react"
 
 const quickLinks = [
   { href: "/services", label: "Our Services" },
@@ -33,31 +33,16 @@ export function Footer() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div className="space-y-4">
-            <Logo />
+            <span className="text-xl font-bold tracking-tight text-foreground">
+              AI Reno <span className="text-primary">Demo</span>
+            </span>
             <p className="text-sm text-muted-foreground">
-              Professional renovation services in Greater Ontario Area.
-              Building trust with quality work.
+              Professional renovation services in the Greater Ontario Area.
+              AI-powered lead capture and conversion platform.
             </p>
-            <div className="flex gap-4">
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-                aria-label="Facebook"
-              >
-                <Facebook className="size-5" />
-              </a>
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-                aria-label="Instagram"
-              >
-                <Instagram className="size-5" />
-              </a>
-            </div>
+            <p className="text-xs text-muted-foreground/70">
+              Powered by <span className="font-semibold">ConversionOS</span> &mdash; Norbot Systems, Inc.
+            </p>
           </div>
 
           {/* Quick Links */}
@@ -106,7 +91,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm text-muted-foreground">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
-                <span>Ontario, Canada</span>
+                <span>Greater Ontario Area, Canada</span>
               </li>
               <li>
                 <a
@@ -147,8 +132,3 @@ export function Footer() {
   )
 }
 
-function Logo() {
-  return (
-    <span className="text-xl font-bold text-primary">AI Reno Demo</span>
-  )
-}

@@ -45,7 +45,7 @@ export function NewLeadNotificationEmail({
 }: NewLeadNotificationEmailProps) {
   const hasEstimate = estimateLow && estimateHigh;
   const formattedProjectType = projectType.charAt(0).toUpperCase() + projectType.slice(1);
-  const adminUrl = `#/admin/dashboard`;
+  const adminUrl = `https://leadquoteenginev2.vercel.app/admin/dashboard`;
 
   const timelineLabels: Record<string, string> = {
     asap: 'ASAP',

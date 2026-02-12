@@ -1,13 +1,19 @@
 'use client';
 
 /**
- * Before/After Slider
- * Interactive comparison slider for visualizations
+ * Before/After Slider — Opacity Overlay Approach
+ *
+ * The "before" image is the base layer at 100% opacity.
+ * The "after" image overlays it, with opacity controlled by a horizontal
+ * slider track at the bottom of the image.
+ *
+ * Intro animation sequence (Framer Motion `animate()`):
+ *   0 → 100% over 1.5s, hold 0.8s, settle to 50% over 0.8s
  */
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { animate, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { GripVertical } from 'lucide-react';
 
 interface BeforeAfterSliderProps {
   beforeImage: string;
@@ -24,64 +30,124 @@ export function BeforeAfterSlider({
   afterLabel = 'After',
   className,
 }: BeforeAfterSliderProps) {
-  const [sliderPosition, setSliderPosition] = useState(50);
+  const shouldReduce = useReducedMotion();
+  const [sliderPosition, setSliderPosition] = useState(shouldReduce ? 50 : 0);
   const [isDragging, setIsDragging] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [hasRevealed, setHasRevealed] = useState(!!shouldReduce);
+  const trackRef = useRef<HTMLDivElement>(null);
 
-  // Handle mouse/touch movement
-  const updatePosition = useCallback((clientX: number) => {
-    if (!containerRef.current) return;
+  // ─── Intro animation sequence ───────────────────────────────────────
+  useEffect(() => {
+    if (hasRevealed) return;
 
-    const rect = containerRef.current.getBoundingClientRect();
+    let cancelled = false;
+
+    async function runSequence() {
+      // 1. Wait 0.5s
+      await new Promise((r) => setTimeout(r, 500));
+      if (cancelled) return;
+
+      // 2. Animate 0% → 100% over 1.5s
+      await new Promise<void>((resolve) => {
+        const ctrl = animate(0, 100, {
+          duration: 1.5,
+          ease: [0.25, 0.46, 0.45, 0.94],
+          onUpdate: (v) => {
+            if (!cancelled) setSliderPosition(v);
+          },
+          onComplete: resolve,
+        });
+        if (cancelled) ctrl.stop();
+      });
+      if (cancelled) return;
+
+      // 3. Hold for 0.8s
+      await new Promise((r) => setTimeout(r, 800));
+      if (cancelled) return;
+
+      // 4. Animate 100% → 50% over 0.8s
+      await new Promise<void>((resolve) => {
+        const ctrl = animate(100, 50, {
+          duration: 0.8,
+          ease: [0.25, 0.46, 0.45, 0.94],
+          onUpdate: (v) => {
+            if (!cancelled) setSliderPosition(v);
+          },
+          onComplete: resolve,
+        });
+        if (cancelled) ctrl.stop();
+      });
+      if (cancelled) return;
+
+      // 5. Enable user interaction
+      setHasRevealed(true);
+    }
+
+    runSequence();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hasRevealed]);
+
+  // ─── Position calculation (relative to the track) ───────────────────
+  const updatePositionFromClient = useCallback((clientX: number) => {
+    if (!trackRef.current) return;
+
+    const rect = trackRef.current.getBoundingClientRect();
     const x = clientX - rect.left;
     const percentage = Math.min(Math.max((x / rect.width) * 100, 0), 100);
     setSliderPosition(percentage);
   }, []);
 
-  // Mouse events
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-    updatePosition(e.clientX);
-  }, [updatePosition]);
+  // ─── Mouse events (track/thumb only) ───────────────────────────────
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      setIsDragging(true);
+      setHasRevealed(true);
+      updatePositionFromClient(e.clientX);
+    },
+    [updatePositionFromClient],
+  );
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (!isDragging) return;
-      updatePosition(e.clientX);
+      updatePositionFromClient(e.clientX);
     },
-    [isDragging, updatePosition]
+    [isDragging, updatePositionFromClient],
   );
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
   }, []);
 
-  // Touch events
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    setIsDragging(true);
-    const touch = e.touches[0];
-    if (touch) {
-      updatePosition(touch.clientX);
-    }
-  }, [updatePosition]);
+  // ─── Touch events (track/thumb only) ────────────────────────────────
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      setIsDragging(true);
+      setHasRevealed(true);
+      const touch = e.touches[0];
+      if (touch) updatePositionFromClient(touch.clientX);
+    },
+    [updatePositionFromClient],
+  );
 
   const handleTouchMove = useCallback(
     (e: TouchEvent) => {
       if (!isDragging) return;
       const touch = e.touches[0];
-      if (touch) {
-        updatePosition(touch.clientX);
-      }
+      if (touch) updatePositionFromClient(touch.clientX);
     },
-    [isDragging, updatePosition]
+    [isDragging, updatePositionFromClient],
   );
 
   const handleTouchEnd = useCallback(() => {
     setIsDragging(false);
   }, []);
 
-  // Add/remove global event listeners
+  // ─── Global listeners for drag continuation outside the track ───────
   useEffect(() => {
     if (isDragging) {
       window.addEventListener('mousemove', handleMouseMove);
@@ -100,79 +166,70 @@ export function BeforeAfterSlider({
 
   return (
     <div
-      ref={containerRef}
       className={cn(
-        'relative aspect-video overflow-hidden rounded-xl cursor-ew-resize select-none',
+        'relative aspect-video overflow-hidden rounded-xl select-none',
         'border border-border',
-        className
+        className,
       )}
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
     >
-      {/* After image (full width, bottom layer) */}
-      <div className="absolute inset-0">
-        <img
-          src={afterImage}
-          alt={afterLabel}
-          className="w-full h-full object-cover"
-          draggable={false}
-        />
-        {/* After label */}
-        <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1.5 rounded-full text-sm font-medium backdrop-blur-sm">
-          {afterLabel}
-        </div>
-      </div>
+      {/* Before image — base layer, always 100% opacity */}
+      <img
+        src={beforeImage}
+        alt={beforeLabel}
+        className="w-full h-full object-cover"
+        draggable={false}
+      />
 
-      {/* Before image (clipped, top layer) */}
-      <div
-        className="absolute inset-0 overflow-hidden"
-        style={{ width: `${sliderPosition}%` }}
-      >
-        <img
-          src={beforeImage}
-          alt={beforeLabel}
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ width: `${containerRef.current?.offsetWidth || 0}px` }}
-          draggable={false}
-        />
-        {/* Before label */}
-        <div className="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1.5 rounded-full text-sm font-medium backdrop-blur-sm">
-          {beforeLabel}
-        </div>
-      </div>
+      {/* After image — overlay, opacity driven by slider */}
+      <img
+        src={afterImage}
+        alt={afterLabel}
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ opacity: sliderPosition / 100 }}
+        draggable={false}
+      />
 
-      {/* Slider handle */}
-      <div
-        className={cn(
-          'absolute top-0 bottom-0 w-1 bg-white shadow-lg',
-          'transform -translate-x-1/2',
-          isDragging && 'bg-primary'
-        )}
-        style={{ left: `${sliderPosition}%` }}
-      >
-        {/* Handle grip */}
-        <div
-          className={cn(
-            'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
-            'w-10 h-10 rounded-full bg-white shadow-lg',
-            'flex items-center justify-center',
-            'border-2 border-white',
-            isDragging && 'scale-110 bg-primary'
-          )}
-        >
-          <GripVertical
+      {/* ─── Bottom bar: gradient, labels, slider track ─────────────── */}
+      <div className="absolute bottom-0 left-0 right-0 px-6 py-4 bg-gradient-to-t from-black/50 to-transparent">
+        <div className="flex items-center gap-3">
+          {/* Before label */}
+          <span className="text-sm font-medium text-white/90 shrink-0">
+            {beforeLabel}
+          </span>
+
+          {/* Slider track */}
+          <div
+            ref={trackRef}
             className={cn(
-              'w-5 h-5 text-gray-600',
-              isDragging && 'text-white'
+              'relative flex-1 h-2 bg-white/20 backdrop-blur-sm rounded-full',
+              'cursor-pointer',
+              isDragging && 'cursor-grabbing',
             )}
-          />
-        </div>
-      </div>
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+          >
+            {/* Filled portion */}
+            <div
+              className="absolute inset-y-0 left-0 bg-white/40 rounded-full"
+              style={{ width: `${sliderPosition}%` }}
+            />
 
-      {/* Instructions overlay (shows briefly) */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="bg-black/50 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm opacity-0 animate-[fadeOut_3s_ease-in-out_forwards]">
-          Drag to compare
+            {/* Thumb */}
+            <div
+              className={cn(
+                'absolute top-1/2 -translate-y-1/2 -translate-x-1/2',
+                'w-6 h-6 rounded-full bg-white shadow-lg border-2 border-primary',
+                'transition-transform duration-100',
+                isDragging && 'scale-110',
+              )}
+              style={{ left: `${sliderPosition}%` }}
+            />
+          </div>
+
+          {/* After label */}
+          <span className="text-sm font-medium text-white/90 shrink-0">
+            {afterLabel}
+          </span>
         </div>
       </div>
     </div>

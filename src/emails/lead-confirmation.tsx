@@ -91,13 +91,13 @@ export function LeadConfirmationEmail({
 
           <Text style={paragraph}>
             Have questions? Reply to this email or call us at{' '}
-            <Link href="tel:+15551234567" style={link}>
-              (555) 123-4567
+            <Link href="tel:+15195551234" style={link}>
+              (519) 555-1234
             </Link>
           </Text>
 
           <Text style={footer}>
-            AI Reno Demo - Quality Renovations in Ontario, Canada
+            AI Reno Demo - Quality Renovations in Greater Ontario Area
             <br />
             <Link href="https://airenodemo.com" style={footerLink}>
               airenodemo.com

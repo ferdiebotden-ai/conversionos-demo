@@ -1,7 +1,9 @@
 import { streamText, type UserModelMessage, type AssistantModelMessage } from 'ai';
 import { openai } from '@/lib/ai/providers';
 import { AI_CONFIG } from '@/lib/ai/config';
-import { QUOTE_ASSISTANT_SYSTEM_PROMPT } from '@/lib/ai/prompts';
+import { buildAgentSystemPrompt } from '@/lib/ai/personas';
+import { buildHandoffPromptPrefix, type HandoffContext } from '@/lib/chat/handoff';
+import { buildPricingGateInstruction, type EstimateContext } from '@/lib/ai/pricing-gate';
 
 export const runtime = 'edge';
 
@@ -20,7 +22,7 @@ interface IncomingMessage {
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages, handoffContext, estimateData } = await req.json();
 
     // Helper to extract text content from message (handles both old and new formats)
     const getMessageContent = (msg: IncomingMessage): string => {
@@ -81,9 +83,31 @@ export async function POST(req: Request) {
         };
       });
 
+    // Get latest user message for dynamic knowledge injection
+    const lastUserMsg = formattedMessages.filter((m: { role: string }) => m.role === 'user').pop();
+    const userMessage = lastUserMsg?.content as string | undefined;
+
+    // Build system prompt with optional handoff context prefix + pricing gate
+    let systemPrompt = buildAgentSystemPrompt('quote-specialist', {
+      userMessage,
+      handoffContext: handoffContext as Record<string, unknown> | undefined,
+    });
+
+    // Pricing confidence gating
+    if (estimateData) {
+      const pricingInstruction = buildPricingGateInstruction(estimateData as EstimateContext);
+      systemPrompt += `\n\n---\n\n${pricingInstruction}`;
+    }
+
+    // Handoff context from another persona (prompt prefix with recent messages + summary)
+    if (handoffContext) {
+      const handoffPrefix = buildHandoffPromptPrefix(handoffContext as HandoffContext);
+      systemPrompt = `${handoffPrefix}\n\n---\n\n${systemPrompt}`;
+    }
+
     const result = streamText({
       model: openai(AI_CONFIG.openai.chat),
-      system: QUOTE_ASSISTANT_SYSTEM_PROMPT,
+      system: systemPrompt,
       messages: formattedMessages,
       maxOutputTokens: AI_CONFIG.parameters.chat.maxTokens,
       temperature: AI_CONFIG.parameters.chat.temperature,
