@@ -7,7 +7,6 @@
  */
 
 import { useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Calculator, Palette } from 'lucide-react';
 import { serializeHandoffContext } from '@/lib/chat/handoff';
@@ -60,15 +59,15 @@ export function HandoffCard({
   messages,
   extractedData,
 }: HandoffCardProps) {
-  const router = useRouter();
   const target = PERSONA_INFO[toPersona];
   const Icon = target.icon;
 
   const handleClick = useCallback(() => {
     // Serialize context to sessionStorage before navigating
     serializeHandoffContext(fromPersona, toPersona, messages, extractedData);
-    router.push(`${target.path}?handoff=${fromPersona}`);
-  }, [fromPersona, toPersona, messages, extractedData, router, target.path]);
+    // Full page navigation to reliably exit the widget overlay context
+    window.location.href = `${target.path}?handoff=${fromPersona}`;
+  }, [fromPersona, toPersona, messages, extractedData, target.path]);
 
   return (
     <div className="my-2 mx-1">

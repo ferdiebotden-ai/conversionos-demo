@@ -64,7 +64,11 @@ export function ReceptionistCTAButtons({
   const ctas = extractCTAs(text);
 
   // Fallback: detect natural language routing when no CTA markers found
-  if (ctas.length === 0) {
+  // Skip NLP fallback on the greeting message (first assistant message) to avoid
+  // phantom CTAs from words like "transformation" matching the /transform/i regex
+  const isGreeting = !messages || messages.filter(m => m.role === 'assistant').length <= 1;
+
+  if (ctas.length === 0 && !isGreeting) {
     if (/marcus|estimate|cost|price|quote|budget/i.test(text)) {
       ctas.push({ label: 'Get a Free Estimate', path: '/estimate' });
     }
