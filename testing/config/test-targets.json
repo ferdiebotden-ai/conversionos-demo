@@ -1,0 +1,63 @@
+{
+  "public": [
+    { "path": "/", "name": "Home", "hasCTA": true },
+    { "path": "/services", "name": "Services", "hasCTA": true },
+    { "path": "/services/kitchen", "name": "Kitchen Service", "hasCTA": true },
+    { "path": "/services/bathroom", "name": "Bathroom Service", "hasCTA": true },
+    { "path": "/services/basement", "name": "Basement Service", "hasCTA": true },
+    { "path": "/services/outdoor", "name": "Outdoor Service", "hasCTA": true },
+    { "path": "/about", "name": "About", "hasCTA": true },
+    { "path": "/contact", "name": "Contact", "hasCTA": false },
+    { "path": "/projects", "name": "Projects", "hasCTA": true },
+    { "path": "/estimate", "name": "AI Estimate Chat", "hasCTA": false },
+    { "path": "/estimate/resume", "name": "Resume Estimate", "hasCTA": false },
+    { "path": "/visualizer", "name": "AI Visualizer", "hasCTA": false },
+    { "path": "/admin/login", "name": "Admin Login", "hasCTA": false }
+  ],
+  "admin": [
+    { "path": "/admin", "name": "Admin Dashboard", "requiresAuth": true },
+    { "path": "/admin/leads", "name": "Leads List", "requiresAuth": true },
+    { "path": "/admin/quotes", "name": "Quotes", "requiresAuth": true },
+    { "path": "/admin/invoices", "name": "Invoices", "requiresAuth": true },
+    { "path": "/admin/drawings", "name": "Drawings", "requiresAuth": true },
+    { "path": "/admin/settings", "name": "Settings", "requiresAuth": true }
+  ],
+  "adminDetail": [
+    { "path": "/admin/leads/:id", "name": "Lead Detail", "requiresAuth": true, "needsData": true },
+    { "path": "/admin/invoices/:id", "name": "Invoice Detail", "requiresAuth": true, "needsData": true },
+    { "path": "/admin/drawings/:id", "name": "Drawing Detail", "requiresAuth": true, "needsData": true }
+  ],
+  "api": [
+    { "path": "/api/leads", "methods": ["GET", "POST"] },
+    { "path": "/api/leads/:id", "methods": ["GET", "PUT", "DELETE"] },
+    { "path": "/api/leads/:id/audit", "methods": ["GET"] },
+    { "path": "/api/quotes/:leadId", "methods": ["GET", "PUT"] },
+    { "path": "/api/quotes/:leadId/pdf", "methods": ["GET"] },
+    { "path": "/api/quotes/:leadId/send", "methods": ["POST"] },
+    { "path": "/api/quotes/:leadId/regenerate", "methods": ["POST"] },
+    { "path": "/api/quotes/:leadId/draft-email", "methods": ["POST"] },
+    { "path": "/api/invoices", "methods": ["GET", "POST"] },
+    { "path": "/api/invoices/:id", "methods": ["GET", "PUT", "DELETE"] },
+    { "path": "/api/invoices/:id/payments", "methods": ["POST"] },
+    { "path": "/api/invoices/:id/pdf", "methods": ["GET"] },
+    { "path": "/api/invoices/:id/send", "methods": ["POST"] },
+    { "path": "/api/invoices/export/sage", "methods": ["GET"] },
+    { "path": "/api/drawings", "methods": ["GET", "POST"] },
+    { "path": "/api/drawings/:id", "methods": ["GET", "PUT", "DELETE"] },
+    { "path": "/api/admin/settings", "methods": ["GET", "PUT"] },
+    { "path": "/api/admin/leads/:id/visualizations", "methods": ["GET"] },
+    { "path": "/api/admin/visualizations/metrics", "methods": ["GET"] },
+    { "path": "/api/admin/visualizations/:id", "methods": ["GET", "DELETE"] },
+    { "path": "/api/visualizations", "methods": ["GET", "POST"] },
+    { "path": "/api/visualizations/:id", "methods": ["GET", "DELETE"] },
+    { "path": "/api/sessions/:id", "methods": ["GET"] },
+    { "path": "/api/sessions/save", "methods": ["POST"] },
+    { "path": "/api/ai/chat", "methods": ["POST"] },
+    { "path": "/api/ai/receptionist", "methods": ["POST"] },
+    { "path": "/api/ai/visualize", "methods": ["POST"] },
+    { "path": "/api/ai/visualizer-chat", "methods": ["POST"] },
+    { "path": "/api/ai/summarize-voice", "methods": ["POST"] },
+    { "path": "/api/voice/check", "methods": ["GET"] },
+    { "path": "/api/voice/signed-url", "methods": ["POST"] }
+  ]
+}

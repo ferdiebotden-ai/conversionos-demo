@@ -1,0 +1,27 @@
+{
+  "default": {
+    "maxDiffPercentage": 5,
+    "failOnMissingBaseline": false
+  },
+  "aiPages": {
+    "maxDiffPercentage": 15,
+    "paths": ["/estimate", "/visualizer", "/estimate/resume"]
+  },
+  "dynamicPages": {
+    "maxDiffPercentage": 10,
+    "paths": ["/admin/leads", "/admin/quotes", "/admin/invoices", "/admin/drawings"]
+  },
+  "maskSelectors": [
+    "[data-testid='timestamp']",
+    "[data-testid='date']",
+    "time",
+    ".animate-pulse",
+    ".animate-spin",
+    "[data-random-id]"
+  ],
+  "viewports": {
+    "mobile": { "width": 375, "height": 812 },
+    "tablet": { "width": 768, "height": 1024 },
+    "desktop": { "width": 1440, "height": 900 }
+  }
+}
