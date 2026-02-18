@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
@@ -18,6 +19,7 @@ export interface Project {
   type: "kitchen" | "bathroom" | "basement" | "flooring"
   description: string
   location: string
+  image?: string
 }
 
 interface ProjectCardProps {
@@ -37,9 +39,19 @@ export function ProjectCard({ project }: ProjectCardProps) {
       <DialogTrigger asChild>
         <Card className="group cursor-pointer overflow-hidden transition-all hover:shadow-lg">
           <div className="relative aspect-[4/3] bg-muted">
-            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-              Before / After
-            </div>
+            {project.image ? (
+              <Image
+                src={project.image}
+                alt={project.title}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
+                Before / After
+              </div>
+            )}
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4">
               <Badge
                 variant="secondary"
@@ -67,15 +79,17 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          {/* Before/After Images */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="aspect-[4/3] rounded-lg bg-muted flex items-center justify-center">
-              <p className="text-muted-foreground">Before photo</p>
+          {project.image && (
+            <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+              <Image
+                src={project.image}
+                alt={project.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 700px"
+              />
             </div>
-            <div className="aspect-[4/3] rounded-lg bg-muted flex items-center justify-center">
-              <p className="text-muted-foreground">After photo</p>
-            </div>
-          </div>
+          )}
           <p className="text-muted-foreground">{project.description}</p>
         </div>
       </DialogContent>

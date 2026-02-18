@@ -51,7 +51,7 @@ export default async function SharedVisualizationPage({ params }: PageProps) {
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="font-bold text-lg">AI Reno Demo</span>
+              <span className="font-bold text-lg">ConversionOS Demo</span>
             </Link>
             <Link href="/estimate">
               <Button>
@@ -82,7 +82,7 @@ export default async function SharedVisualizationPage({ params }: PageProps) {
               {formatRoomType(visualization.room_type)} Design
             </h1>
             <p className="text-muted-foreground mt-2">
-              AI-generated visualization by AI Reno Demo
+              AI-generated visualization by ConversionOS Demo
             </p>
           </div>
 
@@ -96,7 +96,7 @@ export default async function SharedVisualizationPage({ params }: PageProps) {
             <h2 className="text-2xl font-bold">Love This Design?</h2>
             <p className="text-muted-foreground mt-2 max-w-md mx-auto">
               Get a personalized quote for your renovation project from the
-              experts at AI Reno Demo in Greater Ontario Area.
+              experts at ConversionOS Demo in Greater Ontario Area.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-6">
               <Link href={`/estimate?visualization=${visualization.id}`}>

@@ -224,13 +224,13 @@ export function InvoiceEmailTemplate({ invoice, customMessage }: InvoiceEmailPro
     <Html>
       <Head />
       <Preview>
-        Invoice #{invoice.invoice_number} from AI Reno Demo - {formatCurrency(total)}
+        Invoice #{invoice.invoice_number} from ConversionOS Demo - {formatCurrency(total)}
       </Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Header */}
           <Section style={headerSection}>
-            <Text style={brandName}>AI Reno Demo</Text>
+            <Text style={brandName}>ConversionOS Demo</Text>
             <Text style={tagline}>Quality Renovations in Greater Ontario Area</Text>
           </Section>
 
@@ -239,7 +239,7 @@ export function InvoiceEmailTemplate({ invoice, customMessage }: InvoiceEmailPro
             <Text style={greeting}>Hi {firstName},</Text>
 
             <Text style={paragraph}>
-              Please find attached your invoice from AI Reno Demo for your renovation project.
+              Please find attached your invoice from ConversionOS Demo for your renovation project.
             </Text>
 
             {customMessage && (
@@ -318,12 +318,12 @@ export function InvoiceEmailTemplate({ invoice, customMessage }: InvoiceEmailPro
 
             {/* Payment instructions */}
             <Text style={paragraph}>
-              Payment can be made via E-Transfer to <strong>payments@airenodemo.com</strong>.
-              Cheques payable to AI Reno Demo Inc.
+              Payment can be made via E-Transfer to <strong>payments@conversionosdemo.com</strong>.
+              Cheques payable to ConversionOS Demo Inc.
             </Text>
 
             <Section style={ctaSection}>
-              <Button href="mailto:invoices@airenodemo.com" style={ctaButton}>
+              <Button href="mailto:invoices@conversionosdemo.com" style={ctaButton}>
                 Questions? Contact Us
               </Button>
             </Section>
@@ -338,11 +338,11 @@ export function InvoiceEmailTemplate({ invoice, customMessage }: InvoiceEmailPro
           {/* Footer */}
           <Section style={footerSection}>
             <Text style={footerText}>
-              AI Reno Demo | Greater Ontario Area
+              ConversionOS Demo | Greater Ontario Area
             </Text>
             <Text style={footerText}>
-              <Link href="mailto:invoices@airenodemo.com" style={footerLink}>
-                invoices@airenodemo.com
+              <Link href="mailto:invoices@conversionosdemo.com" style={footerLink}>
+                invoices@conversionosdemo.com
               </Link>
               {' '}&bull;{' '}
               <Link href="tel:+15193019140" style={footerLink}>

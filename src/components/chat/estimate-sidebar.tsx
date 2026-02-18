@@ -403,7 +403,7 @@ export function EstimateSidebar({
               Submit Request
             </Button>
             <p className="text-xs text-center text-muted-foreground">
-              Get a detailed quote from AI Reno Demo
+              Get a detailed quote from ConversionOS Demo
             </p>
           </>
         )}

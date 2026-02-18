@@ -81,7 +81,7 @@ export function LeadConfirmationEmail({
 
           <Text style={paragraph}>
             In the meantime, feel free to browse our{' '}
-            <Link href="https://airenodemo.com/projects" style={link}>
+            <Link href="https://conversionosdemo.com/projects" style={link}>
               recent projects
             </Link>{' '}
             for inspiration!
@@ -97,10 +97,10 @@ export function LeadConfirmationEmail({
           </Text>
 
           <Text style={footer}>
-            AI Reno Demo - Quality Renovations in Greater Ontario Area
+            ConversionOS Demo - Quality Renovations in Greater Ontario Area
             <br />
-            <Link href="https://airenodemo.com" style={footerLink}>
-              airenodemo.com
+            <Link href="https://conversionosdemo.com" style={footerLink}>
+              conversionosdemo.com
             </Link>
           </Text>
         </Container>

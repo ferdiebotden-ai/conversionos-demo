@@ -1,6 +1,6 @@
 /**
  * Invoice PDF Template
- * Professional PDF matching AI Reno Demo's invoice format
+ * Professional PDF matching ConversionOS Demo's invoice format
  * Adapted from quote-template.tsx
  * [DEV-089]
  */
@@ -294,12 +294,12 @@ export function InvoicePdfDocument({ invoice, payments }: InvoicePdfProps) {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.logoSection}>
-            <Text style={{ fontSize: 20, fontFamily: 'Helvetica-Bold', color: COLORS.primary }}>AI Reno Demo</Text>
+            <Text style={{ fontSize: 20, fontFamily: 'Helvetica-Bold', color: COLORS.primary }}>ConversionOS Demo</Text>
             <View style={styles.companyInfo}>
               <Text style={styles.companyAddress}>123 Innovation Drive</Text>
               <Text style={styles.companyAddress}>Greater Ontario Area N0N 0N0</Text>
               <Text style={styles.companyPhone}>Tel: (555) 123-4567</Text>
-              <Text style={styles.companyWebsite}>www.airenodemo.com</Text>
+              <Text style={styles.companyWebsite}>www.conversionosdemo.com</Text>
             </View>
           </View>
 
@@ -342,7 +342,7 @@ export function InvoicePdfDocument({ invoice, payments }: InvoicePdfProps) {
           <View style={styles.paymentSection}>
             <Text style={styles.sectionLabel}>Payment Terms</Text>
             <Text style={styles.cellText}>50% Deposit Required</Text>
-            <Text style={styles.cellText}>E-Transfer: payments@airenodemo.com</Text>
+            <Text style={styles.cellText}>E-Transfer: payments@conversionosdemo.com</Text>
           </View>
         </View>
 
@@ -407,11 +407,11 @@ export function InvoicePdfDocument({ invoice, payments }: InvoicePdfProps) {
           <View style={styles.termsSection}>
             <Text style={styles.termsTitle}>Terms: 50% Deposit required to schedule work.</Text>
             <Text style={styles.termsText}>
-              Invoices payable upon receipt. Please make cheques payable to AI Reno Demo Inc.
+              Invoices payable upon receipt. Please make cheques payable to ConversionOS Demo Inc.
               Finance Charges will be applied at a rate of 1.25% per month.
             </Text>
             <Text style={styles.termsText}>
-              E-Transfer payments to: payments@airenodemo.com
+              E-Transfer payments to: payments@conversionosdemo.com
             </Text>
             {payments.length > 0 && (
               <>

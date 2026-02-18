@@ -13,6 +13,7 @@ const projects: Project[] = [
     description:
       "Complete kitchen remodel featuring custom white shaker cabinets, quartz countertops, and a large center island. The open concept design connects seamlessly to the dining area.",
     location: "Greater Ontario Area",
+    image: "/images/demo/kitchen-modern.png",
   },
   {
     id: "2",
@@ -21,6 +22,7 @@ const projects: Project[] = [
     description:
       "Luxurious master bathroom renovation with walk-in shower, freestanding tub, heated floors, and custom double vanity. Features large format porcelain tiles throughout.",
     location: "St. Marys, ON",
+    image: "/images/demo/bathroom-spa.png",
   },
   {
     id: "3",
@@ -29,6 +31,7 @@ const projects: Project[] = [
     description:
       "Full basement finishing with home theater, wet bar, and guest bedroom. Includes soundproofing, custom built-ins, and a full bathroom.",
     location: "Greater Ontario Area",
+    image: "/images/demo/basement-entertainment.png",
   },
   {
     id: "4",
@@ -37,6 +40,7 @@ const projects: Project[] = [
     description:
       "Whole-home hardwood flooring installation. White oak throughout main floor with coordinating engineered hardwood on upper level.",
     location: "Mitchell, ON",
+    image: "/images/demo/flooring-hardwood.png",
   },
   {
     id: "5",
@@ -45,6 +49,7 @@ const projects: Project[] = [
     description:
       "Charming farmhouse-style kitchen with two-tone cabinets, butcher block island, and apron-front sink. Exposed beam ceiling adds character.",
     location: "Listowel, ON",
+    image: "/images/demo/kitchen-farmhouse.png",
   },
   {
     id: "6",
@@ -53,6 +58,7 @@ const projects: Project[] = [
     description:
       "Barrier-free bathroom renovation with curbless shower, grab bars, and accessible vanity. Combines safety features with modern aesthetics.",
     location: "Greater Ontario Area",
+    image: "/images/demo/bathroom-accessible.png",
   },
   {
     id: "7",
@@ -61,6 +67,7 @@ const projects: Project[] = [
     description:
       "Legal basement apartment with separate entrance, full kitchen, living area, bedroom, and bathroom. Includes egress windows and fire separation.",
     location: "Greater Ontario Area",
+    image: "/images/demo/basement-walkout.png",
   },
   {
     id: "8",
@@ -69,6 +76,7 @@ const projects: Project[] = [
     description:
       "Waterproof luxury vinyl plank installation in basement and main floor bathrooms. Features realistic oak wood look with enhanced durability.",
     location: "St. Marys, ON",
+    image: "/images/demo/flooring-vinyl.png",
   },
 ]
 

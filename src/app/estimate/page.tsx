@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { EstimatePageClient } from './estimate-client';
 
 export const metadata: Metadata = {
-  title: 'Get an Instant Estimate | AI Reno Demo',
+  title: 'Get an Instant Estimate | ConversionOS Demo',
   description: 'Chat with our AI assistant to get a preliminary renovation estimate in minutes. Upload photos of your space and describe your project.',
 };
 

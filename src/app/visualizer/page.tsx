@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { VisualizerForm } from '@/components/visualizer/visualizer-form';
 
 export const metadata: Metadata = {
-  title: 'AI Design Visualizer | AI Reno Demo',
+  title: 'AI Design Visualizer | ConversionOS Demo',
   description:
     'See your renovation vision come to life. Upload a photo, choose a style, and let our AI show you the possibilities.',
 };

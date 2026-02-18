@@ -319,8 +319,10 @@ export async function POST(request: NextRequest) {
     const errorResponse: VisualizationError = {
       error: 'Failed to generate visualization',
       code: 'UNKNOWN',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: 'An unexpected error occurred. Please try again.',
     };
+    // Log the real error server-side only
+    console.error('Visualization error details:', error instanceof Error ? error.message : error);
     return NextResponse.json(errorResponse, { status: 500 });
   }
 }

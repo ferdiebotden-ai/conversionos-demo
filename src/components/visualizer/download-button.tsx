@@ -55,7 +55,7 @@ export function DownloadButton({
 
       // Download with watermark
       await downloadWithWatermark(imageUrl, filename, {
-        text: 'AI Reno Demo',
+        text: 'ConversionOS Demo',
         subtext: 'AI Visualization - For Concept Purposes Only',
       });
 

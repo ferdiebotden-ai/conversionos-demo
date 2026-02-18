@@ -207,3 +207,47 @@ export async function PATCH(
     );
   }
 }
+
+/**
+ * DELETE /api/leads/[id]
+ * Soft-delete a lead by marking it as lost
+ */
+export async function DELETE(
+  request: NextRequest,
+  context: RouteContext
+) {
+  try {
+    const { id } = await context.params;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Lead ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const supabase = createServiceClient();
+
+    // Soft delete — mark as lost
+    const { data, error } = await supabase
+      .from('leads')
+      .update({ status: 'lost' as LeadStatus, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('site_id', getSiteId())
+      .select('*')
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
+      }
+      console.error('Error deleting lead:', error);
+      return NextResponse.json({ error: 'Failed to delete lead' }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true, data });
+  } catch (error) {
+    console.error('Lead delete error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

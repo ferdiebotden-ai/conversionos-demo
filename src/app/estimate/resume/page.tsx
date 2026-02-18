@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { ResumeChat } from './resume-chat';
 
 export const metadata: Metadata = {
-  title: 'Continue Your Quote | AI Reno Demo',
+  title: 'Continue Your Quote | ConversionOS Demo',
   description: 'Pick up where you left off on your renovation estimate.',
 };
 

@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Shield,
-  Users,
   Heart,
   Target,
   MapPin,
@@ -13,7 +13,7 @@ import {
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about AI Reno Demo - Ontario's trusted renovation contractor. Quality craftsmanship for residential and commercial projects in the Greater Ontario Area.",
+    "Learn about ConversionOS Demo - Ontario's trusted renovation contractor. Quality craftsmanship for residential and commercial projects in the Greater Ontario Area.",
 }
 
 const values = [
@@ -42,11 +42,13 @@ const teamMembers = [
     name: "Alex Thompson",
     role: "Owner/Operator",
     description: "Job site contact and lead craftsman",
+    image: "/images/demo/team-male.png",
   },
   {
     name: "Jordan Mitchell",
     role: "Business Manager",
     description: "General inquiries and project coordination",
+    image: "/images/demo/team-female.png",
   },
 ]
 
@@ -83,7 +85,7 @@ export default function AboutPage() {
               Building Trust With Quality Work
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              AI Reno Demo transforms homes in the Greater Ontario Area
+              ConversionOS Demo transforms homes in the Greater Ontario Area
               with quality craftsmanship and modern building techniques.
               Taking care of our clients is what we do best.
             </p>
@@ -121,8 +123,14 @@ export default function AboutPage() {
                 </p>
               </div>
             </div>
-            <div className="aspect-[4/3] rounded-lg bg-muted flex items-center justify-center">
-              <p className="text-muted-foreground">Project photos coming soon</p>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+              <Image
+                src="/images/demo/flooring-vinyl.png"
+                alt="Luxury vinyl plank flooring installation in a modern living space"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
             </div>
           </div>
         </div>
@@ -192,8 +200,14 @@ export default function AboutPage() {
             {teamMembers.map((member) => (
               <Card key={member.name}>
                 <CardContent className="p-6 text-center">
-                  <div className="mx-auto size-24 rounded-full bg-muted flex items-center justify-center">
-                    <Users className="size-10 text-muted-foreground" />
+                  <div className="relative mx-auto size-24 overflow-hidden rounded-full">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      className="object-cover"
+                      sizes="96px"
+                    />
                   </div>
                   <p className="mt-4 font-semibold text-foreground">
                     {member.name}

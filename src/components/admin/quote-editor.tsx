@@ -651,6 +651,7 @@ export function QuoteEditor({
                     markChanged();
                   }}
                   className="w-[70px] h-8"
+                  aria-label="Contingency percentage"
                 />
                 <span className="text-muted-foreground">%</span>
               </div>

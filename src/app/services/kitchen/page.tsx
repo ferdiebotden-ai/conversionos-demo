@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -7,7 +8,7 @@ import { Check, ChefHat } from "lucide-react"
 export const metadata: Metadata = {
   title: "Kitchen Renovation",
   description:
-    "Transform your kitchen with AI Reno Demo. Custom cabinets, countertops, appliance installation, and complete kitchen remodels in Greater Ontario Area.",
+    "Transform your kitchen with ConversionOS Demo. Custom cabinets, countertops, appliance installation, and complete kitchen remodels in Greater Ontario Area.",
 }
 
 const features = [
@@ -82,11 +83,37 @@ export default function KitchenPage() {
         </div>
       </section>
 
-      {/* Image Placeholder */}
+      {/* Gallery */}
       <section className="px-4 py-8">
         <div className="container mx-auto">
-          <div className="aspect-[21/9] rounded-lg bg-muted flex items-center justify-center">
-            <p className="text-muted-foreground">Kitchen project gallery coming soon</p>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg sm:col-span-2 sm:row-span-2 sm:aspect-auto">
+              <Image
+                src="/images/demo/kitchen-modern.png"
+                alt="Modern renovated kitchen with flat-panel white cabinets and waterfall island"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 66vw"
+              />
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+              <Image
+                src="/images/demo/kitchen-farmhouse.png"
+                alt="Charming farmhouse kitchen with two-tone cabinetry and Edison bulb pendants"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 33vw"
+              />
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+              <Image
+                src="/images/demo/kitchen-detail.png"
+                alt="Close-up of veined quartz countertop with brushed gold faucet"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 33vw"
+              />
+            </div>
           </div>
         </div>
       </section>

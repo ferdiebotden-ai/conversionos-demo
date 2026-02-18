@@ -17,7 +17,7 @@ import {
 /**
  * System prompt for email generation
  */
-const EMAIL_GENERATION_SYSTEM_PROMPT = `You are a professional email writer for AI Reno Demo, a home renovation company in Greater Ontario Area, Canada.
+const EMAIL_GENERATION_SYSTEM_PROMPT = `You are a professional email writer for ConversionOS Demo, a home renovation company in Greater Ontario Area, Canada.
 
 Your task is to generate personalized, professional emails to accompany renovation quotes.
 
@@ -29,7 +29,7 @@ Your task is to generate personalized, professional emails to accompany renovati
 - Focus on quality work and customer satisfaction
 
 ## Email Guidelines
-1. Subject lines should be clear and professional (e.g., "Your Kitchen Renovation Quote - AI Reno Demo")
+1. Subject lines should be clear and professional (e.g., "Your Kitchen Renovation Quote - ConversionOS Demo")
 2. Greeting should use the customer's first name
 3. Body should:
    - Thank them for their interest
@@ -41,7 +41,7 @@ Your task is to generate personalized, professional emails to accompany renovati
 5. Closing should be warm but professional
 
 ## Tone Examples
-GOOD: "Thank you for considering AI Reno Demo for your basement renovation."
+GOOD: "Thank you for considering ConversionOS Demo for your basement renovation."
 BAD: "Thanks for reaching out!" (too casual)
 
 GOOD: "Please don't hesitate to reach out if you have any questions."
@@ -143,7 +143,7 @@ export function formatAIEmail(
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="border-bottom: 3px solid #D32F2F; padding-bottom: 20px; margin-bottom: 20px;">
-    <h1 style="color: #D32F2F; margin: 0; font-size: 24px;">AI Reno Demo</h1>
+    <h1 style="color: #D32F2F; margin: 0; font-size: 24px;">ConversionOS Demo</h1>
     <p style="color: #666; margin: 4px 0 0 0; font-size: 14px;">Quality Renovations in Greater Ontario Area</p>
   </div>
 
@@ -162,10 +162,10 @@ export function formatAIEmail(
   <p style="color: #333;">${aiEmail.closing}</p>
 
   <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e5e5e5; font-size: 12px; color: #666;">
-    <p style="margin: 0;"><strong style="color: #D32F2F;">AI Reno Demo</strong></p>
+    <p style="margin: 0;"><strong style="color: #D32F2F;">ConversionOS Demo</strong></p>
     <p style="margin: 4px 0;">123 Innovation Drive, Greater Ontario Area N0N 0N0</p>
     <p style="margin: 4px 0;">Tel: (555) 123-4567</p>
-    <p style="margin: 4px 0;"><a href="https://www.airenodemo.com" style="color: #D32F2F;">www.airenodemo.com</a></p>
+    <p style="margin: 4px 0;"><a href="https://www.conversionosdemo.com" style="color: #D32F2F;">www.conversionosdemo.com</a></p>
   </div>
 </body>
 </html>
@@ -189,10 +189,10 @@ ${aiEmail.callToAction}
 ${aiEmail.closing}
 
 --
-AI Reno Demo
+ConversionOS Demo
 123 Innovation Drive, Greater Ontario Area N0N 0N0
 Tel: (555) 123-4567
-www.airenodemo.com
+www.conversionosdemo.com
   `.trim();
 
   return {
@@ -213,7 +213,7 @@ export function generateDefaultEmail(
 ): FormattedEmail {
   const firstName = customerName.split(' ')[0];
 
-  const subject = `Your ${projectType.charAt(0).toUpperCase() + projectType.slice(1)} Renovation Quote - AI Reno Demo`;
+  const subject = `Your ${projectType.charAt(0).toUpperCase() + projectType.slice(1)} Renovation Quote - ConversionOS Demo`;
 
   const htmlBody = `
 <!DOCTYPE html>
@@ -224,13 +224,13 @@ export function generateDefaultEmail(
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="border-bottom: 3px solid #D32F2F; padding-bottom: 20px; margin-bottom: 20px;">
-    <h1 style="color: #D32F2F; margin: 0; font-size: 24px;">AI Reno Demo</h1>
+    <h1 style="color: #D32F2F; margin: 0; font-size: 24px;">ConversionOS Demo</h1>
     <p style="color: #666; margin: 4px 0 0 0; font-size: 14px;">Quality Renovations in Greater Ontario Area</p>
   </div>
 
   <p style="font-size: 16px; color: #333; margin-bottom: 16px;">Hi ${firstName},</p>
 
-  <p style="margin-bottom: 16px; color: #333;">Thank you for considering AI Reno Demo for your ${projectType} renovation project. Please find your detailed quote attached to this email.</p>
+  <p style="margin-bottom: 16px; color: #333;">Thank you for considering ConversionOS Demo for your ${projectType} renovation project. Please find your detailed quote attached to this email.</p>
 
   <p style="margin-bottom: 16px; color: #333;">We've carefully reviewed your requirements and prepared an estimate that reflects our commitment to quality workmanship and fair pricing.</p>
 
@@ -243,13 +243,13 @@ export function generateDefaultEmail(
   <p style="margin-bottom: 16px; color: #333;">If you have any questions about the quote or would like to discuss your project further, please don't hesitate to reach out. We're happy to schedule a call or site visit at your convenience.</p>
 
   <p style="color: #333;">We look forward to working with you.</p>
-  <p style="color: #333; margin-top: 16px;">Best regards,<br>The AI Reno Demo Team</p>
+  <p style="color: #333; margin-top: 16px;">Best regards,<br>The ConversionOS Demo Team</p>
 
   <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e5e5e5; font-size: 12px; color: #666;">
-    <p style="margin: 0;"><strong style="color: #D32F2F;">AI Reno Demo</strong></p>
+    <p style="margin: 0;"><strong style="color: #D32F2F;">ConversionOS Demo</strong></p>
     <p style="margin: 4px 0;">123 Innovation Drive, Greater Ontario Area N0N 0N0</p>
     <p style="margin: 4px 0;">Tel: (555) 123-4567</p>
-    <p style="margin: 4px 0;"><a href="https://www.airenodemo.com" style="color: #D32F2F;">www.airenodemo.com</a></p>
+    <p style="margin: 4px 0;"><a href="https://www.conversionosdemo.com" style="color: #D32F2F;">www.conversionosdemo.com</a></p>
   </div>
 </body>
 </html>
@@ -258,7 +258,7 @@ export function generateDefaultEmail(
   const textBody = `
 Hi ${firstName},
 
-Thank you for considering AI Reno Demo for your ${projectType} renovation project. Please find your detailed quote attached to this email.
+Thank you for considering ConversionOS Demo for your ${projectType} renovation project. Please find your detailed quote attached to this email.
 
 We've carefully reviewed your requirements and prepared an estimate that reflects our commitment to quality workmanship and fair pricing.
 
@@ -273,13 +273,13 @@ If you have any questions about the quote or would like to discuss your project 
 We look forward to working with you.
 
 Best regards,
-The AI Reno Demo Team
+The ConversionOS Demo Team
 
 --
-AI Reno Demo
+ConversionOS Demo
 123 Innovation Drive, Greater Ontario Area N0N 0N0
 Tel: (555) 123-4567
-www.airenodemo.com
+www.conversionosdemo.com
   `.trim();
 
   return {

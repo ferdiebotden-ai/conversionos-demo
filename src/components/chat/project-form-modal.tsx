@@ -147,7 +147,7 @@ export function ProjectFormModal({
               </div>
               <DialogTitle>Request Submitted!</DialogTitle>
               <DialogDescription className="text-center">
-                Thanks{formData.name ? `, ${formData.name.split(' ')[0]}` : ''}! AI Reno Demo will
+                Thanks{formData.name ? `, ${formData.name.split(' ')[0]}` : ''}! ConversionOS Demo will
                 review your project and contact you within 24 hours.
               </DialogDescription>
             </DialogHeader>

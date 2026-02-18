@@ -48,4 +48,4 @@ Extend your living space outdoors. Scopes include:
 - Fencing and privacy screens
 `;
 
-export const SERVICES_SUMMARY = `AI Reno Demo specializes in four core areas: kitchen renovations (cabinets, counters, flooring, full remodels), bathroom renovations (fixtures, tile, tub-to-shower, full renos), basement finishing (basic finish to legal rental suites), and outdoor living (decks, patios, pergolas).`;
+export const SERVICES_SUMMARY = `ConversionOS Demo specializes in four core areas: kitchen renovations (cabinets, counters, flooring, full remodels), bathroom renovations (fixtures, tile, tub-to-shower, full renos), basement finishing (basic finish to legal rental suites), and outdoor living (decks, patios, pergolas).`;

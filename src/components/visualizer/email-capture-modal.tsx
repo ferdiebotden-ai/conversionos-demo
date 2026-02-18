@@ -125,7 +125,7 @@ export function EmailCaptureModal({
               disabled={isLoading}
             />
             <Label htmlFor="marketing-optin" className="text-sm text-muted-foreground font-normal">
-              Send me design inspiration and renovation tips from AI Reno Demo
+              Send me design inspiration and renovation tips from ConversionOS Demo
               (you can unsubscribe anytime)
             </Label>
           </div>

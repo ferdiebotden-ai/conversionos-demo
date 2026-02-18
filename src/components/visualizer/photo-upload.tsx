@@ -152,6 +152,7 @@ export function PhotoUpload({ value, onChange, className }: PhotoUploadProps) {
             onChange={handleFileSelect}
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             disabled={isProcessing}
+            aria-label="Upload room photo"
           />
 
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">

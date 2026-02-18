@@ -168,7 +168,7 @@ export async function checkHeadingHierarchy(page: Page): Promise<{
   const headings = await page.evaluate(() => {
     const hs = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
     return Array.from(hs).map(h => ({
-      level: parseInt(h.tagName[1]),
+      level: parseInt(h.tagName[1]!),
       text: h.textContent?.trim().slice(0, 50) || '',
     }));
   });
@@ -177,7 +177,7 @@ export async function checkHeadingHierarchy(page: Page): Promise<{
   let hasSkippedLevel = false;
 
   for (let i = 1; i < headings.length; i++) {
-    if (headings[i].level > headings[i - 1].level + 1) {
+    if (headings[i]!.level > headings[i - 1]!.level + 1) {
       hasSkippedLevel = true;
       break;
     }

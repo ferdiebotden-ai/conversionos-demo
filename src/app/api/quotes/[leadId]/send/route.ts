@@ -25,8 +25,8 @@ const SendQuoteSchema = z.object({
 });
 
 // Email configuration
-const FROM_EMAIL = process.env['FROM_EMAIL'] || 'AI Reno Demo <noreply@airenodemo.com>';
-const REPLY_TO_EMAIL = process.env['REPLY_TO_EMAIL'] || 'quotes@airenodemo.com';
+const FROM_EMAIL = process.env['FROM_EMAIL'] || 'ConversionOS Demo <noreply@conversionosdemo.com>';
+const REPLY_TO_EMAIL = process.env['REPLY_TO_EMAIL'] || 'quotes@conversionosdemo.com';
 
 /**
  * POST /api/quotes/[leadId]/send
@@ -144,7 +144,7 @@ export async function POST(
     const projectType = projectTypeLabels[lead.project_type || 'other'] || 'Renovation';
 
     // Determine email subject
-    const finalSubject = emailSubject || `Your ${projectType} Quote from AI Reno Demo - ${quoteNumber}`;
+    const finalSubject = emailSubject || `Your ${projectType} Quote from ConversionOS Demo - ${quoteNumber}`;
 
     // Send email with Resend
     const resend = getResend();
@@ -167,17 +167,17 @@ export async function POST(
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="border-bottom: 3px solid #D32F2F; padding-bottom: 20px; margin-bottom: 20px;">
-    <h1 style="color: #D32F2F; margin: 0; font-size: 24px;">AI Reno Demo</h1>
+    <h1 style="color: #D32F2F; margin: 0; font-size: 24px;">ConversionOS Demo</h1>
     <p style="color: #666; margin: 4px 0 0 0; font-size: 14px;">Quality Renovations in Greater Ontario Area</p>
   </div>
 
   ${emailBody.split('\n').map(line => line.trim() ? `<p style="margin-bottom: 16px; color: #333;">${line}</p>` : '<br/>').join('\n')}
 
   <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e5e5e5; font-size: 12px; color: #666;">
-    <p style="margin: 0;"><strong style="color: #D32F2F;">AI Reno Demo</strong></p>
+    <p style="margin: 0;"><strong style="color: #D32F2F;">ConversionOS Demo</strong></p>
     <p style="margin: 4px 0;">123 Innovation Drive, Greater Ontario Area N0N 0N0</p>
     <p style="margin: 4px 0;">Tel: (555) 123-4567</p>
-    <p style="margin: 4px 0;"><a href="https://www.airenodemo.com" style="color: #D32F2F;">www.airenodemo.com</a></p>
+    <p style="margin: 4px 0;"><a href="https://www.conversionosdemo.com" style="color: #D32F2F;">www.conversionosdemo.com</a></p>
   </div>
 </body>
 </html>

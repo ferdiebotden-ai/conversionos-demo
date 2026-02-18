@@ -233,8 +233,9 @@ SUITE_STATUS=blocked"
   start_time=$(date +%s)
   exit_code=0
 
-  timeout "$SESSION_TIMEOUT" claude -p "$full_prompt" \
+  CLAUDECODE= timeout --foreground "$SESSION_TIMEOUT" claude -p "$full_prompt" \
     --allowedTools "Bash,Read,Write,Edit,Glob,Grep" \
+    --dangerously-skip-permissions \
     > "$log_file" 2>&1 || exit_code=$?
 
   end_time=$(date +%s)
@@ -245,9 +246,32 @@ SUITE_STATUS=blocked"
     echo "[OK] $unit complete (${duration}s)"
 
     # Extract test counts (macOS-compatible: use grep -oE instead of -oP)
-    tests=$(grep -oE '[0-9]+ passed' "$log_file" 2>/dev/null | head -1 | grep -oE '[0-9]+' || echo "0")
-    failed_count=$(grep -oE '[0-9]+ failed' "$log_file" 2>/dev/null | head -1 | grep -oE '[0-9]+' || echo "0")
-    skipped_count=$(grep -oE '[0-9]+ skipped' "$log_file" 2>/dev/null | head -1 | grep -oE '[0-9]+' || echo "0")
+    # Try standard Playwright format first ("N passed"), then Vitest formats
+    tests=$(grep -oE '[0-9]+ passed' "$log_file" 2>/dev/null | tail -1 | grep -oE '[0-9]+' || echo "0")
+    if [ "$tests" = "0" ]; then
+      # Try Vitest format: "Tests  X passed"
+      tests=$(grep -oE 'Tests\s+[0-9]+ passed' "$log_file" 2>/dev/null | grep -oE '[0-9]+' | head -1 || echo "0")
+    fi
+    if [ "$tests" = "0" ]; then
+      # Try "X tests passed" format
+      tests=$(grep -oE '[0-9]+ tests? passed' "$log_file" 2>/dev/null | grep -oE '[0-9]+' | head -1 || echo "0")
+    fi
+
+    failed_count=$(grep -oE '[0-9]+ failed' "$log_file" 2>/dev/null | tail -1 | grep -oE '[0-9]+' || echo "0")
+    if [ "$failed_count" = "0" ]; then
+      failed_count=$(grep -oE 'Tests\s+[0-9]+ failed' "$log_file" 2>/dev/null | grep -oE '[0-9]+' | head -1 || echo "0")
+    fi
+    if [ "$failed_count" = "0" ]; then
+      failed_count=$(grep -oE '[0-9]+ tests? failed' "$log_file" 2>/dev/null | grep -oE '[0-9]+' | head -1 || echo "0")
+    fi
+
+    skipped_count=$(grep -oE '[0-9]+ skipped' "$log_file" 2>/dev/null | tail -1 | grep -oE '[0-9]+' || echo "0")
+    if [ "$skipped_count" = "0" ]; then
+      skipped_count=$(grep -oE 'Tests\s+[0-9]+ skipped' "$log_file" 2>/dev/null | grep -oE '[0-9]+' | head -1 || echo "0")
+    fi
+    if [ "$skipped_count" = "0" ]; then
+      skipped_count=$(grep -oE '[0-9]+ tests? skipped' "$log_file" 2>/dev/null | grep -oE '[0-9]+' | head -1 || echo "0")
+    fi
 
     unit_set_results "$unit" "$((tests + failed_count + skipped_count))" "$tests" "$failed_count" "$skipped_count" "${duration}s"
     pipeline_increment_completed

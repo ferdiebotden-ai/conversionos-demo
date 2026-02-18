@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -7,7 +8,7 @@ import { Check, Bath } from "lucide-react"
 export const metadata: Metadata = {
   title: "Bathroom Renovation",
   description:
-    "Create your dream bathroom with AI Reno Demo. Showers, tubs, vanities, and complete bathroom remodels in Greater Ontario Area.",
+    "Create your dream bathroom with ConversionOS Demo. Showers, tubs, vanities, and complete bathroom remodels in Greater Ontario Area.",
 }
 
 const features = [
@@ -84,11 +85,37 @@ export default function BathroomPage() {
         </div>
       </section>
 
-      {/* Image Placeholder */}
+      {/* Gallery */}
       <section className="px-4 py-8">
         <div className="container mx-auto">
-          <div className="aspect-[21/9] rounded-lg bg-muted flex items-center justify-center">
-            <p className="text-muted-foreground">Bathroom project gallery coming soon</p>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg sm:col-span-2 sm:row-span-2 sm:aspect-auto">
+              <Image
+                src="/images/demo/bathroom-spa.png"
+                alt="Luxurious spa-inspired master bathroom with frameless glass shower and freestanding tub"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 66vw"
+              />
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+              <Image
+                src="/images/demo/bathroom-accessible.png"
+                alt="Modern accessible barrier-free bathroom with curbless shower"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 33vw"
+              />
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+              <Image
+                src="/images/demo/bathroom-tub.png"
+                alt="Elegant bathroom with matte white freestanding oval tub"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 33vw"
+              />
+            </div>
           </div>
         </div>
       </section>

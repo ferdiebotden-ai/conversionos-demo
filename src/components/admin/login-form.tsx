@@ -106,7 +106,7 @@ export function LoginForm() {
         <Input
           id="email"
           type="email"
-          placeholder="admin@airenodemo.com"
+          placeholder="admin@conversionosdemo.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={isLoading}
@@ -164,7 +164,7 @@ export function LoginForm() {
 
       {/* Help text */}
       <p className="text-xs text-center text-muted-foreground">
-        Contact AI Reno Demo support if you need access.
+        Contact ConversionOS Demo support if you need access.
       </p>
     </form>
   );

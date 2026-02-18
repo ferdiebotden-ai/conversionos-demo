@@ -21,7 +21,7 @@ export default async function AdminLoginPage() {
           <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mb-4">
             <Sparkles className="w-7 h-7 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold">AI Reno Demo</h1>
+          <h1 className="text-2xl font-bold">ConversionOS Demo</h1>
           <p className="text-muted-foreground">Admin Dashboard</p>
         </div>
 

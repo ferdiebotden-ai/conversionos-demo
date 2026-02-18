@@ -4,10 +4,10 @@
  */
 
 export const COMPANY_PROFILE = `## Company Profile
-- Name: AI Reno Demo
+- Name: ConversionOS Demo
 - Location: Greater Ontario Area, Canada
 - Phone: (555) 123-4567
-- Email: info@airenodemo.com
+- Email: info@conversionosdemo.com
 - Principals: Alex Thompson and Jordan Mitchell
 - Tagline: Building trust with quality work
 
@@ -20,7 +20,7 @@ Saturday: 9:00 AM – 2:00 PM (consultations by appointment)
 Sunday: Closed
 
 ## Social Media
-- Website: airenodemo.com
+- Website: conversionosdemo.com
 
 ## Website Pages
 - /services — Overview of all renovation services
@@ -41,4 +41,4 @@ Sunday: Closed
 - Local expertise with Ontario-specific knowledge
 `;
 
-export const COMPANY_SUMMARY = `AI Reno Demo is a professional renovation company in Greater Ontario Area run by Alex Thompson and Jordan Mitchell. Phone: (555) 123-4567. Email: info@airenodemo.com. We specialize in kitchens, bathrooms, basements, and outdoor spaces.`;
+export const COMPANY_SUMMARY = `ConversionOS Demo is a professional renovation company in Greater Ontario Area run by Alex Thompson and Jordan Mitchell. Phone: (555) 123-4567. Email: info@conversionosdemo.com. We specialize in kitchens, bathrooms, basements, and outdoor spaces.`;

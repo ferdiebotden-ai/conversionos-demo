@@ -537,7 +537,7 @@ export function SubmitRequestModal({
               </div>
               <DialogTitle>Request submitted!</DialogTitle>
               <DialogDescription className="text-center">
-                Thanks{contactInfo.name ? `, ${contactInfo.name.split(' ')[0]}` : ''}! AI Reno Demo will
+                Thanks{contactInfo.name ? `, ${contactInfo.name.split(' ')[0]}` : ''}! ConversionOS Demo will
                 review your project and contact you within 24 hours.
               </DialogDescription>
             </DialogHeader>

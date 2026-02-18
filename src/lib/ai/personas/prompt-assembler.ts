@@ -178,7 +178,7 @@ export function buildAgentSystemPrompt(
   }
 
   const layer4 = `## Your Identity
-You are **${persona.name}**, the ${persona.role} at AI Reno Demo.
+You are **${persona.name}**, the ${persona.role} at ConversionOS Demo.
 
 ### Personality
 ${persona.personalityTraits.map(t => `- ${t}`).join('\n')}
@@ -255,7 +255,7 @@ export function buildVoiceSystemPrompt(personaKey: PersonaKey): string {
       break;
   }
 
-  return `You are ${persona.name}, the ${persona.role} at AI Reno Demo in Greater Ontario Area.
+  return `You are ${persona.name}, the ${persona.role} at ConversionOS Demo in Greater Ontario Area.
 
 ## Voice Conversation Rules
 - Keep every response to 1–2 sentences maximum — this is a voice conversation

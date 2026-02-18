@@ -186,7 +186,7 @@ function WidgetPanelHeader({ onClose }: { onClose: () => void }) {
         <div>
           <p className="text-sm font-semibold">Emma</p>
           <p className="text-xs opacity-80">
-            {isVoiceActive ? 'Listening...' : 'AI Reno Demo'}
+            {isVoiceActive ? 'Listening...' : 'ConversionOS Demo'}
           </p>
         </div>
       </div>

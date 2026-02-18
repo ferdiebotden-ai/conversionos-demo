@@ -206,6 +206,7 @@ export function StyleSelector({
             className="max-w-md"
             maxLength={100}
             autoFocus
+            aria-label="Custom design style"
           />
           <p className="text-xs text-muted-foreground mt-1">
             Describe the design aesthetic you envision

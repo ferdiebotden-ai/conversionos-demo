@@ -315,6 +315,7 @@ export function LeadsTable({ initialLeads, initialPagination }: LeadsTableProps)
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="pl-9 pr-9"
+            aria-label="Search leads"
           />
           {searchInput && (
             <button
@@ -323,6 +324,7 @@ export function LeadsTable({ initialLeads, initialPagination }: LeadsTableProps)
                 updateParams({ search: null });
               }}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label="Clear search"
             >
               <X className="h-4 w-4" />
             </button>

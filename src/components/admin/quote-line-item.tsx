@@ -129,6 +129,7 @@ export function QuoteLineItem({
               onChange={(e) => handleFieldChange('description', e.target.value)}
               placeholder="Item description"
               className="min-w-[200px]"
+              aria-label="Item description"
             />
             {/* Status badges */}
             {item.isFromAI && !item.isModified && (
@@ -185,13 +186,14 @@ export function QuoteLineItem({
               onChange={(e) => handleFieldChange('customCategory', e.target.value)}
               placeholder="Category..."
               className="w-[100px]"
+              aria-label="Custom category"
             />
             <Button
               variant="ghost"
               size="icon"
               className="h-8 w-8 shrink-0"
               onClick={() => handleFieldChange('category', 'materials')}
-              title="Switch to dropdown"
+              aria-label="Switch to category dropdown"
             >
               ×
             </Button>
@@ -228,6 +230,7 @@ export function QuoteLineItem({
             handleFieldChange('quantity', parseFloat(e.target.value) || 0)
           }
           className="w-[80px]"
+          aria-label="Quantity"
         />
       </td>
 
@@ -238,6 +241,7 @@ export function QuoteLineItem({
           onChange={(e) => handleFieldChange('unit', e.target.value)}
           placeholder="ea"
           className="w-[80px]"
+          aria-label="Unit"
         />
       </td>
 
@@ -252,6 +256,7 @@ export function QuoteLineItem({
             handleFieldChange('unit_price', parseFloat(e.target.value) || 0)
           }
           className="w-[120px]"
+          aria-label="Unit price"
         />
       </td>
 
@@ -270,6 +275,7 @@ export function QuoteLineItem({
                     size="icon"
                     className="h-8 w-8 text-muted-foreground hover:text-foreground"
                     onClick={onDuplicate}
+                    aria-label="Duplicate item"
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
@@ -286,6 +292,7 @@ export function QuoteLineItem({
                   size="icon"
                   className="h-8 w-8 text-destructive hover:text-destructive"
                   onClick={onDelete}
+                  aria-label="Remove item"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

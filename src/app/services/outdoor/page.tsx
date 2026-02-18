@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -7,7 +8,7 @@ import { Check, TreeDeciduous } from "lucide-react"
 export const metadata: Metadata = {
   title: "Outdoor Renovation",
   description:
-    "Transform your outdoor living space with AI Reno Demo. Decks, fences, porches, driveways, and exterior painting in Greater Ontario Area.",
+    "Transform your outdoor living space with ConversionOS Demo. Decks, fences, porches, driveways, and exterior painting in Greater Ontario Area.",
 }
 
 const features = [
@@ -80,11 +81,28 @@ export default function OutdoorPage() {
         </div>
       </section>
 
-      {/* Image Placeholder */}
+      {/* Gallery */}
       <section className="px-4 py-8">
         <div className="container mx-auto">
-          <div className="aspect-[21/9] rounded-lg bg-muted flex items-center justify-center">
-            <p className="text-muted-foreground">Outdoor project gallery coming soon</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+              <Image
+                src="/images/demo/outdoor-deck.png"
+                alt="Beautiful backyard composite deck with outdoor kitchen and pergola"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 50vw"
+              />
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+              <Image
+                src="/images/demo/outdoor-patio.png"
+                alt="Professionally landscaped backyard stone patio with fire pit"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 50vw"
+              />
+            </div>
           </div>
         </div>
       </section>

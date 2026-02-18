@@ -74,20 +74,20 @@ const DEFAULT_SETTINGS: Settings = {
   deposit_rate: { percent: 50 },
   quote_validity: { days: 30 },
   notifications: {
-    email: 'admin@airenodemo.com',
+    email: 'admin@conversionosdemo.com',
     onNewLead: true,
     onQuoteSent: true,
     onQuoteOpened: true,
   },
   business_info: {
-    name: 'AI Reno Demo',
+    name: 'ConversionOS Demo',
     address: '123 Innovation Drive',
     city: 'Ontario',
     province: 'ON',
     postal: 'N0N 0N0',
     phone: '(555) 123-4567',
-    email: 'info@airenodemo.com',
-    website: 'www.airenodemo.com',
+    email: 'info@conversionosdemo.com',
+    website: 'www.conversionosdemo.com',
   },
 };
 
@@ -120,6 +120,7 @@ function PricingCard({
                 value={pricing[level].min}
                 onChange={(e) => onChange(settingKey, level, 'min', parseFloat(e.target.value) || 0)}
                 className="w-20 h-8"
+                aria-label={`${title} ${level} minimum price`}
               />
               <span className="text-sm text-muted-foreground">to $</span>
               <Input
@@ -129,6 +130,7 @@ function PricingCard({
                 value={pricing[level].max}
                 onChange={(e) => onChange(settingKey, level, 'max', parseFloat(e.target.value) || 0)}
                 className="w-20 h-8"
+                aria-label={`${title} ${level} maximum price`}
               />
               <span className="text-sm text-muted-foreground">/sqft</span>
             </div>
@@ -266,7 +268,7 @@ export default function SettingsPage() {
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Settings</h2>
+          <h2 className="text-2xl font-bold" id="settings-heading">Settings</h2>
           <p className="text-muted-foreground">
             Configure pricing, business settings, and quote defaults.
           </p>
@@ -485,6 +487,7 @@ export default function SettingsPage() {
                   <Switch
                     checked={settings.notifications?.onNewLead ?? true}
                     onCheckedChange={(checked) => handleValueChange('notifications', 'onNewLead', checked)}
+                    aria-label="New lead notifications"
                   />
                 </div>
 
@@ -498,6 +501,7 @@ export default function SettingsPage() {
                   <Switch
                     checked={settings.notifications?.onQuoteSent ?? true}
                     onCheckedChange={(checked) => handleValueChange('notifications', 'onQuoteSent', checked)}
+                    aria-label="Quote sent notifications"
                   />
                 </div>
 
@@ -511,6 +515,7 @@ export default function SettingsPage() {
                   <Switch
                     checked={settings.notifications?.onQuoteOpened ?? true}
                     onCheckedChange={(checked) => handleValueChange('notifications', 'onQuoteOpened', checked)}
+                    aria-label="Quote opened notifications"
                   />
                 </div>
               </div>

@@ -6,6 +6,8 @@ import type { InvoiceUpdate, Json } from '@/types/database';
 
 type RouteContext = { params: Promise<{ id: string }> };
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 /**
  * GET /api/invoices/[id]
  * Get invoice detail with payments
@@ -16,6 +18,11 @@ export async function GET(
 ) {
   try {
     const { id } = await context.params;
+
+    if (!UUID_REGEX.test(id)) {
+      return NextResponse.json({ error: 'Invalid invoice ID format' }, { status: 400 });
+    }
+
     const supabase = createServiceClient();
 
     const { data: invoice, error } = await supabase
@@ -61,6 +68,11 @@ export async function PUT(
 ) {
   try {
     const { id } = await context.params;
+
+    if (!UUID_REGEX.test(id)) {
+      return NextResponse.json({ error: 'Invalid invoice ID format' }, { status: 400 });
+    }
+
     const body = await request.json();
     const validation = InvoiceUpdateSchema.safeParse(body);
 
@@ -121,6 +133,11 @@ export async function DELETE(
 ) {
   try {
     const { id } = await context.params;
+
+    if (!UUID_REGEX.test(id)) {
+      return NextResponse.json({ error: 'Invalid invoice ID format' }, { status: 400 });
+    }
+
     const supabase = createServiceClient();
 
     const { data: invoice, error } = await supabase

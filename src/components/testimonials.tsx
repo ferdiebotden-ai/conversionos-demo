@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { StaggerContainer, StaggerItem } from "@/components/motion"
 import { Star } from "lucide-react"
@@ -12,6 +13,7 @@ const testimonials = [
     author: "Sarah M.",
     projectType: "Bathroom Renovation",
     rating: 5,
+    image: "/images/demo/bathroom-spa.png",
   },
   {
     id: 2,
@@ -20,6 +22,7 @@ const testimonials = [
     author: "David L.",
     projectType: "Basement Finishing",
     rating: 5,
+    image: "/images/demo/basement-entertainment.png",
   },
   {
     id: 3,
@@ -28,6 +31,7 @@ const testimonials = [
     author: "Emily R.",
     projectType: "Kitchen Renovation",
     rating: 5,
+    image: "/images/demo/kitchen-modern.png",
   },
   {
     id: 4,
@@ -36,6 +40,7 @@ const testimonials = [
     author: "James K.",
     projectType: "Home Renovation",
     rating: 5,
+    image: "/images/demo/testimonial-home.png",
   },
 ]
 
@@ -57,20 +62,28 @@ function TestimonialCard({
   testimonial: (typeof testimonials)[number]
 }) {
   return (
-    <Card className="h-full">
-      <CardContent className="flex h-full flex-col p-6">
-        {/* Star Rating */}
-        <div className="flex gap-1">
+    <Card className="h-full overflow-hidden">
+      <div className="relative h-32">
+        <Image
+          src={testimonial.image}
+          alt={testimonial.projectType}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/50" />
+        <div className="absolute bottom-3 left-4 flex gap-1">
           {Array.from({ length: testimonial.rating }).map((_, i) => (
             <Star
               key={i}
-              className="size-4 fill-yellow-400 text-yellow-400"
+              className="size-4 fill-yellow-400 text-yellow-400 drop-shadow"
             />
           ))}
         </div>
-
+      </div>
+      <CardContent className="flex h-full flex-col p-6">
         {/* Quote */}
-        <blockquote className="mt-4 flex-1 text-muted-foreground">
+        <blockquote className="flex-1 text-muted-foreground">
           &ldquo;{testimonial.quote}&rdquo;
         </blockquote>
 

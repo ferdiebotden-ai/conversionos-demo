@@ -492,6 +492,7 @@ function VisualizerChatInner({
             placeholder="Tell Mia about your dream space..."
             disabled={isLoading || isAnalyzing}
             className="flex-1"
+            aria-label="Message to Mia"
           />
           <TalkButton
             persona="design-consultant"
@@ -502,6 +503,7 @@ function VisualizerChatInner({
             onClick={handleSend}
             disabled={!inputValue.trim() || isLoading || isAnalyzing}
             size="icon"
+            aria-label="Send message"
           >
             <Send className="w-4 h-4" />
           </Button>

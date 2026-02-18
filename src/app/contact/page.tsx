@@ -7,7 +7,7 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react"
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Get in touch with AI Reno Demo. Request a free quote or ask questions about your renovation project in Greater Ontario Area.",
+    "Get in touch with ConversionOS Demo. Request a free quote or ask questions about your renovation project in Greater Ontario Area.",
 }
 
 const businessHours = [
@@ -83,7 +83,7 @@ export default function ContactPage() {
                           <br />
                           <a href="tel:5551234567" className="hover:text-primary">(555) 123-4567</a>
                           <br />
-                          <a href="mailto:info@airenodemo.com" className="hover:text-primary">info@airenodemo.com</a>
+                          <a href="mailto:info@conversionosdemo.com" className="hover:text-primary">info@conversionosdemo.com</a>
                         </span>
                       </div>
                     </li>
@@ -96,7 +96,7 @@ export default function ContactPage() {
                           <br />
                           <a href="tel:5551234568" className="hover:text-primary">(555) 123-4568</a>
                           <br />
-                          <a href="mailto:info@airenodemo.com" className="hover:text-primary">info@airenodemo.com</a>
+                          <a href="mailto:info@conversionosdemo.com" className="hover:text-primary">info@conversionosdemo.com</a>
                         </span>
                       </div>
                     </li>

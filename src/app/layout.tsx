@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "AI Reno Demo | Ontario Renovation Contractor",
-    template: "%s | AI Reno Demo",
+    default: "ConversionOS Demo | Ontario Renovation Contractor",
+    template: "%s | ConversionOS Demo",
   },
   description:
     "Professional renovation services in Greater Ontario Area. Kitchen, bathroom, and whole-home renovations with AI-powered project visualization.",
@@ -30,11 +30,11 @@ export const metadata: Metadata = {
     "bathroom renovation",
     "home improvement",
   ],
-  authors: [{ name: "AI Reno Demo" }],
+  authors: [{ name: "ConversionOS Demo" }],
   openGraph: {
     type: "website",
     locale: "en_CA",
-    siteName: "AI Reno Demo",
+    siteName: "ConversionOS Demo",
   },
 };
 

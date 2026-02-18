@@ -151,12 +151,14 @@ reset_state() {
     .pipeline.completedUnits = 0 |
     .pipeline.failedUnits = 0 |
     .pipeline.skippedUnits = 0 |
-    (.units | keys[]) as $k | .units[$k].status = "pending" |
-    (.units | keys[]) as $k | .units[$k].tests = 0 |
-    (.units | keys[]) as $k | .units[$k].passed = 0 |
-    (.units | keys[]) as $k | .units[$k].failed = 0 |
-    (.units | keys[]) as $k | .units[$k].skipped = 0 |
-    (.units | keys[]) as $k | .units[$k].duration = null |
-    (.units | keys[]) as $k | .units[$k].session = null
+    .units |= with_entries(
+      .value.status = "pending" |
+      .value.tests = 0 |
+      .value.passed = 0 |
+      .value.failed = 0 |
+      .value.skipped = 0 |
+      .value.duration = null |
+      .value.session = null
+    )
   ' "$STATE_FILE" > "$tmp" && mv "$tmp" "$STATE_FILE"
 }

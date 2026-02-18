@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -7,7 +8,7 @@ import { Check, Sofa } from "lucide-react"
 export const metadata: Metadata = {
   title: "Basement Finishing",
   description:
-    "Unlock your basement's potential with AI Reno Demo. Family rooms, home offices, rental suites, and complete basement finishing in Greater Ontario Area.",
+    "Unlock your basement's potential with ConversionOS Demo. Family rooms, home offices, rental suites, and complete basement finishing in Greater Ontario Area.",
 }
 
 const features = [
@@ -84,11 +85,28 @@ export default function BasementPage() {
         </div>
       </section>
 
-      {/* Image Placeholder */}
+      {/* Gallery */}
       <section className="px-4 py-8">
         <div className="container mx-auto">
-          <div className="aspect-[21/9] rounded-lg bg-muted flex items-center justify-center">
-            <p className="text-muted-foreground">Basement project gallery coming soon</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+              <Image
+                src="/images/demo/basement-entertainment.png"
+                alt="Fully finished basement entertainment room with sectional sofa and wall-mounted TV"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 50vw"
+              />
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
+              <Image
+                src="/images/demo/basement-walkout.png"
+                alt="Modern walkout basement apartment with sliding glass patio door"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 50vw"
+              />
+            </div>
           </div>
         </div>
       </section>

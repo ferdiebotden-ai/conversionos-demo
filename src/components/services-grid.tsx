@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { StaggerContainer, StaggerItem } from "@/components/motion"
@@ -12,6 +13,7 @@ const services = [
     description:
       "The heart of your home. Plumbing, electrical, lighting, flooring, cabinets, countertops, and more.",
     icon: ChefHat,
+    image: "/images/demo/kitchen-modern.png",
   },
   {
     slug: "bathroom",
@@ -19,6 +21,7 @@ const services = [
     description:
       "Transform your functional space into something much more. Plumbing, tile, vanities, and complete renovations.",
     icon: Bath,
+    image: "/images/demo/bathroom-spa.png",
   },
   {
     slug: "basement",
@@ -26,6 +29,7 @@ const services = [
     description:
       "Transform your perspective on an entire floor of your home. Insulation, drywall, flooring, and more.",
     icon: Sofa,
+    image: "/images/demo/basement-entertainment.png",
   },
   {
     slug: "outdoor",
@@ -33,6 +37,7 @@ const services = [
     description:
       "Increase your curb appeal. Decks, fences, porches, concrete driveways and sidewalks, painting.",
     icon: TreeDeciduous,
+    image: "/images/demo/outdoor-deck.png",
   },
 ]
 
@@ -62,7 +67,16 @@ function ServiceCard({
   const Icon = service.icon
 
   const content = (
-    <Card className="group h-full border-2 border-transparent transition-all hover:border-primary/20 hover:shadow-md">
+    <Card className="group h-full overflow-hidden border-2 border-transparent transition-all hover:border-primary/20 hover:shadow-md">
+      <div className="relative aspect-[3/2] overflow-hidden">
+        <Image
+          src={service.image}
+          alt={`${service.title} renovation`}
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        />
+      </div>
       <CardContent className="flex h-full flex-col p-6">
         <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
           <Icon className="size-6" />

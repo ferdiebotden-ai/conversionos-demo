@@ -29,7 +29,7 @@ export function SessionResumeEmail({
   return (
     <Html>
       <Head />
-      <Preview>Continue your renovation quote with AI Reno Demo</Preview>
+      <Preview>Continue your renovation quote with ConversionOS Demo</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={heading}>
@@ -67,10 +67,10 @@ export function SessionResumeEmail({
           </Text>
 
           <Text style={footer}>
-            AI Reno Demo - Quality Renovations in Greater Ontario Area
+            ConversionOS Demo - Quality Renovations in Greater Ontario Area
             <br />
-            <Link href="https://airenodemo.com" style={footerLink}>
-              airenodemo.com
+            <Link href="https://conversionosdemo.com" style={footerLink}>
+              conversionosdemo.com
             </Link>
           </Text>
         </Container>

@@ -73,12 +73,12 @@ export async function POST(
       `Balance Due: $${Number(invoice.balance_due).toFixed(2)}`,
       `Due Date: ${invoice.due_date}`,
       '',
-      custom_message ? `Note from AI Reno Demo: ${custom_message}\n` : '',
-      'Payment can be made via E-Transfer to payments@airenodemo.com',
+      custom_message ? `Note from ConversionOS Demo: ${custom_message}\n` : '',
+      'Payment can be made via E-Transfer to payments@conversionosdemo.com',
       '',
-      'Thank you for choosing AI Reno Demo!',
+      'Thank you for choosing ConversionOS Demo!',
       '',
-      'AI Reno Demo Inc.',
+      'ConversionOS Demo Inc.',
       '123 Innovation Drive, Greater Ontario Area N0N 0N0',
       'Tel: (555) 123-4567',
     ].join('\n');
@@ -90,9 +90,9 @@ export async function POST(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'AI Reno Demo <invoices@airenodemo.com>',
+        from: 'ConversionOS Demo <invoices@conversionosdemo.com>',
         to: [to_email],
-        subject: `Invoice #${invoice.invoice_number} from AI Reno Demo`,
+        subject: `Invoice #${invoice.invoice_number} from ConversionOS Demo`,
         text: emailBody,
         attachments: [
           {

@@ -14,7 +14,7 @@ export interface WatermarkOptions {
 }
 
 const DEFAULT_OPTIONS: Required<WatermarkOptions> = {
-  text: 'AI Reno Demo',
+  text: 'ConversionOS Demo',
   subtext: 'AI Visualization - For Concept Purposes Only',
   position: 'bottom-right',
   opacity: 0.85,
@@ -165,5 +165,5 @@ export function generateFilename(
 ): string {
   const timestamp = new Date().toISOString().split('T')[0];
   const room = roomType.replace(/_/g, '-');
-  return `airenodemo-${room}-${style}-concept${conceptIndex + 1}-${timestamp}.jpg`;
+  return `conversionosdemo-${room}-${style}-concept${conceptIndex + 1}-${timestamp}.jpg`;
 }

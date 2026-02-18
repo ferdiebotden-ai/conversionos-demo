@@ -1,6 +1,6 @@
 /**
  * Quote PDF Template
- * Professional PDF matching AI Reno Demo's exact invoice format
+ * Professional PDF matching ConversionOS Demo's exact invoice format
  * [DEV-057, DEV-072]
  */
 
@@ -13,7 +13,7 @@ import {
 } from '@react-pdf/renderer';
 import type { Lead, QuoteDraft, QuoteLineItem } from '@/types/database';
 
-// AI Reno Demo brand colors
+// ConversionOS Demo brand colors
 const COLORS = {
   primary: '#D32F2F', // Red
   secondary: '#1a1a1a',
@@ -324,12 +324,12 @@ export function QuotePdfDocument({ lead, quote }: QuotePdfProps) {
           {/* Logo and Company Info */}
           <View style={styles.logoSection}>
             {/* Company Name */}
-            <Text style={{ fontSize: 20, fontFamily: 'Helvetica-Bold', color: COLORS.primary }}>AI Reno Demo</Text>
+            <Text style={{ fontSize: 20, fontFamily: 'Helvetica-Bold', color: COLORS.primary }}>ConversionOS Demo</Text>
             <View style={styles.companyInfo}>
               <Text style={styles.companyAddress}>123 Innovation Drive</Text>
               <Text style={styles.companyAddress}>Greater Ontario Area N0N 0N0</Text>
               <Text style={styles.companyPhone}>Tel: (555) 123-4567</Text>
-              <Text style={styles.companyWebsite}>www.airenodemo.com</Text>
+              <Text style={styles.companyWebsite}>www.conversionosdemo.com</Text>
             </View>
           </View>
 
@@ -446,7 +446,7 @@ export function QuotePdfDocument({ lead, quote }: QuotePdfProps) {
               supplies pricing will be guaranteed for only one week.
             </Text>
             <Text style={styles.termsText}>
-              Invoices payable upon receipt. Please make cheques payable to AI Reno Demo Inc.
+              Invoices payable upon receipt. Please make cheques payable to ConversionOS Demo Inc.
               Finance Charges will be applied at a rate of 1.25% per month
             </Text>
           </View>

@@ -34,14 +34,13 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <span className="text-xl font-bold tracking-tight text-foreground">
-              AI Reno <span className="text-primary">Demo</span>
+              ConversionOS <span className="text-primary">Demo</span>
             </span>
             <p className="text-sm text-muted-foreground">
-              Professional renovation services in the Greater Ontario Area.
-              AI-powered lead capture and conversion platform.
+              Professional renovation services for homes and businesses across Ontario.
             </p>
-            <p className="text-xs text-muted-foreground/70">
-              Powered by <span className="font-semibold">ConversionOS</span> &mdash; Norbot Systems, Inc.
+            <p className="text-xs text-muted-foreground/40">
+              Powered by <span className="font-semibold">ConversionOS</span>
             </p>
           </div>
 
@@ -104,11 +103,11 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:info@airenodemo.com"
+                  href="mailto:info@conversionosdemo.com"
                   className="flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-primary"
                 >
                   <Mail className="size-4 shrink-0 text-primary" />
-                  info@airenodemo.com
+                  info@conversionosdemo.com
                 </a>
               </li>
             </ul>
@@ -117,7 +116,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-sm text-muted-foreground md:flex-row">
-          <p>&copy; {currentYear} AI Reno Demo. All rights reserved.</p>
+          <p>&copy; {currentYear} ConversionOS Demo. All rights reserved.</p>
           <div className="flex gap-6">
             <Link href="/privacy" className="transition-colors hover:text-primary">
               Privacy Policy

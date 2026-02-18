@@ -191,11 +191,13 @@ export function SaveVisualizationModal({
                     value={shareUrl}
                     readOnly
                     className="flex-1 text-sm"
+                    aria-label="Share URL"
                   />
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={handleCopyLink}
+                    aria-label="Copy share link"
                   >
                     {copied ? (
                       <Check className="w-4 h-4 text-green-600" />

@@ -169,10 +169,10 @@ export function QuoteSendWizard({
 
       if (!response.ok) {
         // Fall back to default if AI fails
-        setEmailSubject(`Your ${projectType} Renovation Quote - AI Reno Demo`);
+        setEmailSubject(`Your ${projectType} Renovation Quote - ConversionOS Demo`);
         setEmailBody(`Hi ${customerName.split(' ')[0]},
 
-Thank you for considering AI Reno Demo for your ${projectType} renovation project. Please find your detailed quote attached to this email.
+Thank you for considering ConversionOS Demo for your ${projectType} renovation project. Please find your detailed quote attached to this email.
 
 We've carefully reviewed your requirements and prepared an estimate that reflects our commitment to quality workmanship and fair pricing.
 
@@ -181,7 +181,7 @@ If you have any questions about the quote or would like to discuss your project 
 We look forward to working with you.
 
 Best regards,
-The AI Reno Demo Team`);
+The ConversionOS Demo Team`);
         return;
       }
 
@@ -194,13 +194,13 @@ The AI Reno Demo Team`);
     } catch (err) {
       console.error('Error generating email:', err);
       // Use default email on error
-      setEmailSubject(`Your ${projectType} Renovation Quote - AI Reno Demo`);
+      setEmailSubject(`Your ${projectType} Renovation Quote - ConversionOS Demo`);
       setEmailBody(`Hi ${customerName.split(' ')[0]},
 
-Thank you for considering AI Reno Demo for your ${projectType} renovation project. Please find your detailed quote attached.
+Thank you for considering ConversionOS Demo for your ${projectType} renovation project. Please find your detailed quote attached.
 
 Best regards,
-The AI Reno Demo Team`);
+The ConversionOS Demo Team`);
     } finally {
       setIsGeneratingEmail(false);
     }

@@ -4,30 +4,192 @@
     "status": "idle",
     "startedAt": null,
     "completedAt": null,
-    "targetUrl": null,
+    "targetUrl": "https://ai-reno-demo.vercel.app",
     "totalUnits": 18,
     "completedUnits": 0,
     "failedUnits": 0,
     "skippedUnits": 0
   },
   "units": {
-    "T-01": { "name": "Link Crawl (Public)", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-02": { "name": "Link Crawl (Admin)", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-03": { "name": "Visual (Public)", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-04": { "name": "Visual (Admin)", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-05": { "name": "Homeowner Journey", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-06": { "name": "Contractor Journey", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-07": { "name": "AI Chat Assistant", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-08": { "name": "AI Visualizer", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-09": { "name": "AI Receptionist", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-10": { "name": "Leads CRUD", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-11": { "name": "Quotes Workflow", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-12": { "name": "Invoices Workflow", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-13": { "name": "Drawings & CAD", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-14": { "name": "Admin Settings", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-15": { "name": "Pricing Calculations", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-16": { "name": "Accessibility (WCAG AA)", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-17": { "name": "Performance (Lighthouse)", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null },
-    "T-18": { "name": "Security & Routes", "status": "pending", "tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration": null, "session": null }
+    "T-01": {
+      "name": "Link Crawl (Public)",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-02": {
+      "name": "Link Crawl (Admin)",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-03": {
+      "name": "Visual (Public)",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-04": {
+      "name": "Visual (Admin)",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-05": {
+      "name": "Homeowner Journey",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-06": {
+      "name": "Contractor Journey",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-07": {
+      "name": "AI Chat Assistant",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-08": {
+      "name": "AI Visualizer",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-09": {
+      "name": "AI Receptionist",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-10": {
+      "name": "Leads CRUD",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-11": {
+      "name": "Quotes Workflow",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-12": {
+      "name": "Invoices Workflow",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-13": {
+      "name": "Drawings & CAD",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-14": {
+      "name": "Admin Settings",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-15": {
+      "name": "Pricing Calculations",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-16": {
+      "name": "Accessibility (WCAG AA)",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-17": {
+      "name": "Performance (Lighthouse)",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    },
+    "T-18": {
+      "name": "Security & Routes",
+      "status": "pending",
+      "tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": null,
+      "session": null
+    }
   }
 }

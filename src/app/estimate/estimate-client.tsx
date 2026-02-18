@@ -54,9 +54,12 @@ export function EstimatePageClient() {
   }
 
   return (
-    <ChatInterface
-      visualizationContext={visualizationContext ?? undefined}
-    />
+    <>
+      <h1 className="sr-only">Get an Instant Renovation Estimate</h1>
+      <ChatInterface
+        visualizationContext={visualizationContext ?? undefined}
+      />
+    </>
   );
 }
 

@@ -60,7 +60,7 @@ interface ChatInterfaceProps {
   visualizationContext?: VisualizationContext | undefined;
 }
 
-const WELCOME_MESSAGE = "Hey there! I'm Marcus, the budget and cost specialist here at AI Reno Demo. I help homeowners in the Greater Ontario Area understand what their renovation will cost — no surprises, no pressure.\n\nTell me about the space you're thinking of renovating, or snap a quick photo and I'll take a look!";
+const WELCOME_MESSAGE = "Hey there! I'm Marcus, the budget and cost specialist here at ConversionOS Demo. I help homeowners in the Greater Ontario Area understand what their renovation will cost — no surprises, no pressure.\n\nTell me about the space you're thinking of renovating, or snap a quick photo and I'll take a look!";
 
 // Map frontend timeline values to API enum values
 function mapTimelineToApi(timeline: string | undefined): string | undefined {
@@ -93,7 +93,7 @@ function getVisualizationWelcomeMessage(context: VisualizationContext): string {
   const roomType = context.roomType.replace(/_/g, ' ');
   const style = context.style.charAt(0).toUpperCase() + context.style.slice(1);
 
-  return `Hi! I see you've been exploring designs for your ${roomType} renovation in a ${style} style - it looks great! 🎨\n\nI'm your renovation assistant from AI Reno Demo. I can help turn that vision into a detailed estimate.\n\nTo get started, could you tell me a bit more about the space? For example:\n- What's the approximate size of the room?\n- When are you hoping to start the project?\n- Is there anything specific from your visualization you want to prioritize?`;
+  return `Hi! I see you've been exploring designs for your ${roomType} renovation in a ${style} style - it looks great! 🎨\n\nI'm your renovation assistant from ConversionOS Demo. I can help turn that vision into a detailed estimate.\n\nTo get started, could you tell me a bit more about the space? For example:\n- What's the approximate size of the room?\n- When are you hoping to start the project?\n- Is there anything specific from your visualization you want to prioritize?`;
 }
 
 /**
@@ -154,10 +154,10 @@ function ChatInterfaceInner({ initialMessages, sessionId: initialSessionId, visu
       const styleLabel = dp.customStyle || dp.style;
       const conceptCount = ctx.visualizationData?.concepts.length || 0;
       const conceptNote = conceptCount > 0 ? ` I can see you generated ${conceptCount} design concepts — they look great!` : '';
-      return `Hey there! I see you've been designing a ${roomLabel} renovation in a ${styleLabel} style with ${fromName}.${conceptNote}\n\nI'm Marcus, the budget and cost specialist here at AI Reno Demo. Let's turn that vision into real numbers.\n\nTo get you an accurate estimate, could you tell me about the size of the space and when you're hoping to start?`;
+      return `Hey there! I see you've been designing a ${roomLabel} renovation in a ${styleLabel} style with ${fromName}.${conceptNote}\n\nI'm Marcus, the budget and cost specialist here at ConversionOS Demo. Let's turn that vision into real numbers.\n\nTo get you an accurate estimate, could you tell me about the size of the space and when you're hoping to start?`;
     }
 
-    return `Hey! ${fromName} filled me in on what you've been discussing. I'm Marcus, the budget and cost specialist here at AI Reno Demo.\n\nLet's pick up where you left off and get you some solid numbers. What would you like to focus on first?`;
+    return `Hey! ${fromName} filled me in on what you've been discussing. I'm Marcus, the budget and cost specialist here at ConversionOS Demo.\n\nLet's pick up where you left off and get you some solid numbers. What would you like to focus on first?`;
   };
 
   const welcomeMessage = handoffContext

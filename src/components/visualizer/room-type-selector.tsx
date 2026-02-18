@@ -162,6 +162,7 @@ export function RoomTypeSelector({
             className="max-w-md"
             maxLength={100}
             autoFocus
+            aria-label="Custom room type"
           />
           <p className="text-xs text-muted-foreground mt-1">
             Describe your space so we can tailor the design

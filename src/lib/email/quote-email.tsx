@@ -255,13 +255,13 @@ export function QuoteEmailTemplate({ lead, quote, customMessage }: QuoteEmailPro
     <Html>
       <Head />
       <Preview>
-        Your quote from AI Reno Demo - {formatCurrency(quote.total || 0)} for your {projectType.toLowerCase()}
+        Your quote from ConversionOS Demo - {formatCurrency(quote.total || 0)} for your {projectType.toLowerCase()}
       </Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Header */}
           <Section style={headerSection}>
-            <Text style={brandName}>AI Reno Demo</Text>
+            <Text style={brandName}>ConversionOS Demo</Text>
             <Text style={tagline}>Quality Renovations in Greater Ontario Area</Text>
           </Section>
 
@@ -270,7 +270,7 @@ export function QuoteEmailTemplate({ lead, quote, customMessage }: QuoteEmailPro
             <Text style={greeting}>Hi {firstName},</Text>
 
             <Text style={paragraph}>
-              Thank you for considering AI Reno Demo for your {projectType.toLowerCase()}.
+              Thank you for considering ConversionOS Demo for your {projectType.toLowerCase()}.
               We&apos;re excited about the possibility of bringing your vision to life!
             </Text>
 
@@ -380,7 +380,7 @@ export function QuoteEmailTemplate({ lead, quote, customMessage }: QuoteEmailPro
             </Text>
 
             <Section style={ctaSection}>
-              <Button href="mailto:quotes@airenodemo.com" style={ctaButton}>
+              <Button href="mailto:quotes@conversionosdemo.com" style={ctaButton}>
                 Reply to This Quote
               </Button>
             </Section>
@@ -389,11 +389,11 @@ export function QuoteEmailTemplate({ lead, quote, customMessage }: QuoteEmailPro
           {/* Footer */}
           <Section style={footerSection}>
             <Text style={footerText}>
-              AI Reno Demo | Greater Ontario Area
+              ConversionOS Demo | Greater Ontario Area
             </Text>
             <Text style={footerText}>
-              <Link href="mailto:quotes@airenodemo.com" style={footerLink}>
-                quotes@airenodemo.com
+              <Link href="mailto:quotes@conversionosdemo.com" style={footerLink}>
+                quotes@conversionosdemo.com
               </Link>
               {' '}&bull;{' '}
               <Link href="tel:+15195550000" style={footerLink}>

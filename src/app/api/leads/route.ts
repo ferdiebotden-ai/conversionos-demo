@@ -298,7 +298,7 @@ export async function POST(request: NextRequest) {
     emailPromises.push(
       sendEmail({
         to: data.email,
-        subject: `Thanks for your ${data.projectType} renovation inquiry - AI Reno Demo`,
+        subject: `Thanks for your ${data.projectType} renovation inquiry - ConversionOS Demo`,
         react: LeadConfirmationEmail({
           customerName: data.name,
           projectType: data.projectType,
