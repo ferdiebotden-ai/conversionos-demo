@@ -126,7 +126,7 @@ export default function AboutPage() {
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
               <Image
                 src="/images/demo/flooring-vinyl.png"
-                alt="Luxury vinyl plank flooring installation in a modern living space"
+                alt="Beautifully renovated heritage living room with stone fireplace, built-in bookshelves, and expert trim work"
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
