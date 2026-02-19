@@ -17,24 +17,28 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ConversionOS Demo | Ontario Renovation Contractor",
-    template: "%s | ConversionOS Demo",
+    default: "McCarty Squared Inc. | London ON Renovation Contractor",
+    template: "%s | McCarty Squared Inc.",
   },
   description:
-    "Professional renovation services in Greater Ontario Area. Kitchen, bathroom, and whole-home renovations with AI-powered project visualization.",
+    "Professional renovation services in London, ON. Dream. Plan. Build. Kitchen, bathroom, net-zero, heritage restoration, and whole-home renovations with AI-powered project visualization.",
   keywords: [
     "renovation",
     "contractor",
-    "Ontario",
+    "London Ontario",
     "kitchen renovation",
     "bathroom renovation",
     "home improvement",
+    "net zero homes",
+    "heritage restoration",
+    "accessibility modifications",
+    "McCarty Squared",
   ],
-  authors: [{ name: "ConversionOS Demo" }],
+  authors: [{ name: "McCarty Squared Inc." }],
   openGraph: {
     type: "website",
     locale: "en_CA",
-    siteName: "ConversionOS Demo",
+    siteName: "McCarty Squared Inc.",
   },
 };
 

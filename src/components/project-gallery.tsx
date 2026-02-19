@@ -12,7 +12,7 @@ const projects: Project[] = [
     type: "kitchen",
     description:
       "Complete kitchen remodel featuring custom white shaker cabinets, quartz countertops, and a large center island. The open concept design connects seamlessly to the dining area.",
-    location: "Greater Ontario Area",
+    location: "London, ON",
     image: "/images/demo/kitchen-modern.png",
   },
   {
@@ -30,7 +30,7 @@ const projects: Project[] = [
     type: "basement",
     description:
       "Full basement finishing with home theater, wet bar, and guest bedroom. Includes soundproofing, custom built-ins, and a full bathroom.",
-    location: "Greater Ontario Area",
+    location: "London, ON",
     image: "/images/demo/basement-entertainment.png",
   },
   {
@@ -57,7 +57,7 @@ const projects: Project[] = [
     type: "bathroom",
     description:
       "Barrier-free bathroom renovation with curbless shower, grab bars, and accessible vanity. Combines safety features with modern aesthetics.",
-    location: "Greater Ontario Area",
+    location: "London, ON",
     image: "/images/demo/bathroom-accessible.png",
   },
   {
@@ -66,7 +66,7 @@ const projects: Project[] = [
     type: "basement",
     description:
       "Legal basement apartment with separate entrance, full kitchen, living area, bedroom, and bathroom. Includes egress windows and fire separation.",
-    location: "Greater Ontario Area",
+    location: "London, ON",
     image: "/images/demo/basement-walkout.png",
   },
   {

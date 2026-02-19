@@ -6,7 +6,7 @@
  */
 
 import { Button } from '@/components/ui/button';
-import { Menu, Bell } from 'lucide-react';
+import { Menu, Bell, User } from 'lucide-react';
 
 interface AdminHeaderProps {
   onMenuClick?: () => void;
@@ -41,8 +41,8 @@ export function AdminHeader({ onMenuClick, title = 'Dashboard' }: AdminHeaderPro
         </Button>
 
         {/* User avatar */}
-        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
-          RW
+        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+          <User className="h-4 w-4" />
         </div>
       </div>
     </header>

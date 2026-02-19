@@ -8,7 +8,7 @@ import { Check, Bath } from "lucide-react"
 export const metadata: Metadata = {
   title: "Bathroom Renovation",
   description:
-    "Create your dream bathroom with ConversionOS Demo. Showers, tubs, vanities, and complete bathroom remodels in Greater Ontario Area.",
+    "Create your dream bathroom with McCarty Squared. Showers, tubs, vanities, and complete bathroom remodels in London, ON.",
 }
 
 const features = [

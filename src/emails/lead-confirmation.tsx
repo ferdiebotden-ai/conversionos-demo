@@ -39,7 +39,7 @@ export function LeadConfirmationEmail({
       <Body style={main}>
         <Container style={container}>
           <Heading style={heading}>
-            <span style={{ color: '#D32F2F' }}>Red</span>{' '}
+            <span style={{ color: '#1565C0' }}>Red</span>{' '}
             <span style={{ color: '#1a1a1a' }}>White</span>{' '}
             <span style={{ color: '#666' }}>Reno</span>
           </Heading>
@@ -81,7 +81,7 @@ export function LeadConfirmationEmail({
 
           <Text style={paragraph}>
             In the meantime, feel free to browse our{' '}
-            <Link href="https://conversionosdemo.com/projects" style={link}>
+            <Link href="https://mccartysquared.ca/projects" style={link}>
               recent projects
             </Link>{' '}
             for inspiration!
@@ -97,10 +97,10 @@ export function LeadConfirmationEmail({
           </Text>
 
           <Text style={footer}>
-            ConversionOS Demo - Quality Renovations in Greater Ontario Area
+            McCarty Squared - Quality Renovations in London, ON
             <br />
-            <Link href="https://conversionosdemo.com" style={footerLink}>
-              conversionosdemo.com
+            <Link href="https://mccartysquared.ca" style={footerLink}>
+              mccartysquared.ca
             </Link>
           </Text>
         </Container>
@@ -143,7 +143,7 @@ const estimateBox = {
   borderRadius: '8px',
   padding: '20px',
   margin: '24px 0',
-  borderLeft: '4px solid #D32F2F',
+  borderLeft: '4px solid #1565C0',
 };
 
 const estimateLabel = {
@@ -157,7 +157,7 @@ const estimateLabel = {
 const estimateValue = {
   fontSize: '28px',
   fontWeight: '700',
-  color: '#D32F2F',
+  color: '#1565C0',
   margin: '0 0 12px',
 };
 
@@ -177,7 +177,7 @@ const listItem = {
 };
 
 const link = {
-  color: '#D32F2F',
+  color: '#1565C0',
   textDecoration: 'underline',
 };
 
@@ -195,7 +195,7 @@ const footer = {
 };
 
 const footerLink = {
-  color: '#D32F2F',
+  color: '#1565C0',
   textDecoration: 'underline',
 };
 

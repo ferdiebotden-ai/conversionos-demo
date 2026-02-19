@@ -55,7 +55,7 @@ export function TalkButton({
             'h-14 px-8 rounded-full text-base font-semibold transition-all',
             isActive
               ? 'bg-destructive hover:bg-destructive/90 text-destructive-foreground'
-              : 'bg-[#D32F2F] hover:bg-[#B71C1C] text-white',
+              : 'bg-[#1565C0] hover:bg-[#B71C1C] text-white',
             className
           )}
         >
@@ -86,7 +86,7 @@ export function TalkButton({
       variant={isActive ? 'destructive' : 'outline'}
       className={cn(
         'h-10 shrink-0 rounded-full px-3 transition-all',
-        !isActive && 'text-[#D32F2F] border-[#D32F2F]/30 hover:text-[#B71C1C] hover:bg-[#D32F2F]/10',
+        !isActive && 'text-[#1565C0] border-[#1565C0]/30 hover:text-[#B71C1C] hover:bg-[#1565C0]/10',
         className
       )}
       aria-label={isActive ? 'End voice call' : `Talk to ${name}`}

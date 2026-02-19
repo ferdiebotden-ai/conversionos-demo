@@ -55,7 +55,7 @@ export function DownloadButton({
 
       // Download with watermark
       await downloadWithWatermark(imageUrl, filename, {
-        text: 'ConversionOS Demo',
+        text: 'McCarty Squared',
         subtext: 'AI Visualization - For Concept Purposes Only',
       });
 

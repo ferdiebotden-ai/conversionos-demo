@@ -140,8 +140,13 @@ export function Header() {
 
 function Logo() {
   return (
-    <span className="text-xl font-bold tracking-tight text-foreground">
-      ConversionOS <span className="text-primary">Demo</span>
-    </span>
+    <div className="flex flex-col leading-tight">
+      <span className="text-xl font-bold tracking-tight text-foreground">
+        McCarty <span className="text-primary">Squared</span>
+      </span>
+      <span className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
+        Dream. Plan. Build.
+      </span>
+    </div>
   )
 }

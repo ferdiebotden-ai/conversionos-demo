@@ -49,19 +49,19 @@ function textToHtml(text: string): string {
   // Make URLs clickable
   html = html.replace(
     /(https?:\/\/[^\s<]+)/g,
-    '<a href="$1" style="color: #D32F2F;">$1</a>'
+    '<a href="$1" style="color: #1565C0;">$1</a>'
   );
 
   // Make email addresses clickable
   html = html.replace(
     /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-    '<a href="mailto:$1" style="color: #D32F2F;">$1</a>'
+    '<a href="mailto:$1" style="color: #1565C0;">$1</a>'
   );
 
   // Make phone numbers clickable
   html = html.replace(
     /(\(\d{3}\)\s?\d{3}[-.]?\d{4}|\d{3}[-.]?\d{3}[-.]?\d{4})/g,
-    '<a href="tel:$1" style="color: #D32F2F;">$1</a>'
+    '<a href="tel:$1" style="color: #1565C0;">$1</a>'
   );
 
   // Bold text between ** **
@@ -75,9 +75,9 @@ export function EmailPreview({
   body,
   recipientEmail,
   recipientName,
-  senderName = 'ConversionOS Demo',
-  senderEmail = 'info@conversionosdemo.com',
-  companyName = 'ConversionOS Demo',
+  senderName = 'McCarty Squared',
+  senderEmail = 'info@mccartysquared.ca',
+  companyName = 'McCarty Squared',
   quoteTotal,
   depositRequired,
   className,
@@ -99,12 +99,12 @@ export function EmailPreview({
             <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
               <!-- Header -->
               <tr>
-                <td style="background-color: #D32F2F; padding: 24px 30px; text-align: center;">
+                <td style="background-color: #1565C0; padding: 24px 30px; text-align: center;">
                   <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">
                     ${companyName}
                   </h1>
                   <p style="margin: 4px 0 0 0; color: #ffffff; opacity: 0.9; font-size: 14px;">
-                    Quality Renovations in Greater Ontario Area
+                    Quality Renovations in London, ON
                   </p>
                 </td>
               </tr>
@@ -129,8 +129,8 @@ export function EmailPreview({
                           </tr>
                           ${depositRequired ? `
                           <tr>
-                            <td style="padding: 8px 0; border-top: 1px solid #e0e0e0; color: #D32F2F; font-weight: 500;">Deposit Required (50%)</td>
-                            <td style="padding: 8px 0; border-top: 1px solid #e0e0e0; text-align: right; font-weight: bold; color: #D32F2F;">${formatCurrency(depositRequired)}</td>
+                            <td style="padding: 8px 0; border-top: 1px solid #e0e0e0; color: #1565C0; font-weight: 500;">Deposit Required (50%)</td>
+                            <td style="padding: 8px 0; border-top: 1px solid #e0e0e0; text-align: right; font-weight: bold; color: #1565C0;">${formatCurrency(depositRequired)}</td>
                           </tr>
                           ` : ''}
                         </table>
@@ -151,8 +151,8 @@ export function EmailPreview({
                 <td style="background-color: #f4f4f4; padding: 24px 30px; text-align: center; border-top: 1px solid #e0e0e0;">
                   <p style="margin: 0; color: #666666; font-size: 14px;">
                     <strong>${companyName}</strong><br>
-                    Greater Ontario Area<br>
-                    <a href="mailto:${senderEmail}" style="color: #D32F2F; text-decoration: none;">${senderEmail}</a>
+                    London, ON<br>
+                    <a href="mailto:${senderEmail}" style="color: #1565C0; text-decoration: none;">${senderEmail}</a>
                   </p>
                   <p style="margin: 16px 0 0 0; color: #999999; font-size: 12px;">
                     © ${new Date().getFullYear()} ${companyName}. All rights reserved.

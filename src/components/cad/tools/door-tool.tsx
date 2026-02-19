@@ -161,7 +161,7 @@ export function DoorTool({ isActive }: DoorToolProps) {
         >
           <boxGeometry args={[DOOR_WIDTH, DOOR_HEIGHT, 0.08]} />
           <meshStandardMaterial
-            color={hover.valid ? '#D32F2F' : '#999999'}
+            color={hover.valid ? '#1565C0' : '#999999'}
             transparent
             opacity={0.4}
           />

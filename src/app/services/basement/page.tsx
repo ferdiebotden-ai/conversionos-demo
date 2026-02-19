@@ -8,7 +8,7 @@ import { Check, Sofa } from "lucide-react"
 export const metadata: Metadata = {
   title: "Basement Finishing",
   description:
-    "Unlock your basement's potential with ConversionOS Demo. Family rooms, home offices, rental suites, and complete basement finishing in Greater Ontario Area.",
+    "Unlock your basement's potential with McCarty Squared. Family rooms, home offices, rental suites, and complete basement finishing in London, ON.",
 }
 
 const features = [

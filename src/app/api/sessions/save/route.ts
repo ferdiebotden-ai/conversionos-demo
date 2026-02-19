@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     // Send magic link email
     const emailResult = await sendEmail({
       to: data.email,
-      subject: 'Continue Your Renovation Quote - ConversionOS Demo',
+      subject: 'Continue Your Renovation Quote - McCarty Squared',
       react: SessionResumeEmail({ resumeUrl, expiresInDays: 7 }),
     });
 

@@ -16,6 +16,10 @@ import {
   Shield,
   Award,
   Users,
+  ClipboardList,
+  FileCheck,
+  Hammer,
+  CheckCircle,
 } from "lucide-react"
 
 export default function Home() {
@@ -38,15 +42,15 @@ export default function Home() {
               <StaggerContainer className="mx-auto max-w-3xl text-center">
                 <StaggerItem>
                   <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-                    Transform Your Home{" "}
-                    <span className="text-primary">in Ontario</span>
+                    Dream. Plan.{" "}
+                    <span className="text-primary">Build.</span>
                   </h1>
                 </StaggerItem>
                 <StaggerItem>
                   <p className="mt-6 text-lg leading-8 text-white/85 md:text-xl">
-                    Professional renovation services with AI-powered project
-                    visualization. Get instant estimates and see your dream space
-                    before construction begins.
+                    With a focus on quality craftsmanship and integrity, McCarty Squared
+                    provides superior construction and renovation services in London, Ontario
+                    and surrounding areas, dedicated to bringing your dream projects to fruition.
                   </p>
                 </StaggerItem>
                 <StaggerItem>
@@ -69,15 +73,15 @@ export default function Home() {
                   <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-white/80">
                     <div className="flex items-center gap-2">
                       <Award className="size-5 text-primary" />
-                      <span>Quality Craftsmanship</span>
+                      <span>RenoMark Certified</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="size-5 text-primary" />
-                      <span>Residential & Commercial</span>
+                      <span>13 Service Categories</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Shield className="size-5 text-primary" />
-                      <span>On Time & On Budget</span>
+                      <span>NetZero Home Certified</span>
                     </div>
                   </div>
                 </StaggerItem>
@@ -153,8 +157,8 @@ export default function Home() {
               Our Services
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              From kitchens to basements, we handle every aspect of your home
-              renovation with expertise and care.
+              From kitchens to net-zero homes, McCarty Squared handles every aspect
+              of your renovation with expertise and care.
             </p>
           </FadeInUp>
 
@@ -188,7 +192,7 @@ export default function Home() {
             <div>
               <FadeInUp>
                 <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  Why Choose ConversionOS Demo?
+                  Why Choose McCarty Squared?
                 </h2>
                 <p className="mt-4 text-lg text-muted-foreground">
                   We combine traditional craftsmanship with modern technology to
@@ -199,23 +203,23 @@ export default function Home() {
               <StaggerContainer className="mt-8 space-y-6">
                 <StaggerItem>
                   <WhyUsCard
-                    icon={<Clock className="size-6" />}
-                    title="On-Time Delivery"
-                    description="We respect your time. Our project management ensures work is completed on schedule, every time."
+                    icon={<Award className="size-6" />}
+                    title="RenoMark Certified"
+                    description="Minimum 2-year warranty on all work, $2M liability insurance, and strict Code of Conduct compliance."
                   />
                 </StaggerItem>
                 <StaggerItem>
                   <WhyUsCard
                     icon={<Shield className="size-6" />}
                     title="Quality Guaranteed"
-                    description="Every project comes with our satisfaction guarantee. We stand behind our workmanship."
+                    description="Written contracts required on every project. Code of Conduct compliance ensures your renovation meets the highest standards."
                   />
                 </StaggerItem>
                 <StaggerItem>
                   <WhyUsCard
-                    icon={<Award className="size-6" />}
-                    title="Expert Craftsmen"
-                    description="Our team includes certified professionals with decades of combined experience."
+                    icon={<Clock className="size-6" />}
+                    title="2-Day Response Time"
+                    description="RenoMark's 2-business-day response commitment means you'll never be left waiting. Quick answers, clear communication."
                   />
                 </StaggerItem>
               </StaggerContainer>
@@ -224,15 +228,65 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* Our Process Section */}
       <section className="px-4 py-16 md:py-20">
+        <div className="container mx-auto">
+          <FadeInUp className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Our Process
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              From first conversation to final walkthrough, we keep things clear
+              and organized.
+            </p>
+          </FadeInUp>
+
+          <StaggerContainer className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <StaggerItem>
+              <ProcessStep
+                step={1}
+                icon={<ClipboardList className="size-6" />}
+                title="Design Consultation"
+                description="Collaborate with experts to refine your vision"
+              />
+            </StaggerItem>
+            <StaggerItem>
+              <ProcessStep
+                step={2}
+                icon={<FileCheck className="size-6" />}
+                title="Planning & Approval"
+                description="Finalize detailed plans and obtain necessary permits"
+              />
+            </StaggerItem>
+            <StaggerItem>
+              <ProcessStep
+                step={3}
+                icon={<Hammer className="size-6" />}
+                title="Construction Phase"
+                description="Skilled crew executes with precision and quality materials"
+              />
+            </StaggerItem>
+            <StaggerItem>
+              <ProcessStep
+                step={4}
+                icon={<CheckCircle className="size-6" />}
+                title="Final Inspection"
+                description="Review completed project for quality assurance"
+              />
+            </StaggerItem>
+          </StaggerContainer>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="border-t border-border bg-muted/30 px-4 py-16 md:py-20">
         <div className="container mx-auto">
           <FadeInUp className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               What Our Clients Say
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Don&apos;t just take our word for it. Here&apos;s what Ontario
+              Don&apos;t just take our word for it. Here&apos;s what London-area
               homeowners have to say.
             </p>
           </FadeInUp>
@@ -273,6 +327,31 @@ export default function Home() {
           </div>
         </FadeInUp>
       </section>
+    </div>
+  )
+}
+
+function ProcessStep({
+  step,
+  icon,
+  title,
+  description,
+}: {
+  step: number
+  icon: React.ReactNode
+  title: string
+  description: string
+}) {
+  return (
+    <div className="text-center">
+      <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+        {icon}
+      </div>
+      <div className="mt-2 text-xs font-semibold uppercase tracking-wider text-primary">
+        Step {step}
+      </div>
+      <h3 className="mt-2 text-lg font-semibold text-foreground">{title}</h3>
+      <p className="mt-1 text-sm text-muted-foreground">{description}</p>
     </div>
   )
 }

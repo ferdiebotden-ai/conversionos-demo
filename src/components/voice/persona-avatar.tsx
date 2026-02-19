@@ -21,8 +21,8 @@ const PERSONA_CONFIG: Record<
   receptionist: {
     icon: MessageCircle,
     color: 'text-white',
-    bgColor: 'bg-[#D32F2F]',
-    ringColor: 'ring-[#D32F2F]/30',
+    bgColor: 'bg-[#1565C0]',
+    ringColor: 'ring-[#1565C0]/30',
   },
   'quote-specialist': {
     icon: Calculator,

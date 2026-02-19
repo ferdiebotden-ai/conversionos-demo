@@ -22,7 +22,7 @@ import {
 import type { Invoice } from '@/types/database';
 
 const COLORS = {
-  primary: '#D32F2F',
+  primary: '#1565C0',
   secondary: '#1a1a1a',
   muted: '#666666',
   border: '#e5e5e5',
@@ -224,14 +224,14 @@ export function InvoiceEmailTemplate({ invoice, customMessage }: InvoiceEmailPro
     <Html>
       <Head />
       <Preview>
-        Invoice #{invoice.invoice_number} from ConversionOS Demo - {formatCurrency(total)}
+        Invoice #{invoice.invoice_number} from McCarty Squared - {formatCurrency(total)}
       </Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Header */}
           <Section style={headerSection}>
-            <Text style={brandName}>ConversionOS Demo</Text>
-            <Text style={tagline}>Quality Renovations in Greater Ontario Area</Text>
+            <Text style={brandName}>McCarty Squared</Text>
+            <Text style={tagline}>Quality Renovations in London, ON</Text>
           </Section>
 
           {/* Content */}
@@ -239,7 +239,7 @@ export function InvoiceEmailTemplate({ invoice, customMessage }: InvoiceEmailPro
             <Text style={greeting}>Hi {firstName},</Text>
 
             <Text style={paragraph}>
-              Please find attached your invoice from ConversionOS Demo for your renovation project.
+              Please find attached your invoice from McCarty Squared for your renovation project.
             </Text>
 
             {customMessage && (
@@ -318,12 +318,12 @@ export function InvoiceEmailTemplate({ invoice, customMessage }: InvoiceEmailPro
 
             {/* Payment instructions */}
             <Text style={paragraph}>
-              Payment can be made via E-Transfer to <strong>payments@conversionosdemo.com</strong>.
-              Cheques payable to ConversionOS Demo Inc.
+              Payment can be made via E-Transfer to <strong>payments@mccartysquared.ca</strong>.
+              Cheques payable to McCarty Squared Inc.
             </Text>
 
             <Section style={ctaSection}>
-              <Button href="mailto:invoices@conversionosdemo.com" style={ctaButton}>
+              <Button href="mailto:info@mccartysquared.ca" style={ctaButton}>
                 Questions? Contact Us
               </Button>
             </Section>
@@ -338,15 +338,15 @@ export function InvoiceEmailTemplate({ invoice, customMessage }: InvoiceEmailPro
           {/* Footer */}
           <Section style={footerSection}>
             <Text style={footerText}>
-              ConversionOS Demo | Greater Ontario Area
+              McCarty Squared | London, ON
             </Text>
             <Text style={footerText}>
-              <Link href="mailto:invoices@conversionosdemo.com" style={footerLink}>
-                invoices@conversionosdemo.com
+              <Link href="mailto:info@mccartysquared.ca" style={footerLink}>
+                info@mccartysquared.ca
               </Link>
               {' '}&bull;{' '}
               <Link href="tel:+15193019140" style={footerLink}>
-                (555) 123-4567
+                (226) 667-8940
               </Link>
             </Text>
             <Text style={{ ...footerText, marginTop: '16px', fontSize: '11px' }}>

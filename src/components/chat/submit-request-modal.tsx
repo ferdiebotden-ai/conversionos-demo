@@ -245,7 +245,7 @@ export function SubmitRequestModal({
               </Button>
               <Button
                 onClick={() => setStep('contact')}
-                className="sm:flex-1 bg-[#D32F2F] hover:bg-[#B71C1C]"
+                className="sm:flex-1 bg-[#1565C0] hover:bg-[#B71C1C]"
               >
                 Continue
               </Button>
@@ -295,7 +295,7 @@ export function SubmitRequestModal({
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="(555) 123-4567"
+                  placeholder="(226) 667-8940"
                   value={contactInfo.phone}
                   onChange={(e) =>
                     setContactInfo((prev) => ({ ...prev, phone: e.target.value }))
@@ -332,7 +332,7 @@ export function SubmitRequestModal({
                   setError(null);
                   setStep('details');
                 }}
-                className="sm:flex-1 bg-[#D32F2F] hover:bg-[#B71C1C]"
+                className="sm:flex-1 bg-[#1565C0] hover:bg-[#B71C1C]"
               >
                 Continue
               </Button>
@@ -509,7 +509,7 @@ export function SubmitRequestModal({
               </Button>
               <Button
                 onClick={handleSubmit}
-                className="sm:flex-1 bg-[#D32F2F] hover:bg-[#B71C1C]"
+                className="sm:flex-1 bg-[#1565C0] hover:bg-[#B71C1C]"
                 data-testid="submit-form-button"
               >
                 Submit Request Now
@@ -537,7 +537,7 @@ export function SubmitRequestModal({
               </div>
               <DialogTitle>Request submitted!</DialogTitle>
               <DialogDescription className="text-center">
-                Thanks{contactInfo.name ? `, ${contactInfo.name.split(' ')[0]}` : ''}! ConversionOS Demo will
+                Thanks{contactInfo.name ? `, ${contactInfo.name.split(' ')[0]}` : ''}! McCarty Squared will
                 review your project and contact you within 24 hours.
               </DialogDescription>
             </DialogHeader>

@@ -169,10 +169,10 @@ export function QuoteSendWizard({
 
       if (!response.ok) {
         // Fall back to default if AI fails
-        setEmailSubject(`Your ${projectType} Renovation Quote - ConversionOS Demo`);
+        setEmailSubject(`Your ${projectType} Renovation Quote - McCarty Squared`);
         setEmailBody(`Hi ${customerName.split(' ')[0]},
 
-Thank you for considering ConversionOS Demo for your ${projectType} renovation project. Please find your detailed quote attached to this email.
+Thank you for considering McCarty Squared for your ${projectType} renovation project. Please find your detailed quote attached to this email.
 
 We've carefully reviewed your requirements and prepared an estimate that reflects our commitment to quality workmanship and fair pricing.
 
@@ -181,7 +181,7 @@ If you have any questions about the quote or would like to discuss your project 
 We look forward to working with you.
 
 Best regards,
-The ConversionOS Demo Team`);
+The McCarty Squared Team`);
         return;
       }
 
@@ -194,13 +194,13 @@ The ConversionOS Demo Team`);
     } catch (err) {
       console.error('Error generating email:', err);
       // Use default email on error
-      setEmailSubject(`Your ${projectType} Renovation Quote - ConversionOS Demo`);
+      setEmailSubject(`Your ${projectType} Renovation Quote - McCarty Squared`);
       setEmailBody(`Hi ${customerName.split(' ')[0]},
 
-Thank you for considering ConversionOS Demo for your ${projectType} renovation project. Please find your detailed quote attached.
+Thank you for considering McCarty Squared for your ${projectType} renovation project. Please find your detailed quote attached.
 
 Best regards,
-The ConversionOS Demo Team`);
+The McCarty Squared Team`);
     } finally {
       setIsGeneratingEmail(false);
     }
@@ -309,7 +309,7 @@ The ConversionOS Demo Team`);
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Send className="h-5 w-5 text-[#D32F2F]" />
+            <Send className="h-5 w-5 text-[#1565C0]" />
             Send Quote to Customer
           </DialogTitle>
           <DialogDescription>
@@ -325,7 +325,7 @@ The ConversionOS Demo Team`);
                 onClick={() => goToStep(step)}
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
                   index === currentStepIndex
-                    ? 'bg-[#D32F2F] text-white'
+                    ? 'bg-[#1565C0] text-white'
                     : index < currentStepIndex
                     ? 'bg-green-100 text-green-700'
                     : 'bg-gray-100 text-gray-500'
@@ -381,7 +381,7 @@ The ConversionOS Demo Team`);
                       <span className="text-muted-foreground">Total</span>
                       <span className="font-bold text-lg">{formatCurrency(quoteTotal)}</span>
                     </div>
-                    <div className="flex justify-between text-[#D32F2F]">
+                    <div className="flex justify-between text-[#1565C0]">
                       <span className="font-medium">Deposit Required (50%)</span>
                       <span className="font-bold">{formatCurrency(depositRequired)}</span>
                     </div>
@@ -613,7 +613,7 @@ The ConversionOS Demo Team`);
             {currentStep !== 'confirm' ? (
               <Button
                 onClick={goNext}
-                className="bg-[#D32F2F] hover:bg-[#B71C1C]"
+                className="bg-[#1565C0] hover:bg-[#B71C1C]"
               >
                 Next
                 <ChevronRight className="h-4 w-4 ml-1" />
@@ -621,7 +621,7 @@ The ConversionOS Demo Team`);
             ) : !sendSuccess && !isSending ? (
               <Button
                 onClick={handleSend}
-                className="bg-[#D32F2F] hover:bg-[#B71C1C]"
+                className="bg-[#1565C0] hover:bg-[#B71C1C]"
               >
                 <Send className="h-4 w-4 mr-2" />
                 Send Quote

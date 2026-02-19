@@ -44,10 +44,10 @@ export function FurnitureMesh({ object }: FurnitureMeshProps) {
       <boxGeometry args={[scaledDims.x, scaledDims.y, scaledDims.z]} />
       <meshStandardMaterial
         color={color}
-        emissive={isSelected ? '#D32F2F' : '#000000'}
+        emissive={isSelected ? '#1565C0' : '#000000'}
         emissiveIntensity={isSelected ? 0.2 : 0}
       />
-      <Edges color={isSelected ? '#D32F2F' : '#666666'} />
+      <Edges color={isSelected ? '#1565C0' : '#666666'} />
       <Html position={[0, scaledDims.y / 2 + 0.3, 0]} center>
         <div className="text-xs bg-black/70 text-white px-1.5 py-0.5 rounded whitespace-nowrap pointer-events-none">
           {object.name}

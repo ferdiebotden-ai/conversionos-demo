@@ -4,23 +4,37 @@
  */
 
 export const COMPANY_PROFILE = `## Company Profile
-- Name: ConversionOS Demo
-- Location: Greater Ontario Area, Canada
-- Phone: (555) 123-4567
-- Email: info@conversionosdemo.com
-- Principals: Alex Thompson and Jordan Mitchell
-- Tagline: Building trust with quality work
+- Name: McCarty Squared Inc.
+- Location: London, ON, Canada
+- Phone: (226) 667-8940
+- Email: info@mccartysquared.ca
+- Website: https://www.mccartysquared.ca/
+- Principals: Garnet & Carisa (co-owners)
+- Tagline: Dream. Plan. Build.
+- Founded: 2021
+- Booking: https://myonlinebooking.co/booking/mccarty-squared-inc
 
 ## Service Area
-Greater Ontario Area and surrounding regions. We serve homeowners throughout Ontario.
+London, ON and 20+ surrounding communities: Argyle, Arva, Belmont, Byron, Dorchester, Hyde Park, Ingersoll, Komoka, Masonville, Mt Brydges, North London, Oakridge, Old North, OEV, St Thomas, Strathroy, Tillsonburg, Woodfield, Wortley.
 
 ## Business Hours
-Monday–Friday: 8:00 AM – 6:00 PM
-Saturday: 9:00 AM – 2:00 PM (consultations by appointment)
+Monday-Friday: 9:00 AM - 5:00 PM
+Saturday: Closed
 Sunday: Closed
 
+## Certifications & Memberships
+- RenoMark (Canadian Home Builders' Association quality standard)
+- LHBA (London Home Builders' Association)
+- NetZero Home certified
+- Houzz Pro
+- London Chamber of Commerce
+
 ## Social Media
-- Website: conversionosdemo.com
+- Website: mccartysquared.ca
+- Facebook: facebook.com/mccartysquaredinc
+- Instagram: instagram.com/mccartysquared
+- LinkedIn: linkedin.com/company/mccarty-squared-inc
+- Pinterest: pinterest.com/mccartysquared
 
 ## Website Pages
 - /services — Overview of all renovation services
@@ -35,10 +49,11 @@ Sunday: Closed
 - /contact — Get in touch, request a callback
 
 ## Core Values
-- Transparency in pricing — no hidden costs
-- Quality craftsmanship backed by warranty
+- Dream. Plan. Build. — guiding clients from vision to reality
+- Quality craftsmanship backed by RenoMark standards
+- Clean, courteous, efficient worksite
 - Respect for your home and timeline
-- Local expertise with Ontario-specific knowledge
+- Local expertise with London, ON-specific knowledge
 `;
 
-export const COMPANY_SUMMARY = `ConversionOS Demo is a professional renovation company in Greater Ontario Area run by Alex Thompson and Jordan Mitchell. Phone: (555) 123-4567. Email: info@conversionosdemo.com. We specialize in kitchens, bathrooms, basements, and outdoor spaces.`;
+export const COMPANY_SUMMARY = `McCarty Squared Inc. is a professional renovation company in London, ON run by Garnet & Carisa, founded in 2021. Phone: (226) 667-8940. Email: info@mccartysquared.ca. Tagline: "Dream. Plan. Build." We specialize in 13 service categories including accessibility modifications, net-zero homes, heritage restoration, kitchens, bathrooms, basements, custom cabinetry, and full design-build. Certified: RenoMark, LHBA, NetZero Home, Houzz Pro. Booking: https://myonlinebooking.co/booking/mccarty-squared-inc`;

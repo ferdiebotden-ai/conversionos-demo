@@ -772,7 +772,7 @@ export function QuoteEditor({
               <Button
                 onClick={handleOpenSendWizard}
                 disabled={lineItems.length === 0 || !customerEmail}
-                className="bg-[#D32F2F] hover:bg-[#B71C1C]"
+                className="bg-[#1565C0] hover:bg-[#B71C1C]"
               >
                 <Send className="h-4 w-4 mr-2" />
                 {sentAt ? 'Resend Quote' : 'Send Quote'}

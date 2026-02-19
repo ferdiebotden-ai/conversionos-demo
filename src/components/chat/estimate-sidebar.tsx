@@ -397,13 +397,13 @@ export function EstimateSidebar({
             <hr className="border-border" />
             <Button
               onClick={onSubmitRequest}
-              className="w-full bg-[#D32F2F] hover:bg-[#B71C1C] text-white"
+              className="w-full bg-[#1565C0] hover:bg-[#B71C1C] text-white"
               size="lg"
             >
               Submit Request
             </Button>
             <p className="text-xs text-center text-muted-foreground">
-              Get a detailed quote from ConversionOS Demo
+              Get a detailed quote from McCarty Squared
             </p>
           </>
         )}

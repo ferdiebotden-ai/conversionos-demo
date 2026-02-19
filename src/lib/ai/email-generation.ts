@@ -17,7 +17,7 @@ import {
 /**
  * System prompt for email generation
  */
-const EMAIL_GENERATION_SYSTEM_PROMPT = `You are a professional email writer for ConversionOS Demo, a home renovation company in Greater Ontario Area, Canada.
+const EMAIL_GENERATION_SYSTEM_PROMPT = `You are a professional email writer for McCarty Squared, a home renovation company in London, ON, Canada.
 
 Your task is to generate personalized, professional emails to accompany renovation quotes.
 
@@ -29,7 +29,7 @@ Your task is to generate personalized, professional emails to accompany renovati
 - Focus on quality work and customer satisfaction
 
 ## Email Guidelines
-1. Subject lines should be clear and professional (e.g., "Your Kitchen Renovation Quote - ConversionOS Demo")
+1. Subject lines should be clear and professional (e.g., "Your Kitchen Renovation Quote - McCarty Squared")
 2. Greeting should use the customer's first name
 3. Body should:
    - Thank them for their interest
@@ -41,7 +41,7 @@ Your task is to generate personalized, professional emails to accompany renovati
 5. Closing should be warm but professional
 
 ## Tone Examples
-GOOD: "Thank you for considering ConversionOS Demo for your basement renovation."
+GOOD: "Thank you for considering McCarty Squared for your basement renovation."
 BAD: "Thanks for reaching out!" (too casual)
 
 GOOD: "Please don't hesitate to reach out if you have any questions."
@@ -142,9 +142,9 @@ export function formatAIEmail(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px;">
-  <div style="border-bottom: 3px solid #D32F2F; padding-bottom: 20px; margin-bottom: 20px;">
-    <h1 style="color: #D32F2F; margin: 0; font-size: 24px;">ConversionOS Demo</h1>
-    <p style="color: #666; margin: 4px 0 0 0; font-size: 14px;">Quality Renovations in Greater Ontario Area</p>
+  <div style="border-bottom: 3px solid #1565C0; padding-bottom: 20px; margin-bottom: 20px;">
+    <h1 style="color: #1565C0; margin: 0; font-size: 24px;">McCarty Squared</h1>
+    <p style="color: #666; margin: 4px 0 0 0; font-size: 14px;">Quality Renovations in London, ON</p>
   </div>
 
   <p style="font-size: 16px; color: #333; margin-bottom: 16px;">${aiEmail.greeting}</p>
@@ -154,7 +154,7 @@ export function formatAIEmail(
   <div style="background-color: #f8f8f8; padding: 16px; border-radius: 8px; margin: 24px 0;">
     <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Quote Summary</strong></p>
     <p style="margin: 4px 0; color: #666;">Total: <strong style="color: #333;">${formatCurrency(quoteTotal)}</strong></p>
-    <p style="margin: 4px 0; color: #666;">Deposit Required: <strong style="color: #D32F2F;">${formatCurrency(depositRequired)}</strong></p>
+    <p style="margin: 4px 0; color: #666;">Deposit Required: <strong style="color: #1565C0;">${formatCurrency(depositRequired)}</strong></p>
   </div>
 
   <p style="margin-bottom: 16px; color: #333;">${aiEmail.callToAction}</p>
@@ -162,10 +162,10 @@ export function formatAIEmail(
   <p style="color: #333;">${aiEmail.closing}</p>
 
   <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e5e5e5; font-size: 12px; color: #666;">
-    <p style="margin: 0;"><strong style="color: #D32F2F;">ConversionOS Demo</strong></p>
-    <p style="margin: 4px 0;">123 Innovation Drive, Greater Ontario Area N0N 0N0</p>
-    <p style="margin: 4px 0;">Tel: (555) 123-4567</p>
-    <p style="margin: 4px 0;"><a href="https://www.conversionosdemo.com" style="color: #D32F2F;">www.conversionosdemo.com</a></p>
+    <p style="margin: 0;"><strong style="color: #1565C0;">McCarty Squared</strong></p>
+    <p style="margin: 4px 0;">123 Innovation Drive, London, ON N0N 0N0</p>
+    <p style="margin: 4px 0;">Tel: (226) 667-8940</p>
+    <p style="margin: 4px 0;"><a href="https://www.mccartysquared.ca" style="color: #1565C0;">www.mccartysquared.ca</a></p>
   </div>
 </body>
 </html>
@@ -189,10 +189,10 @@ ${aiEmail.callToAction}
 ${aiEmail.closing}
 
 --
-ConversionOS Demo
-123 Innovation Drive, Greater Ontario Area N0N 0N0
-Tel: (555) 123-4567
-www.conversionosdemo.com
+McCarty Squared
+123 Innovation Drive, London, ON N0N 0N0
+Tel: (226) 667-8940
+www.mccartysquared.ca
   `.trim();
 
   return {
@@ -213,7 +213,7 @@ export function generateDefaultEmail(
 ): FormattedEmail {
   const firstName = customerName.split(' ')[0];
 
-  const subject = `Your ${projectType.charAt(0).toUpperCase() + projectType.slice(1)} Renovation Quote - ConversionOS Demo`;
+  const subject = `Your ${projectType.charAt(0).toUpperCase() + projectType.slice(1)} Renovation Quote - McCarty Squared`;
 
   const htmlBody = `
 <!DOCTYPE html>
@@ -223,33 +223,33 @@ export function generateDefaultEmail(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px;">
-  <div style="border-bottom: 3px solid #D32F2F; padding-bottom: 20px; margin-bottom: 20px;">
-    <h1 style="color: #D32F2F; margin: 0; font-size: 24px;">ConversionOS Demo</h1>
-    <p style="color: #666; margin: 4px 0 0 0; font-size: 14px;">Quality Renovations in Greater Ontario Area</p>
+  <div style="border-bottom: 3px solid #1565C0; padding-bottom: 20px; margin-bottom: 20px;">
+    <h1 style="color: #1565C0; margin: 0; font-size: 24px;">McCarty Squared</h1>
+    <p style="color: #666; margin: 4px 0 0 0; font-size: 14px;">Quality Renovations in London, ON</p>
   </div>
 
   <p style="font-size: 16px; color: #333; margin-bottom: 16px;">Hi ${firstName},</p>
 
-  <p style="margin-bottom: 16px; color: #333;">Thank you for considering ConversionOS Demo for your ${projectType} renovation project. Please find your detailed quote attached to this email.</p>
+  <p style="margin-bottom: 16px; color: #333;">Thank you for considering McCarty Squared for your ${projectType} renovation project. Please find your detailed quote attached to this email.</p>
 
   <p style="margin-bottom: 16px; color: #333;">We've carefully reviewed your requirements and prepared an estimate that reflects our commitment to quality workmanship and fair pricing.</p>
 
   <div style="background-color: #f8f8f8; padding: 16px; border-radius: 8px; margin: 24px 0;">
     <p style="margin: 0 0 8px 0; font-size: 14px;"><strong>Quote Summary</strong></p>
     <p style="margin: 4px 0; color: #666;">Total: <strong style="color: #333;">${formatCurrency(quoteTotal)}</strong></p>
-    <p style="margin: 4px 0; color: #666;">Deposit Required: <strong style="color: #D32F2F;">${formatCurrency(depositRequired)}</strong></p>
+    <p style="margin: 4px 0; color: #666;">Deposit Required: <strong style="color: #1565C0;">${formatCurrency(depositRequired)}</strong></p>
   </div>
 
   <p style="margin-bottom: 16px; color: #333;">If you have any questions about the quote or would like to discuss your project further, please don't hesitate to reach out. We're happy to schedule a call or site visit at your convenience.</p>
 
   <p style="color: #333;">We look forward to working with you.</p>
-  <p style="color: #333; margin-top: 16px;">Best regards,<br>The ConversionOS Demo Team</p>
+  <p style="color: #333; margin-top: 16px;">Best regards,<br>The McCarty Squared Team</p>
 
   <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #e5e5e5; font-size: 12px; color: #666;">
-    <p style="margin: 0;"><strong style="color: #D32F2F;">ConversionOS Demo</strong></p>
-    <p style="margin: 4px 0;">123 Innovation Drive, Greater Ontario Area N0N 0N0</p>
-    <p style="margin: 4px 0;">Tel: (555) 123-4567</p>
-    <p style="margin: 4px 0;"><a href="https://www.conversionosdemo.com" style="color: #D32F2F;">www.conversionosdemo.com</a></p>
+    <p style="margin: 0;"><strong style="color: #1565C0;">McCarty Squared</strong></p>
+    <p style="margin: 4px 0;">123 Innovation Drive, London, ON N0N 0N0</p>
+    <p style="margin: 4px 0;">Tel: (226) 667-8940</p>
+    <p style="margin: 4px 0;"><a href="https://www.mccartysquared.ca" style="color: #1565C0;">www.mccartysquared.ca</a></p>
   </div>
 </body>
 </html>
@@ -258,7 +258,7 @@ export function generateDefaultEmail(
   const textBody = `
 Hi ${firstName},
 
-Thank you for considering ConversionOS Demo for your ${projectType} renovation project. Please find your detailed quote attached to this email.
+Thank you for considering McCarty Squared for your ${projectType} renovation project. Please find your detailed quote attached to this email.
 
 We've carefully reviewed your requirements and prepared an estimate that reflects our commitment to quality workmanship and fair pricing.
 
@@ -273,13 +273,13 @@ If you have any questions about the quote or would like to discuss your project 
 We look forward to working with you.
 
 Best regards,
-The ConversionOS Demo Team
+The McCarty Squared Team
 
 --
-ConversionOS Demo
-123 Innovation Drive, Greater Ontario Area N0N 0N0
-Tel: (555) 123-4567
-www.conversionosdemo.com
+McCarty Squared
+123 Innovation Drive, London, ON N0N 0N0
+Tel: (226) 667-8940
+www.mccartysquared.ca
   `.trim();
 
   return {

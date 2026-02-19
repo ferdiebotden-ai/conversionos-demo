@@ -7,12 +7,12 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react"
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Get in touch with ConversionOS Demo. Request a free quote or ask questions about your renovation project in Greater Ontario Area.",
+    "Get in touch with McCarty Squared Inc. Request a free quote or ask questions about your renovation project in London, ON.",
 }
 
 const businessHours = [
-  { day: "Monday - Friday", hours: "8:00 AM - 6:00 PM" },
-  { day: "Saturday", hours: "9:00 AM - 4:00 PM" },
+  { day: "Monday - Friday", hours: "9:00 AM - 5:00 PM" },
+  { day: "Saturday", hours: "Closed" },
   { day: "Sunday", hours: "Closed" },
 ]
 
@@ -78,25 +78,17 @@ export default function ContactPage() {
                       <div className="flex items-start gap-3 text-muted-foreground">
                         <Phone className="mt-0.5 size-5 shrink-0 text-primary" />
                         <span>
-                          <strong className="block text-foreground">General Inquiries</strong>
-                          Jordan Mitchell, Business Manager
-                          <br />
-                          <a href="tel:5551234567" className="hover:text-primary">(555) 123-4567</a>
-                          <br />
-                          <a href="mailto:info@conversionosdemo.com" className="hover:text-primary">info@conversionosdemo.com</a>
+                          <strong className="block text-foreground">Phone</strong>
+                          <a href="tel:2266678940" className="hover:text-primary">(226) 667-8940</a>
                         </span>
                       </div>
                     </li>
                     <li>
                       <div className="flex items-start gap-3 text-muted-foreground">
-                        <Phone className="mt-0.5 size-5 shrink-0 text-primary" />
+                        <Mail className="mt-0.5 size-5 shrink-0 text-primary" />
                         <span>
-                          <strong className="block text-foreground">Job Site Contact</strong>
-                          Alex Thompson, Owner/Operator
-                          <br />
-                          <a href="tel:5551234568" className="hover:text-primary">(555) 123-4568</a>
-                          <br />
-                          <a href="mailto:info@conversionosdemo.com" className="hover:text-primary">info@conversionosdemo.com</a>
+                          <strong className="block text-foreground">Email</strong>
+                          <a href="mailto:info@mccartysquared.ca" className="hover:text-primary">info@mccartysquared.ca</a>
                         </span>
                       </div>
                     </li>
@@ -104,10 +96,20 @@ export default function ContactPage() {
                       <MapPin className="mt-0.5 size-5 shrink-0 text-primary" />
                       <span>
                         <strong className="block text-foreground">Location</strong>
-                        Greater Ontario Area, Canada
+                        London, ON, Canada
                       </span>
                     </li>
                   </ul>
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <a
+                      href="https://myonlinebooking.co/booking/mccarty-squared-inc"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block text-sm font-medium text-primary hover:underline"
+                    >
+                      Book a consultation online →
+                    </a>
+                  </div>
                 </CardContent>
               </Card>
 

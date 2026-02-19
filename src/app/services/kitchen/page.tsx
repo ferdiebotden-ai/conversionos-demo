@@ -8,7 +8,7 @@ import { Check, ChefHat } from "lucide-react"
 export const metadata: Metadata = {
   title: "Kitchen Renovation",
   description:
-    "Transform your kitchen with ConversionOS Demo. Custom cabinets, countertops, appliance installation, and complete kitchen remodels in Greater Ontario Area.",
+    "Transform your kitchen with McCarty Squared. Custom cabinets, countertops, appliance installation, and complete kitchen remodels in London, ON.",
 }
 
 const features = [

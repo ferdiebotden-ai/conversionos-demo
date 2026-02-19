@@ -24,7 +24,7 @@ import type { Lead, QuoteDraft } from '@/types/database';
 
 // Brand colors
 const COLORS = {
-  primary: '#D32F2F',
+  primary: '#1565C0',
   secondary: '#1a1a1a',
   muted: '#666666',
   border: '#e5e5e5',
@@ -255,14 +255,14 @@ export function QuoteEmailTemplate({ lead, quote, customMessage }: QuoteEmailPro
     <Html>
       <Head />
       <Preview>
-        Your quote from ConversionOS Demo - {formatCurrency(quote.total || 0)} for your {projectType.toLowerCase()}
+        Your quote from McCarty Squared - {formatCurrency(quote.total || 0)} for your {projectType.toLowerCase()}
       </Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Header */}
           <Section style={headerSection}>
-            <Text style={brandName}>ConversionOS Demo</Text>
-            <Text style={tagline}>Quality Renovations in Greater Ontario Area</Text>
+            <Text style={brandName}>McCarty Squared</Text>
+            <Text style={tagline}>Quality Renovations in London, ON</Text>
           </Section>
 
           {/* Content */}
@@ -270,7 +270,7 @@ export function QuoteEmailTemplate({ lead, quote, customMessage }: QuoteEmailPro
             <Text style={greeting}>Hi {firstName},</Text>
 
             <Text style={paragraph}>
-              Thank you for considering ConversionOS Demo for your {projectType.toLowerCase()}.
+              Thank you for considering McCarty Squared for your {projectType.toLowerCase()}.
               We&apos;re excited about the possibility of bringing your vision to life!
             </Text>
 
@@ -380,7 +380,7 @@ export function QuoteEmailTemplate({ lead, quote, customMessage }: QuoteEmailPro
             </Text>
 
             <Section style={ctaSection}>
-              <Button href="mailto:quotes@conversionosdemo.com" style={ctaButton}>
+              <Button href="mailto:quotes@mccartysquared.ca" style={ctaButton}>
                 Reply to This Quote
               </Button>
             </Section>
@@ -389,11 +389,11 @@ export function QuoteEmailTemplate({ lead, quote, customMessage }: QuoteEmailPro
           {/* Footer */}
           <Section style={footerSection}>
             <Text style={footerText}>
-              ConversionOS Demo | Greater Ontario Area
+              McCarty Squared | London, ON
             </Text>
             <Text style={footerText}>
-              <Link href="mailto:quotes@conversionosdemo.com" style={footerLink}>
-                quotes@conversionosdemo.com
+              <Link href="mailto:quotes@mccartysquared.ca" style={footerLink}>
+                quotes@mccartysquared.ca
               </Link>
               {' '}&bull;{' '}
               <Link href="tel:+15195550000" style={footerLink}>
