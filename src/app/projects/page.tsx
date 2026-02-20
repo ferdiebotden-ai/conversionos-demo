@@ -6,7 +6,7 @@ import { ProjectGallery } from "@/components/project-gallery"
 export const metadata: Metadata = {
   title: "Our Projects",
   description:
-    "Browse our portfolio of kitchen, bathroom, basement, and flooring renovations in the London, ON, Ontario.",
+    "Browse our portfolio of kitchen, bathroom, basement, and flooring renovations in London, ON and surrounding areas.",
 }
 
 export default function ProjectsPage() {

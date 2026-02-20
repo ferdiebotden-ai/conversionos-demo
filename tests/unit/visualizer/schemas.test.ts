@@ -149,6 +149,12 @@ describe('Visualization Schemas', () => {
         currentStyle: null,
         estimatedDimensions: null,
         potentialFocalPoints: null,
+        wallCount: null,
+        wallDimensions: null,
+        estimatedCeilingHeight: null,
+        spatialZones: null,
+        openings: null,
+        architecturalLines: null,
       };
       expect(() => VisualizationRoomAnalysisSchema.parse(validAnalysis)).not.toThrow();
     });
@@ -167,6 +173,12 @@ describe('Visualization Schemas', () => {
         currentStyle: 'traditional',
         estimatedDimensions: '12x14 feet',
         potentialFocalPoints: ['island', 'bay window'],
+        wallCount: 3,
+        wallDimensions: [{ wall: 'left wall', estimatedLength: '~12 feet', hasWindow: true, hasDoor: false }],
+        estimatedCeilingHeight: '~9 feet',
+        spatialZones: [{ name: 'cooking zone', description: 'stove and prep area', approximateLocation: 'left third' }],
+        openings: [{ type: 'window' as const, wall: 'left wall', approximateSize: '36x48 inches', approximatePosition: 'centered' }],
+        architecturalLines: { dominantDirection: 'horizontal', vanishingPointDescription: 'centered', symmetryAxis: null },
       };
       expect(() => VisualizationRoomAnalysisSchema.parse(withOptionals)).not.toThrow();
     });
@@ -185,6 +197,12 @@ describe('Visualization Schemas', () => {
         currentStyle: null,
         estimatedDimensions: null,
         potentialFocalPoints: null,
+        wallCount: null,
+        wallDimensions: null,
+        estimatedCeilingHeight: null,
+        spatialZones: null,
+        openings: null,
+        architecturalLines: null,
       };
       expect(() => VisualizationRoomAnalysisSchema.parse(invalid)).toThrow();
 
@@ -205,6 +223,12 @@ describe('Visualization Schemas', () => {
         currentStyle: null,
         estimatedDimensions: null,
         potentialFocalPoints: null,
+        wallCount: null,
+        wallDimensions: null,
+        estimatedCeilingHeight: null,
+        spatialZones: null,
+        openings: null,
+        architecturalLines: null,
       };
 
       ['excellent', 'good', 'dated', 'needs_renovation'].forEach(condition => {

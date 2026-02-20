@@ -69,11 +69,29 @@ export function ContactForm() {
 
     setIsSubmitting(true)
 
-    // Simulate form submission (server action will be added later)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: result.data.name,
+          email: result.data.email,
+          phone: result.data.phone || undefined,
+          projectType: result.data.projectType,
+          goalsText: result.data.message,
+        }),
+      })
 
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+      if (!response.ok) {
+        throw new Error("Submission failed")
+      }
+
+      setIsSubmitted(true)
+    } catch {
+      setErrors({ message: ["Something went wrong. Please try again or call us directly at (226) 667-8940."] })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (

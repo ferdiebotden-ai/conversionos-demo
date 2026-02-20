@@ -34,8 +34,8 @@ export default function ServicesPage() {
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
               From complete kitchen remodels to basement finishing, we provide
-              comprehensive renovation services for homeowners in Ontario and
-              the London, ON.
+              comprehensive renovation services for homeowners in London, ON
+              and surrounding areas.
             </p>
           </div>
         </div>

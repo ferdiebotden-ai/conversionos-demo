@@ -60,7 +60,7 @@ interface ChatInterfaceProps {
   visualizationContext?: VisualizationContext | undefined;
 }
 
-const WELCOME_MESSAGE = "Hey there! I'm Marcus, the budget and cost specialist here at McCarty Squared. I help homeowners in the London, ON understand what their renovation will cost — no surprises, no pressure.\n\nTell me about the space you're thinking of renovating, or snap a quick photo and I'll take a look!";
+const WELCOME_MESSAGE = "Hey there! I'm Marcus, the budget and cost specialist here at McCarty Squared. I help homeowners in the London, ON area understand what their renovation will cost — no surprises, no pressure.\n\nTell me about the space you're thinking of renovating, or snap a quick photo and I'll take a look!";
 
 // Map frontend timeline values to API enum values
 function mapTimelineToApi(timeline: string | undefined): string | undefined {
