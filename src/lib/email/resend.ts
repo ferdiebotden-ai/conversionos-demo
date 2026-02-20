@@ -16,8 +16,8 @@ function getResendClient(): Resend {
 }
 
 // Email configuration
-const FROM_EMAIL = process.env['FROM_EMAIL'] || 'McCarty Squared <info@mccartysquared.ca>';
-const OWNER_EMAIL = process.env['OWNER_EMAIL'] || 'quotes@mccartysquared.ca';
+const FROM_EMAIL = process.env['FROM_EMAIL'] || 'ConversionOS <noreply@conversionos.com>';
+const OWNER_EMAIL = process.env['OWNER_EMAIL'] || 'admin@conversionos.com';
 
 export interface SendEmailParams {
   to: string | string[];

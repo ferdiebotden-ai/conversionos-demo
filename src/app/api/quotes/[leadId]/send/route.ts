@@ -25,8 +25,8 @@ const SendQuoteSchema = z.object({
 });
 
 // Email configuration
-const FROM_EMAIL = process.env['FROM_EMAIL'] || 'McCarty Squared <info@mccartysquared.ca>';
-const REPLY_TO_EMAIL = process.env['REPLY_TO_EMAIL'] || 'quotes@mccartysquared.ca';
+const FROM_EMAIL = process.env['FROM_EMAIL'] || 'ConversionOS <noreply@conversionos.com>';
+const REPLY_TO_EMAIL = process.env['REPLY_TO_EMAIL'] || 'admin@conversionos.com';
 
 /**
  * POST /api/quotes/[leadId]/send

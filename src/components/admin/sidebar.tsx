@@ -20,6 +20,7 @@ import {
   LogOut,
   Home,
 } from 'lucide-react';
+import { useBranding } from '@/components/branding-provider';
 
 const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -38,6 +39,7 @@ interface SidebarProps {
 export function Sidebar({ className, onNavClick }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const branding = useBranding();
 
   const isActive = (href: string) => {
     if (href === '/admin') {
@@ -65,7 +67,7 @@ export function Sidebar({ className, onNavClick }: SidebarProps) {
             <Sparkles className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <span className="font-bold text-sm">McCarty Squared</span>
+            <span className="font-bold text-sm">{branding.name}</span>
             <span className="block text-xs text-muted-foreground">Admin</span>
           </div>
         </Link>
@@ -114,7 +116,7 @@ export function Sidebar({ className, onNavClick }: SidebarProps) {
         </button>
 
         <div className="mt-4 px-3 text-xs text-muted-foreground">
-          <p>Lead-to-Quote Engine v2</p>
+          <p>ConversionOS</p>
           <p>Powered by AI</p>
         </div>
       </div>
