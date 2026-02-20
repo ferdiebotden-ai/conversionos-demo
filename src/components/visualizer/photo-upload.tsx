@@ -26,7 +26,6 @@ interface PhotoUploadProps {
 export function PhotoUpload({ value, onChange, className }: PhotoUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const processFile = useCallback(
@@ -138,19 +137,12 @@ export function PhotoUpload({ value, onChange, className }: PhotoUploadProps) {
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
-          onPointerDown={() => {
-            if (isProcessing) return;
-            setIsClicked(true);
-            setTimeout(() => setIsClicked(false), 600);
-          }}
           className={cn(
-            'relative rounded-xl border-2 border-dashed transition-all duration-200',
+            'group relative rounded-xl border-2 border-dashed transition-colors',
             'flex flex-col items-center justify-center py-12 px-6',
             isDragging
               ? 'border-primary bg-primary/5'
-              : isClicked
-                ? 'border-primary bg-primary/5 ring-2 ring-primary/30'
-                : 'border-border bg-muted/30 hover:border-primary/50 hover:bg-muted/50',
+              : 'border-border bg-muted/30 hover:border-primary/50 hover:bg-muted/50 active:border-primary active:bg-primary/5 active:ring-2 active:ring-primary/30',
             isProcessing && 'opacity-50 pointer-events-none'
           )}
         >
@@ -163,19 +155,11 @@ export function PhotoUpload({ value, onChange, className }: PhotoUploadProps) {
             aria-label="Upload room photo"
           />
 
-          <div
-            className={cn(
-              'w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors duration-200',
-              isClicked ? 'bg-primary/20' : 'bg-muted'
-            )}
-          >
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors bg-muted group-active:bg-primary/20">
             {isProcessing ? (
               <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
             ) : (
-              <Upload className={cn(
-                'w-8 h-8 transition-colors duration-200',
-                isClicked ? 'text-primary' : 'text-muted-foreground'
-              )} />
+              <Upload className="w-8 h-8 transition-colors text-muted-foreground group-active:text-primary" />
             )}
           </div>
 
