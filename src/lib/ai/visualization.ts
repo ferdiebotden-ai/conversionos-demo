@@ -92,8 +92,8 @@ export async function generateVisualizationConcept(
     const config = roomTypeOrConfig;
     const useEnhanced = config.useEnhancedPrompts !== false;
 
-    if (useEnhanced && (config.photoAnalysis || config.designIntent)) {
-      // Use full 6-part prompt with analysis/intent data
+    if (useEnhanced && (config.photoAnalysis || config.designIntent || config.voicePreferencesSummary)) {
+      // Use full 6-part prompt with analysis/intent/voice data
       const promptData: RenovationPromptData = {
         roomType: config.roomType,
         style: config.style,
@@ -104,6 +104,9 @@ export async function generateVisualizationConcept(
         ...(config.hasDepthMap && { hasDepthMap: true }),
         ...(config.hasEdgeMap && { hasEdgeMap: true }),
         ...(config.depthRange && { depthRange: config.depthRange }),
+        ...(config.customRoomType && { customRoomType: config.customRoomType }),
+        ...(config.customStyle && { customStyle: config.customStyle }),
+        ...(config.voicePreferencesSummary && { voicePreferencesSummary: config.voicePreferencesSummary }),
       };
       prompt = buildRenovationPrompt(promptData);
     } else {
@@ -112,6 +115,9 @@ export async function generateVisualizationConcept(
         style: config.style,
         variationIndex: conceptIndex,
         ...(config.constraints && { constraints: config.constraints }),
+        ...(config.customRoomType && { customRoomType: config.customRoomType }),
+        ...(config.customStyle && { customStyle: config.customStyle }),
+        ...(config.voicePreferencesSummary && { voicePreferencesSummary: config.voicePreferencesSummary }),
       };
       prompt = buildRenovationPrompt(promptData);
     }
