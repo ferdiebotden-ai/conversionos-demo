@@ -149,7 +149,7 @@ export function PhotoUpload({ value, onChange, className }: PhotoUploadProps) {
             isDragging
               ? 'border-primary bg-primary/5'
               : isClicked
-                ? 'border-primary bg-primary/5 scale-[0.98]'
+                ? 'border-primary bg-primary/5 ring-2 ring-primary/30'
                 : 'border-border bg-muted/30 hover:border-primary/50 hover:bg-muted/50',
             isProcessing && 'opacity-50 pointer-events-none'
           )}
