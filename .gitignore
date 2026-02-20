@@ -12,6 +12,16 @@
 
 # testing
 /coverage
+/test-results
+/testing/node_modules
+/testing/reports
+/testing/scripts/.playwright-mcp
+/testing/scripts/screenshots
+/testing/scripts/logs
+/testing/scripts/*.png
+
+# supabase
+supabase/.temp/
 
 # next.js
 /.next/
