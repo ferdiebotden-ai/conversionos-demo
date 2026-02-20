@@ -9,38 +9,29 @@ const testimonials = [
   {
     id: 1,
     quote:
-      "The team did an excellent job on the complete renovation of our bathroom. They were extremely attentive to the smallest detail and kept us informed every step of the way. The work was excellent, timely, and well-priced.",
-    author: "Sarah M.",
-    projectType: "Bathroom Renovation",
-    rating: 5,
-    image: "/images/demo/bathroom-spa.png",
-  },
-  {
-    id: 2,
-    quote:
-      "They transformed our unfinished basement into a beautiful living space. The workmanship, attention to detail, and suggestions were outstanding. When we needed changes to our original plans, the work continued smoothly and quickly!",
-    author: "David L.",
-    projectType: "Basement Finishing",
-    rating: 5,
-    image: "/images/demo/basement-entertainment.png",
-  },
-  {
-    id: 3,
-    quote:
-      "From the initial quote to the final walkthrough, the entire experience was fantastic. Thoughtful planning, efficient timeline, mindful of budget, and the quality of work exceeded our expectations. We love our new kitchen!",
-    author: "Emily R.",
-    projectType: "Kitchen Renovation",
+      "McCarty Squared did a fantastic job renovating our house. Garnet and Carisa fully understood our vision, ensuring everything \u2014 kitchen, bathrooms and bedrooms \u2014 was perfect. We won\u2019t hesitate to call them for future projects. Highly recommend them!",
+    author: "Ziad A.",
+    projectType: "Whole Home Renovation",
     rating: 5,
     image: "/images/demo/kitchen-modern.png",
   },
   {
-    id: 4,
+    id: 2,
     quote:
-      "Professional, reliable, and the quality speaks for itself. Would highly recommend to anyone looking for a renovation contractor.",
-    author: "James K.",
+      "Garnet and Carisa helped with my apartment overhaul in a 112-year-old house. They combined what I had hoped with new ideas I had never considered and provided exceptional workmanship to complete the project. They made me feel like family and my house is now truly a home.",
+    author: "Megan E.",
+    projectType: "Heritage Apartment Overhaul",
+    rating: 5,
+    image: "/images/demo/bathroom-spa.png",
+  },
+  {
+    id: 3,
+    quote:
+      "Garnet\u2019s professionalism, knowledge, and expertise are among the best in London. I\u2019ve worked with six other contractors in the past nine years, and Garnet was by far my favorite. His precise assessment and detailed education on technical aspects were invaluable.",
+    author: "Jenny K. S.",
     projectType: "Home Renovation",
     rating: 5,
-    image: "/images/demo/testimonial-home.png",
+    image: "/images/demo/basement-entertainment.png",
   },
 ]
 

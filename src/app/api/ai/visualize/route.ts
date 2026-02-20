@@ -23,7 +23,6 @@ import {
 import { VISUALIZATION_CONFIG, type GeneratedImage, type ReferenceImage } from '@/lib/ai/gemini';
 import { estimateDepth } from '@/lib/ai/depth-estimation';
 import { extractEdges } from '@/lib/ai/edge-detection';
-import { generateWithRefinement } from '@/lib/ai/iterative-generation';
 import { AI_CONFIG } from '@/lib/ai/config';
 import {
   analyzeRoomPhotoForVisualization,
@@ -73,8 +72,8 @@ const enhancedVisualizationRequestSchema = visualizationRequestSchema
     mode: z.enum(['quick', 'conversation', 'streamlined']).optional().default('quick'),
   });
 
-// Maximum execution time for Vercel
-export const maxDuration = 90;
+// Maximum execution time for Vercel (120s for Gemini image gen headroom)
+export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -232,7 +231,8 @@ export async function POST(request: NextRequest) {
       supabase,
       image,
       visualizationConfig,
-      count
+      count,
+      startTime
     );
 
     // Upload generated concepts to Supabase Storage (for real generated images)
@@ -269,36 +269,34 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (dbError) {
-      console.error('Database error:', dbError);
-      const error: VisualizationError = {
-        error: 'Failed to save visualization',
-        code: 'STORAGE_ERROR',
-        details: dbError.message,
-      };
-      return NextResponse.json(error, { status: 500 });
+      // DB save failed — log but still return the generated concepts
+      // The visualization was expensive to generate; don't throw it away
+      console.error('Database error (non-fatal, returning concepts anyway):', dbError);
     }
 
     // Record metrics (fire and forget - don't block response)
-    recordVisualizationMetrics(supabase, {
-      visualizationId: visualization.id,
-      generationTimeMs,
-      conceptsRequested: count,
-      conceptsGenerated: concepts.length,
-      mode: (mode === 'streamlined' ? 'quick' : mode) || 'quick',
-      photoAnalyzed: !!photoAnalysis,
-      conversationTurns: (conversationContext as Record<string, unknown>)?.['turnCount'] as number || 0,
-    }).catch((err) => console.error('Failed to record metrics:', err));
+    if (!dbError && visualization) {
+      recordVisualizationMetrics(supabase, {
+        visualizationId: visualization.id,
+        generationTimeMs,
+        conceptsRequested: count,
+        conceptsGenerated: concepts.length,
+        mode: (mode === 'streamlined' ? 'quick' : mode) || 'quick',
+        photoAnalyzed: !!photoAnalysis,
+        conversationTurns: (conversationContext as Record<string, unknown>)?.['turnCount'] as number || 0,
+      }).catch((err) => console.error('Failed to record metrics:', err));
+    }
 
     // Build response — use effective types for schema compliance
     const response: VisualizationResponse = {
-      id: visualization.id,
+      id: visualization?.id ?? `local-${Date.now()}`,
       originalImageUrl,
       roomType: effectiveRoomType,
       style: effectiveStyle,
       constraints: constraints || undefined,
       concepts,
       generationTimeMs,
-      createdAt: visualization.created_at,
+      createdAt: visualization?.created_at ?? new Date().toISOString(),
     };
 
     return NextResponse.json(response);
@@ -418,66 +416,111 @@ async function uploadGeneratedImage(
   }
 }
 
-// Generate concepts using enhanced config (new approach)
+/**
+ * Retry a single Gemini generation with exponential backoff for rate limits
+ */
+async function generateWithRetry(
+  imageBase64: string,
+  config: VisualizationConfig,
+  conceptIndex: number,
+  maxRetries: number = 2
+): Promise<GeneratedImage | null> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await generateVisualizationConcept(
+        imageBase64,
+        config,
+        undefined,
+        undefined,
+        conceptIndex
+      );
+      return result;
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      const isRateLimit = msg.includes('429') || msg.includes('quota') || msg.includes('rate');
+      const isTimeout = msg.includes('timed out') || msg.includes('timeout');
+
+      if (attempt < maxRetries && (isRateLimit || isTimeout)) {
+        const delay = (attempt + 1) * 5000; // 5s, 10s backoff
+        console.warn(`Concept ${conceptIndex} attempt ${attempt + 1} failed (${isRateLimit ? 'rate limit' : 'timeout'}), retrying in ${delay / 1000}s...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      throw error;
+    }
+  }
+  return null;
+}
+
+// Generate concepts using enhanced config — sequential with retry for reliability
 async function generateConceptsWithGeminiEnhanced(
   supabase: ReturnType<typeof createServiceClient>,
   imageBase64: string,
   config: VisualizationConfig,
-  count: number
+  count: number,
+  functionStartTime: number
 ): Promise<GeneratedConcept[]> {
   const concepts: GeneratedConcept[] = [];
   const errors: Error[] = [];
 
-  // Generate concepts in parallel for speed
-  // Concept 0 uses iterative refinement; concepts 1-3 are single-shot
-  const promises = Array.from({ length: count }, async (_, i) => {
-    try {
-      let result: GeneratedImage | null;
+  // Generate concepts in batches of 2 to stay within Gemini rate limits
+  // Batch 1: concepts 0 + 1 in parallel
+  // Batch 2: concepts 2 + 3 in parallel (if requested)
+  const batchSize = 2;
+  const batches: number[][] = [];
+  for (let i = 0; i < count; i += batchSize) {
+    batches.push(Array.from({ length: Math.min(batchSize, count - i) }, (_, j) => i + j));
+  }
 
-      if (i === 0 && AI_CONFIG.pipeline.enableIterativeRefinement) {
-        // Primary concept gets iterative refinement
-        const refined = await generateWithRefinement(imageBase64, config);
-        result = refined.image;
-        if (refined.wasRefined) {
-          console.log(`Concept 0 was refined (validation score: ${refined.validationScore})`);
-        }
-      } else {
-        result = await generateVisualizationConcept(
-          imageBase64,
-          config,
-          undefined,
-          undefined,
-          i
-        );
-      }
+  for (const batch of batches) {
+    const batchStartTime = Date.now();
+    console.log(`Generating concept batch [${batch.join(', ')}]...`);
 
-      if (result) {
-        // Upload to Supabase Storage and get URL
-        const imageUrl = await uploadGeneratedImage(supabase, result, i);
-        if (imageUrl) {
-          return {
-            id: `concept-${i + 1}-${Date.now()}`,
-            imageUrl,
-            description: buildConceptDescription(config, i),
-            generatedAt: new Date().toISOString(),
-          };
+    const promises = batch.map(async (i) => {
+      try {
+        const result = await generateWithRetry(imageBase64, config, i);
+
+        if (result) {
+          // Upload to Supabase Storage and get URL
+          const imageUrl = await uploadGeneratedImage(supabase, result, i);
+          if (imageUrl) {
+            return {
+              id: `concept-${i + 1}-${Date.now()}`,
+              imageUrl,
+              description: buildConceptDescription(config, i),
+              generatedAt: new Date().toISOString(),
+            };
+          }
         }
+        return null;
+      } catch (error) {
+        console.error(`Failed to generate concept ${i + 1}:`, error);
+        if (error instanceof Error) {
+          errors.push(error);
+        }
+        return null;
       }
-      return null;
-    } catch (error) {
-      console.error(`Failed to generate concept ${i + 1}:`, error);
-      if (error instanceof Error) {
-        errors.push(error);
+    });
+
+    const results = await Promise.allSettled(promises);
+    for (const result of results) {
+      if (result.status === 'fulfilled' && result.value) {
+        concepts.push(result.value);
       }
-      return null;
     }
-  });
 
-  const results = await Promise.allSettled(promises);
+    console.log(`Batch completed in ${Date.now() - batchStartTime}ms (${concepts.length} concepts so far)`);
 
-  for (const result of results) {
-    if (result.status === 'fulfilled' && result.value) {
-      concepts.push(result.value);
+    // If we already have at least 2 concepts, we can return early if running low on time
+    // This ensures we return something useful even if later batches would timeout
+    if (concepts.length >= 2 && batches.indexOf(batch) < batches.length - 1) {
+      // Check if we're running low on time (>80s elapsed since function start)
+      // The function will be killed at maxDuration, so leave headroom for upload + DB
+      const elapsedSinceStart = Date.now() - functionStartTime;
+      if (elapsedSinceStart > 80000) {
+        console.warn(`Time budget running low (${(elapsedSinceStart / 1000).toFixed(1)}s elapsed), returning ${concepts.length} concepts`);
+        break;
+      }
     }
   }
 
@@ -534,7 +577,8 @@ async function generateConceptsWithGemini(
       ...(constraints && { constraints }),
       useEnhancedPrompts: true,
     },
-    count
+    count,
+    Date.now()
   );
 }
 

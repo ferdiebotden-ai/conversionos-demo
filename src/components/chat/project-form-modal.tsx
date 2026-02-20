@@ -147,7 +147,7 @@ export function ProjectFormModal({
               </div>
               <DialogTitle>Request Submitted!</DialogTitle>
               <DialogDescription className="text-center">
-                Thanks{formData.name ? `, ${formData.name.split(' ')[0]}` : ''}! ConversionOS Demo will
+                Thanks{formData.name ? `, ${formData.name.split(' ')[0]}` : ''}! McCarty Squared will
                 review your project and contact you within 24 hours.
               </DialogDescription>
             </DialogHeader>
@@ -208,7 +208,7 @@ export function ProjectFormModal({
                   <Input
                     id="form-phone"
                     type="tel"
-                    placeholder="(555) 123-4567"
+                    placeholder="(226) 667-8940"
                     value={formData.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
                   />
@@ -317,7 +317,7 @@ export function ProjectFormModal({
               <Button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="sm:flex-1 bg-[#D32F2F] hover:bg-[#B71C1C]"
+                className="sm:flex-1 bg-[#1565C0] hover:bg-[#B71C1C]"
               >
                 {isSubmitting ? (
                   <>

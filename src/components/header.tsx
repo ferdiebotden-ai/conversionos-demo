@@ -14,19 +14,19 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet"
+import { useBranding } from "@/components/branding-provider"
 
-// Navigation links (Admin link included for demo — remove before production)
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: "/projects", label: "Projects" },
   { href: "/about", label: "About" },
-  { href: "/admin", label: "Admin" },
 ] as const
 
 export function Header() {
   const [isOpen, setIsOpen] = React.useState(false)
   const pathname = usePathname()
+  const branding = useBranding()
 
   // Hide public header on admin routes
   if (pathname.startsWith('/admin')) {
@@ -52,7 +52,7 @@ export function Header() {
             <SheetContent side="left" className="w-72">
               <SheetHeader className="border-b pb-4">
                 <SheetTitle>
-                  <Logo />
+                  <Logo name={branding.name} tagline={branding.tagline} />
                 </SheetTitle>
                 <SheetDescription className="sr-only">
                   Navigation menu
@@ -96,7 +96,7 @@ export function Header() {
           href="/"
           className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0"
         >
-          <Logo />
+          <Logo name={branding.name} tagline={branding.tagline} />
         </Link>
 
         {/* Desktop navigation */}
@@ -138,10 +138,20 @@ export function Header() {
   )
 }
 
-function Logo() {
+function Logo({ name, tagline }: { name: string; tagline: string }) {
+  // Split name into words: first word normal, rest primary-colored
+  const words = name.split(" ")
+  const first = words[0]
+  const rest = words.slice(1).join(" ")
+
   return (
-    <span className="text-xl font-bold tracking-tight text-foreground">
-      ConversionOS <span className="text-primary">Demo</span>
-    </span>
+    <div className="flex flex-col leading-tight">
+      <span className="text-xl font-bold tracking-tight text-foreground">
+        {first}{rest && <> <span className="text-primary">{rest}</span></>}
+      </span>
+      <span className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
+        {tagline}
+      </span>
+    </div>
   )
 }

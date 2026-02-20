@@ -159,7 +159,7 @@ const container = {
 };
 
 const badge = {
-  backgroundColor: '#D32F2F',
+  backgroundColor: '#1565C0',
   color: '#ffffff',
   padding: '6px 12px',
   borderRadius: '4px',
@@ -201,7 +201,7 @@ const infoValue = {
 };
 
 const link = {
-  color: '#D32F2F',
+  color: '#1565C0',
   textDecoration: 'none',
 };
 
@@ -210,7 +210,7 @@ const estimateBox = {
   borderRadius: '8px',
   padding: '20px',
   margin: '0 0 16px',
-  borderLeft: '4px solid #D32F2F',
+  borderLeft: '4px solid #1565C0',
 };
 
 const estimateLabel = {
@@ -224,7 +224,7 @@ const estimateLabel = {
 const estimateValue = {
   fontSize: '28px',
   fontWeight: '700',
-  color: '#D32F2F',
+  color: '#1565C0',
   margin: '0',
 };
 
@@ -273,7 +273,7 @@ const ctaSection = {
 };
 
 const ctaButton = {
-  backgroundColor: '#D32F2F',
+  backgroundColor: '#1565C0',
   borderRadius: '8px',
   color: '#fff',
   fontSize: '16px',

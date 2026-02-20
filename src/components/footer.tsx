@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { Mail, MapPin, Phone } from "lucide-react"
+import { useBranding } from "@/components/branding-provider"
 
 const quickLinks = [
   { href: "/services", label: "Our Services" },
@@ -20,6 +21,7 @@ const services = [
 
 export function Footer() {
   const pathname = usePathname()
+  const branding = useBranding()
   const currentYear = new Date().getFullYear()
 
   // Hide public footer on admin routes
@@ -33,12 +35,33 @@ export function Footer() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div className="space-y-4">
-            <span className="text-xl font-bold tracking-tight text-foreground">
-              ConversionOS <span className="text-primary">Demo</span>
-            </span>
+            <div className="flex flex-col leading-tight">
+              <span className="text-xl font-bold tracking-tight text-foreground">
+                {branding.name.split(" ")[0]}{" "}
+                <span className="text-primary">{branding.name.split(" ").slice(1).join(" ")}</span>
+              </span>
+              <span className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">
+                {branding.tagline}
+              </span>
+            </div>
             <p className="text-sm text-muted-foreground">
-              Professional renovation services for homes and businesses across Ontario.
+              Professional renovation services for homes and businesses in {branding.city}, {branding.province} and surrounding communities.
             </p>
+            {branding.socials.length > 0 && (
+              <div className="flex gap-4">
+                {branding.socials.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {social.label}
+                  </a>
+                ))}
+              </div>
+            )}
             <p className="text-xs text-muted-foreground/40">
               Powered by <span className="font-semibold">ConversionOS</span>
             </p>
@@ -90,24 +113,24 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm text-muted-foreground">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
-                <span>Greater Ontario Area, Canada</span>
+                <span>{branding.city}, {branding.province}, Canada</span>
               </li>
               <li>
                 <a
-                  href="tel:(555) 123-4567"
+                  href={`tel:${branding.phone.replace(/\D/g, '')}`}
                   className="flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-primary"
                 >
                   <Phone className="size-4 shrink-0 text-primary" />
-                  (555) 123-4567
+                  {branding.phone}
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:info@conversionosdemo.com"
+                  href={`mailto:${branding.email}`}
                   className="flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-primary"
                 >
                   <Mail className="size-4 shrink-0 text-primary" />
-                  info@conversionosdemo.com
+                  {branding.email}
                 </a>
               </li>
             </ul>
@@ -116,18 +139,17 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-sm text-muted-foreground md:flex-row">
-          <p>&copy; {currentYear} ConversionOS Demo. All rights reserved.</p>
+          <p>&copy; {currentYear} {branding.name}. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link href="/privacy" className="transition-colors hover:text-primary">
+            <span className="text-muted-foreground/60">
               Privacy Policy
-            </Link>
-            <Link href="/terms" className="transition-colors hover:text-primary">
+            </span>
+            <span className="text-muted-foreground/60">
               Terms of Service
-            </Link>
+            </span>
           </div>
         </div>
       </div>
     </footer>
   )
 }
-

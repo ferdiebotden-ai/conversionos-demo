@@ -73,14 +73,14 @@ export async function POST(
       `Balance Due: $${Number(invoice.balance_due).toFixed(2)}`,
       `Due Date: ${invoice.due_date}`,
       '',
-      custom_message ? `Note from ConversionOS Demo: ${custom_message}\n` : '',
-      'Payment can be made via E-Transfer to payments@conversionosdemo.com',
+      custom_message ? `Note from McCarty Squared: ${custom_message}\n` : '',
+      'Payment can be made via E-Transfer to payments@mccartysquared.ca',
       '',
-      'Thank you for choosing ConversionOS Demo!',
+      'Thank you for choosing McCarty Squared!',
       '',
-      'ConversionOS Demo Inc.',
-      '123 Innovation Drive, Greater Ontario Area N0N 0N0',
-      'Tel: (555) 123-4567',
+      'McCarty Squared Inc.',
+      '123 Innovation Drive, London, ON N0N 0N0',
+      'Tel: (226) 667-8940',
     ].join('\n');
 
     const emailResponse = await fetch('https://api.resend.com/emails', {
@@ -90,9 +90,9 @@ export async function POST(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'ConversionOS Demo <invoices@conversionosdemo.com>',
+        from: 'McCarty Squared <info@mccartysquared.ca>',
         to: [to_email],
-        subject: `Invoice #${invoice.invoice_number} from ConversionOS Demo`,
+        subject: `Invoice #${invoice.invoice_number} from McCarty Squared`,
         text: emailBody,
         attachments: [
           {

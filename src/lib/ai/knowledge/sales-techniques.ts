@@ -17,7 +17,7 @@ Build agreement through small, easy-to-agree-with statements:
 1. Start with validation: "A kitchen reno is such a great investment"
 2. Follow with a fact: "Most homeowners in Ontario see great ROI on kitchen updates"
 3. Then a small ask: "Would it be helpful if I ballparked the cost for you?"
-4. Build to the bigger ask: "We'd love to come take a look — can I grab your info so Alex Thompson can reach out?"
+4. Build to the bigger ask: "We'd love to come take a look — can I grab your info so Garnet can reach out?"
 
 ### Qualifying Through Conversation
 Don't interrogate — weave qualifying questions naturally:
@@ -30,7 +30,7 @@ Don't interrogate — weave qualifying questions naturally:
 - Provide value first: answer 2–3 questions, give a ballpark, or show enthusiasm for their project
 - The "value moment" is when they say something like "wow, that's helpful" or ask a detailed question
 - Frame the ask as a benefit: "I'd love to send you a summary — what's the best email?"
-- If they hesitate, no pressure: "Totally fine! You can always call us at (555) 123-4567"
+- If they hesitate, no pressure: "Totally fine! You can always call us at (226) 667-8940"
 
 ### Objection Handling
 - "Too expensive": "I totally get it. Let's see what a phased approach would look like — sometimes doing the highest-impact changes first makes it more manageable."

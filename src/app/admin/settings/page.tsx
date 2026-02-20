@@ -74,20 +74,20 @@ const DEFAULT_SETTINGS: Settings = {
   deposit_rate: { percent: 50 },
   quote_validity: { days: 30 },
   notifications: {
-    email: 'admin@conversionosdemo.com',
+    email: '',
     onNewLead: true,
     onQuoteSent: true,
     onQuoteOpened: true,
   },
   business_info: {
-    name: 'ConversionOS Demo',
-    address: '123 Innovation Drive',
-    city: 'Ontario',
+    name: '',
+    address: '',
+    city: '',
     province: 'ON',
-    postal: 'N0N 0N0',
-    phone: '(555) 123-4567',
-    email: 'info@conversionosdemo.com',
-    website: 'www.conversionosdemo.com',
+    postal: '',
+    phone: '',
+    email: '',
+    website: '',
   },
 };
 

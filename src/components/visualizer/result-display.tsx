@@ -229,7 +229,7 @@ export function ResultDisplay({
             <div className="max-w-[600px] mx-auto pointer-events-auto">
               <Button
                 size="lg"
-                className="w-full min-h-[56px] bg-[#D32F2F] hover:bg-[#B71C1C] text-white text-base font-semibold backdrop-blur-md shadow-xl shadow-[#D32F2F]/20 rounded-xl"
+                className="w-full min-h-[56px] bg-[#1565C0] hover:bg-[#B71C1C] text-white text-base font-semibold backdrop-blur-md shadow-xl shadow-[#1565C0]/20 rounded-xl"
                 onClick={onGetQuote}
               >
                 <MessageSquare className="w-5 h-5 mr-2" />

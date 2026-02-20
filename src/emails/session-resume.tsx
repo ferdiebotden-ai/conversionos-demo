@@ -29,11 +29,11 @@ export function SessionResumeEmail({
   return (
     <Html>
       <Head />
-      <Preview>Continue your renovation quote with ConversionOS Demo</Preview>
+      <Preview>Continue your renovation quote with McCarty Squared</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={heading}>
-            <span style={{ color: '#D32F2F' }}>Red</span>{' '}
+            <span style={{ color: '#1565C0' }}>Red</span>{' '}
             <span style={{ color: '#1a1a1a' }}>White</span>{' '}
             <span style={{ color: '#666' }}>Reno</span>
           </Heading>
@@ -67,10 +67,10 @@ export function SessionResumeEmail({
           </Text>
 
           <Text style={footer}>
-            ConversionOS Demo - Quality Renovations in Greater Ontario Area
+            McCarty Squared - Quality Renovations in London, ON
             <br />
-            <Link href="https://conversionosdemo.com" style={footerLink}>
-              conversionosdemo.com
+            <Link href="https://mccartysquared.ca" style={footerLink}>
+              mccartysquared.ca
             </Link>
           </Text>
         </Container>
@@ -114,7 +114,7 @@ const buttonContainer = {
 };
 
 const button = {
-  backgroundColor: '#D32F2F',
+  backgroundColor: '#1565C0',
   borderRadius: '8px',
   color: '#fff',
   fontSize: '16px',
@@ -126,7 +126,7 @@ const button = {
 };
 
 const link = {
-  color: '#D32F2F',
+  color: '#1565C0',
   fontSize: '14px',
   wordBreak: 'break-all' as const,
 };
@@ -144,7 +144,7 @@ const footer = {
 };
 
 const footerLink = {
-  color: '#D32F2F',
+  color: '#1565C0',
   textDecoration: 'underline',
 };
 

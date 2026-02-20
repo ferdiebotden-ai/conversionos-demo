@@ -1,28 +1,121 @@
 /**
  * Company Knowledge Base
- * Shared company information for all AI agent personas
+ * Dynamic company information for all AI agent personas.
+ * Reads from admin_settings at runtime via getBranding().
+ *
+ * For static contexts where async isn't available, use the
+ * DEFAULT_COMPANY_PROFILE / DEFAULT_COMPANY_SUMMARY exports
+ * which are populated from admin_settings during SSR.
  */
 
-export const COMPANY_PROFILE = `## Company Profile
-- Name: ConversionOS Demo
-- Location: Greater Ontario Area, Canada
-- Phone: (555) 123-4567
-- Email: info@conversionosdemo.com
-- Principals: Alex Thompson and Jordan Mitchell
-- Tagline: Building trust with quality work
+import { createServiceClient } from '@/lib/db/server';
+import { getSiteId } from '@/lib/db/site';
 
-## Service Area
-Greater Ontario Area and surrounding regions. We serve homeowners throughout Ontario.
+export interface CompanyConfig {
+  name: string;
+  location: string;
+  phone: string;
+  email: string;
+  website: string;
+  principals: string;
+  tagline: string;
+  founded: string;
+  booking: string;
+  serviceArea: string;
+  certifications: string[];
+  socials: { platform: string; url: string }[];
+}
 
-## Business Hours
-Monday–Friday: 8:00 AM – 6:00 PM
-Saturday: 9:00 AM – 2:00 PM (consultations by appointment)
-Sunday: Closed
+/**
+ * Fetch company config from admin_settings.
+ * Falls back to minimal defaults if DB is unavailable.
+ */
+export async function getCompanyConfig(): Promise<CompanyConfig> {
+  try {
+    const supabase = createServiceClient();
+    const siteId = getSiteId();
 
-## Social Media
-- Website: conversionosdemo.com
+    const { data } = await supabase
+      .from('admin_settings')
+      .select('key, value')
+      .eq('site_id', siteId)
+      .in('key', ['business_info', 'branding', 'company_profile']);
 
-## Website Pages
+    if (!data || data.length === 0) return FALLBACK_CONFIG;
+
+    const map = Object.fromEntries(data.map((r) => [r.key, r.value]));
+    const info = (map['business_info'] ?? {}) as Record<string, unknown>;
+    const profile = (map['company_profile'] ?? {}) as Record<string, unknown>;
+    const brand = (map['branding'] ?? {}) as Record<string, unknown>;
+
+    return {
+      name: (info['name'] as string) || FALLBACK_CONFIG.name,
+      location: `${(info['city'] as string) || 'London'}, ${(info['province'] as string) || 'ON'}, Canada`,
+      phone: (info['phone'] as string) || FALLBACK_CONFIG.phone,
+      email: (info['email'] as string) || FALLBACK_CONFIG.email,
+      website: (info['website'] as string) || FALLBACK_CONFIG.website,
+      principals: (profile['principals'] as string) || FALLBACK_CONFIG.principals,
+      tagline: (brand['tagline'] as string) || (info['tagline'] as string) || FALLBACK_CONFIG.tagline,
+      founded: (profile['founded'] as string) || FALLBACK_CONFIG.founded,
+      booking: (profile['booking'] as string) || FALLBACK_CONFIG.booking,
+      serviceArea: (profile['serviceArea'] as string) || FALLBACK_CONFIG.serviceArea,
+      certifications: (profile['certifications'] as string[]) || FALLBACK_CONFIG.certifications,
+      socials: (brand['socials'] as CompanyConfig['socials']) || FALLBACK_CONFIG.socials,
+    };
+  } catch {
+    return FALLBACK_CONFIG;
+  }
+}
+
+const FALLBACK_CONFIG: CompanyConfig = {
+  name: 'AI Reno Demo',
+  location: 'London, ON, Canada',
+  phone: '(555) 000-0000',
+  email: 'demo@example.com',
+  website: 'ai-reno-demo.vercel.app',
+  principals: 'the team',
+  tagline: 'Smart Renovations',
+  founded: '2024',
+  booking: '',
+  serviceArea: 'London, ON and surrounding communities',
+  certifications: [],
+  socials: [],
+};
+
+/**
+ * Build the company profile prompt from config.
+ */
+export function buildCompanyProfile(config: CompanyConfig): string {
+  let profile = `## Company Profile
+- Name: ${config.name}
+- Location: ${config.location}
+- Phone: ${config.phone}
+- Email: ${config.email}
+- Website: ${config.website}
+- Principals: ${config.principals}
+- Tagline: ${config.tagline}
+- Founded: ${config.founded}`;
+
+  if (config.booking) {
+    profile += `\n- Booking: ${config.booking}`;
+  }
+
+  profile += `\n\n## Service Area\n${config.serviceArea}`;
+
+  profile += `\n\n## Business Hours
+Monday-Friday: 9:00 AM - 5:00 PM
+Saturday: Closed
+Sunday: Closed`;
+
+  if (config.certifications.length > 0) {
+    profile += `\n\n## Certifications & Memberships\n${config.certifications.map(c => `- ${c}`).join('\n')}`;
+  }
+
+  if (config.socials.length > 0) {
+    profile += `\n\n## Social Media\n${config.socials.map(s => `- ${s.platform}: ${s.url}`).join('\n')}`;
+  }
+
+  profile += `\n\n## Website Pages
 - /services — Overview of all renovation services
 - /services/kitchen — Kitchen renovation details
 - /services/bathroom — Bathroom renovation details
@@ -32,13 +125,24 @@ Sunday: Closed
 - /visualizer — AI room visualization tool
 - /projects — Portfolio of completed work
 - /about — Our story, team, and values
-- /contact — Get in touch, request a callback
+- /contact — Get in touch, request a callback`;
 
-## Core Values
-- Transparency in pricing — no hidden costs
-- Quality craftsmanship backed by warranty
-- Respect for your home and timeline
-- Local expertise with Ontario-specific knowledge
-`;
+  return profile;
+}
 
-export const COMPANY_SUMMARY = `ConversionOS Demo is a professional renovation company in Greater Ontario Area run by Alex Thompson and Jordan Mitchell. Phone: (555) 123-4567. Email: info@conversionosdemo.com. We specialize in kitchens, bathrooms, basements, and outdoor spaces.`;
+/**
+ * Build the company summary from config.
+ */
+export function buildCompanySummary(config: CompanyConfig): string {
+  const certs = config.certifications.length > 0
+    ? ` Certified: ${config.certifications.join(', ')}.`
+    : '';
+  const booking = config.booking ? ` Booking: ${config.booking}` : '';
+
+  return `${config.name} is a professional renovation company in ${config.location} run by ${config.principals}, founded in ${config.founded}. Phone: ${config.phone}. Email: ${config.email}. Tagline: "${config.tagline}".${certs}${booking}`;
+}
+
+// Legacy exports for sync contexts — these use fallback values.
+// Prefer getCompanyConfig() + buildCompanyProfile() for async contexts.
+export const COMPANY_PROFILE = buildCompanyProfile(FALLBACK_CONFIG);
+export const COMPANY_SUMMARY = buildCompanySummary(FALLBACK_CONFIG);

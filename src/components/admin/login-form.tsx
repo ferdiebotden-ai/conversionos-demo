@@ -106,7 +106,7 @@ export function LoginForm() {
         <Input
           id="email"
           type="email"
-          placeholder="admin@conversionosdemo.com"
+          placeholder="admin@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={isLoading}
@@ -164,7 +164,7 @@ export function LoginForm() {
 
       {/* Help text */}
       <p className="text-xs text-center text-muted-foreground">
-        Contact ConversionOS Demo support if you need access.
+        Contact support if you need access.
       </p>
     </form>
   );

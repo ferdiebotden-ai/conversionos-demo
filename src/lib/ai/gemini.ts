@@ -33,8 +33,8 @@ export const VISUALIZATION_CONFIG = {
   outputCount: 4,
   // Output resolution - increased to 2048x2048 for higher quality
   resolution: '2048x2048' as const,
-  // Maximum generation time (ms)
-  timeout: 120000,
+  // Maximum generation time per concept (ms) — keep under maxDuration/2 for headroom
+  timeout: 75000,
   // Preserve original room lighting
   preserveLighting: true,
   // Preserve shadows for realism

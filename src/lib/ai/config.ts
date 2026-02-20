@@ -18,9 +18,9 @@ export const AI_CONFIG = {
     depthTimeout: 25000,
   },
   pipeline: {
-    enableDepthEstimation: true,
-    enableEdgeDetection: true,
-    enableIterativeRefinement: true,
+    enableDepthEstimation: false,  // Disabled: REPLICATE_API_TOKEN not configured
+    enableEdgeDetection: true,     // Local sharp processing, zero cost
+    enableIterativeRefinement: false, // Disabled: adds 2-3 extra API calls, causes timeouts on free tier
   },
   parameters: {
     chat: {

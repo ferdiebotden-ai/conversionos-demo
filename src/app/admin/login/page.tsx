@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { Sparkles } from 'lucide-react';
 import { LoginForm } from '@/components/admin/login-form';
 import { createClient } from '@/lib/db/server';
+import { getBranding } from '@/lib/branding';
 
 export default async function AdminLoginPage() {
   // Check if user is already authenticated
@@ -13,6 +14,8 @@ export default async function AdminLoginPage() {
     redirect('/admin');
   }
 
+  const branding = await getBranding();
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-muted/30">
       <div className="w-full max-w-md">
@@ -21,7 +24,7 @@ export default async function AdminLoginPage() {
           <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mb-4">
             <Sparkles className="w-7 h-7 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold">ConversionOS Demo</h1>
+          <h1 className="text-2xl font-bold">{branding.name}</h1>
           <p className="text-muted-foreground">Admin Dashboard</p>
         </div>
 
@@ -35,7 +38,7 @@ export default async function AdminLoginPage() {
 
         {/* Footer */}
         <p className="text-xs text-center text-muted-foreground mt-6">
-          Lead-to-Quote Engine v2 &bull; Powered by AI
+          ConversionOS &bull; Powered by AI
         </p>
       </div>
     </main>

@@ -101,7 +101,7 @@ export function DimensionTool({ isActive }: DimensionToolProps) {
       {startPoint && (
         <mesh position={[startPoint.x, 0.05, startPoint.z]}>
           <sphereGeometry args={[0.08, 16, 16]} />
-          <meshStandardMaterial color="#D32F2F" />
+          <meshStandardMaterial color="#1565C0" />
         </mesh>
       )}
 
@@ -113,7 +113,7 @@ export function DimensionTool({ isActive }: DimensionToolProps) {
               [startPoint.x, 0.02, startPoint.z],
               [previewPoint.x, 0.02, previewPoint.z],
             ]}
-            color="#D32F2F"
+            color="#1565C0"
             lineWidth={1}
             dashed
             dashSize={0.15}
@@ -135,7 +135,7 @@ export function DimensionTool({ isActive }: DimensionToolProps) {
       {previewPoint && (
         <mesh position={[previewPoint.x, 0.05, previewPoint.z]}>
           <sphereGeometry args={[0.06, 16, 16]} />
-          <meshStandardMaterial color="#D32F2F" opacity={0.5} transparent />
+          <meshStandardMaterial color="#1565C0" opacity={0.5} transparent />
         </mesh>
       )}
     </>

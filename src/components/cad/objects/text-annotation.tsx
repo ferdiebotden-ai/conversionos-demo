@@ -22,7 +22,7 @@ export function TextAnnotationMesh({ annotation }: TextAnnotationMeshProps) {
     selectObject(annotation.id);
   }
 
-  const leaderColor = isSelected ? '#D32F2F' : '#666666';
+  const leaderColor = isSelected ? '#1565C0' : '#666666';
 
   return (
     <group onClick={handleClick}>

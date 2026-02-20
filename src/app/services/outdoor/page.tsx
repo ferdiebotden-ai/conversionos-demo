@@ -8,7 +8,7 @@ import { Check, TreeDeciduous } from "lucide-react"
 export const metadata: Metadata = {
   title: "Outdoor Renovation",
   description:
-    "Transform your outdoor living space with ConversionOS Demo. Decks, fences, porches, driveways, and exterior painting in Greater Ontario Area.",
+    "Transform your outdoor living space with McCarty Squared. Decks, fences, porches, driveways, and exterior painting in London, ON.",
 }
 
 const features = [

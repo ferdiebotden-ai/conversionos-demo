@@ -8,12 +8,16 @@ import {
   Heart,
   Target,
   MapPin,
+  Award,
+  CheckCircle,
+  FileText,
+  Clock,
 } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about ConversionOS Demo - Ontario's trusted renovation contractor. Quality craftsmanship for residential and commercial projects in the Greater Ontario Area.",
+    "Learn about McCarty Squared Inc. — London, ON's trusted renovation contractor. Dream. Plan. Build. Quality craftsmanship for residential and commercial projects since 2021.",
 }
 
 const values = [
@@ -27,7 +31,7 @@ const values = [
     icon: Target,
     title: "Quality Craftsmanship",
     description:
-      "We take pride in our work. Every detail matters, from initial design to final walkthrough.",
+      "RenoMark certified. Every detail matters, from initial design to final walkthrough.",
   },
   {
     icon: Shield,
@@ -37,28 +41,50 @@ const values = [
   },
 ]
 
+const certifications = [
+  "RenoMark",
+  "LHBA",
+  "NetZero Home",
+  "Houzz Pro",
+  "London Chamber of Commerce",
+]
+
 const teamMembers = [
   {
-    name: "Alex Thompson",
-    role: "Owner/Operator",
+    name: "Garnet",
+    role: "Co-Owner / Lead Builder",
     description: "Job site contact and lead craftsman",
     image: "/images/demo/team-male.png",
   },
   {
-    name: "Jordan Mitchell",
-    role: "Business Manager",
+    name: "Carisa",
+    role: "Co-Owner / Business Manager",
     description: "General inquiries and project coordination",
     image: "/images/demo/team-female.png",
   },
 ]
 
 const serviceAreas = [
-  "Toronto",
-  "Ottawa",
-  "Hamilton",
   "London",
-  "Kitchener-Waterloo",
-  "Greater Ontario Area",
+  "Argyle",
+  "Arva",
+  "Belmont",
+  "Byron",
+  "Dorchester",
+  "Hyde Park",
+  "Ingersoll",
+  "Komoka",
+  "Masonville",
+  "Mt Brydges",
+  "North London",
+  "Oakridge",
+  "Old North",
+  "OEV",
+  "St Thomas",
+  "Strathroy",
+  "Tillsonburg",
+  "Woodfield",
+  "Wortley",
 ]
 
 export default function AboutPage() {
@@ -82,10 +108,10 @@ export default function AboutPage() {
         <div className="container mx-auto">
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              Building Trust With Quality Work
+              Dream. Plan. Build.
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              ConversionOS Demo transforms homes in the Greater Ontario Area
+              McCarty Squared Inc. transforms homes in London, ON
               with quality craftsmanship and modern building techniques.
               Taking care of our clients is what we do best.
             </p>
@@ -103,10 +129,16 @@ export default function AboutPage() {
               </h2>
               <div className="mt-4 space-y-4 text-muted-foreground">
                 <p>
-                  Our past projects include both commercial and residential
-                  spaces. We focus on quality craftsmanship as well as modern
-                  building techniques. A clean, courteous, efficient worksite
-                  is a must, and taking care of our clients is what we do best.
+                  Founded in 2021 by Garnet and Carisa, McCarty Squared Inc.
+                  has quickly become one of London&apos;s most trusted renovation
+                  contractors. Our past projects include both commercial and
+                  residential spaces across 13 service categories.
+                </p>
+                <p>
+                  From accessibility modifications and net-zero homes to heritage
+                  restoration and custom cabinetry — we focus on quality craftsmanship
+                  as well as modern building techniques. A clean, courteous, efficient
+                  worksite is a must, and taking care of our clients is what we do best.
                 </p>
                 <p>
                   We offer an end-to-end client experience that includes
@@ -114,12 +146,6 @@ export default function AboutPage() {
                   solid, quality handiwork every time. From the design phase to
                   the last touch-ups, we&apos;ll be there working hard to finish on
                   time and on budget.
-                </p>
-                <p>
-                  We have worked with homeowners and designers to produce work
-                  we think you&apos;ll love. Call us today and bring our project
-                  management skills and extensive construction experience to
-                  your next project.
                 </p>
               </div>
             </div>
@@ -184,15 +210,78 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Certifications */}
+      <section className="border-y border-border bg-muted/30 px-4 py-12 md:py-16">
+        <div className="container mx-auto">
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="flex items-center justify-center gap-3">
+              <Award className="size-6 text-primary" />
+              <h2 className="text-xl font-bold tracking-tight text-foreground">
+                Certifications & Memberships
+              </h2>
+            </div>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              {certifications.map((cert) => (
+                <span
+                  key={cert}
+                  className="rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary"
+                >
+                  {cert}
+                </span>
+              ))}
+            </div>
+
+            {/* RenoMark Guarantee Details */}
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-left max-w-4xl mx-auto">
+              <div className="flex gap-3 rounded-lg border border-border p-4">
+                <Shield className="size-5 shrink-0 text-primary mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Minimum 2-Year Warranty</p>
+                  <p className="text-xs text-muted-foreground">All RenoMark members guarantee a minimum 2-year warranty on workmanship</p>
+                </div>
+              </div>
+              <div className="flex gap-3 rounded-lg border border-border p-4">
+                <Award className="size-5 shrink-0 text-primary mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">$2M Liability Insurance</p>
+                  <p className="text-xs text-muted-foreground">Full $2 million liability insurance coverage for your peace of mind</p>
+                </div>
+              </div>
+              <div className="flex gap-3 rounded-lg border border-border p-4">
+                <CheckCircle className="size-5 shrink-0 text-primary mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Code of Conduct</p>
+                  <p className="text-xs text-muted-foreground">Strict adherence to RenoMark&apos;s professional Code of Conduct</p>
+                </div>
+              </div>
+              <div className="flex gap-3 rounded-lg border border-border p-4">
+                <FileText className="size-5 shrink-0 text-primary mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Written Contracts</p>
+                  <p className="text-xs text-muted-foreground">Detailed written contracts required on every project — no surprises</p>
+                </div>
+              </div>
+              <div className="flex gap-3 rounded-lg border border-border p-4 sm:col-span-2 lg:col-span-1">
+                <Clock className="size-5 shrink-0 text-primary mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">2-Day Response</p>
+                  <p className="text-xs text-muted-foreground">RenoMark commitment to respond within 2 business days</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Team Section */}
-      <section className="border-t border-border bg-muted/30 px-4 py-12 md:py-16">
+      <section className="px-4 py-12 md:py-16">
         <div className="container mx-auto">
           <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Meet the Team
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Experienced professionals dedicated to your project&apos;s success.
+              The husband-and-wife team dedicated to your project&apos;s success.
             </p>
           </div>
 
@@ -222,7 +311,7 @@ export default function AboutPage() {
       </section>
 
       {/* Service Area */}
-      <section className="px-4 py-12 md:py-16">
+      <section className="border-t border-border bg-muted/30 px-4 py-12 md:py-16">
         <div className="container mx-auto">
           <div className="max-w-2xl mx-auto text-center">
             <div className="flex items-center justify-center gap-3">
@@ -232,8 +321,8 @@ export default function AboutPage() {
               </h2>
             </div>
             <p className="mt-4 text-muted-foreground">
-              We proudly serve homeowners and businesses throughout the Greater Ontario Area
-              and surrounding areas:
+              We proudly serve homeowners and businesses throughout London, ON
+              and 20+ surrounding communities:
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               {serviceAreas.map((area) => (
@@ -250,7 +339,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="border-t border-border bg-muted/30 px-4 py-12 md:py-16">
+      <section className="px-4 py-12 md:py-16">
         <div className="container mx-auto text-center">
           <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             Let&apos;s Build Something Together

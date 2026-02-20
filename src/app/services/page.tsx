@@ -6,7 +6,7 @@ import { ServicesGrid } from "@/components/services-grid"
 export const metadata: Metadata = {
   title: "Our Services",
   description:
-    "Professional renovation services in Greater Ontario Area. Kitchen, bathroom, basement, and flooring renovations with expert craftsmanship.",
+    "Professional renovation services in London, ON. Kitchen, bathroom, basement, and flooring renovations with expert craftsmanship.",
 }
 
 export default function ServicesPage() {
@@ -35,7 +35,7 @@ export default function ServicesPage() {
             <p className="mt-4 text-lg text-muted-foreground">
               From complete kitchen remodels to basement finishing, we provide
               comprehensive renovation services for homeowners in Ontario and
-              the Greater Ontario Area.
+              the London, ON.
             </p>
           </div>
         </div>

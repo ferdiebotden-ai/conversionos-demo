@@ -55,7 +55,7 @@ export function DimensionMesh({ dimension }: DimensionMeshProps) {
   }, [dimension, len, units]);
 
   const off = dimension.offset;
-  const color = isSelected ? '#D32F2F' : '#444444';
+  const color = isSelected ? '#1565C0' : '#444444';
 
   // Extension line endpoints (from geometry to dimension line)
   const ext1Start: [number, number, number] = [dimension.start.x, 0.02, dimension.start.z];

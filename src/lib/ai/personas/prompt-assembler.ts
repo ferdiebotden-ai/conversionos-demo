@@ -128,8 +128,9 @@ ${ONTARIO_DESIGN_KNOWLEDGE}`);
  */
 export function buildAgentSystemPrompt(
   personaKey: PersonaKey,
-  options?: { userMessage?: string | undefined; estimateData?: Record<string, unknown> | undefined; handoffContext?: Record<string, unknown> | undefined },
+  options?: { userMessage?: string | undefined; estimateData?: Record<string, unknown> | undefined; handoffContext?: Record<string, unknown> | undefined; companyName?: string | undefined },
 ): string {
+  const companyName = options?.companyName || 'the company';
   const persona = PERSONAS[personaKey];
 
   // Layer 1: Shared company knowledge (scope varies by agent)
@@ -178,7 +179,7 @@ export function buildAgentSystemPrompt(
   }
 
   const layer4 = `## Your Identity
-You are **${persona.name}**, the ${persona.role} at ConversionOS Demo.
+You are **${persona.name}**, the ${persona.role} at ${companyName}.
 
 ### Personality
 ${persona.personalityTraits.map(t => `- ${t}`).join('\n')}
@@ -238,7 +239,9 @@ ${personaRules}`;
  * Build a voice-optimized system prompt for an AI agent
  * Voice prompts are more concise with voice-specific rules
  */
-export function buildVoiceSystemPrompt(personaKey: PersonaKey): string {
+export function buildVoiceSystemPrompt(personaKey: PersonaKey, options?: { companyName?: string; companyLocation?: string }): string {
+  const companyName = options?.companyName || 'the company';
+  const companyLocation = options?.companyLocation || 'London, ON';
   const persona = PERSONAS[personaKey];
 
   // Use the same knowledge layers but in a more compressed form
@@ -255,7 +258,7 @@ export function buildVoiceSystemPrompt(personaKey: PersonaKey): string {
       break;
   }
 
-  return `You are ${persona.name}, the ${persona.role} at ConversionOS Demo in Greater Ontario Area.
+  return `You are ${persona.name}, the ${persona.role} at ${companyName} in ${companyLocation}.
 
 ## Voice Conversation Rules
 - Keep every response to 1–2 sentences maximum — this is a voice conversation

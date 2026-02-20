@@ -73,7 +73,7 @@ export function WallTool({ isActive }: WallToolProps) {
       {startPoint && (
         <mesh position={[startPoint.x, 0.05, startPoint.z]}>
           <sphereGeometry args={[0.1, 16, 16]} />
-          <meshStandardMaterial color="#D32F2F" />
+          <meshStandardMaterial color="#1565C0" />
         </mesh>
       )}
 
@@ -84,7 +84,7 @@ export function WallTool({ isActive }: WallToolProps) {
             [startPoint.x, 0.05, startPoint.z],
             [previewEnd.x, 0.05, previewEnd.z],
           ]}
-          color="#D32F2F"
+          color="#1565C0"
           lineWidth={2}
           dashed
           dashSize={0.2}

@@ -148,13 +148,16 @@ function VisualizerFormInner() {
     setGenerationProgress(0);
     setError(null);
 
-    // Simulate progress
+    // Simulate progress — tuned for ~60-90s generation time
+    // Slower increments to avoid stalling at a visible threshold
     const progressInterval = setInterval(() => {
       setGenerationProgress(prev => {
-        if (prev < 30) return prev + 5;
-        if (prev < 60) return prev + 3;
-        if (prev < 85) return prev + 1;
-        return prev;
+        if (prev < 20) return prev + 2;       // 0→20% in ~5s (uploading + analysis)
+        if (prev < 50) return prev + 1.5;     // 20→50% in ~10s (structural conditioning)
+        if (prev < 75) return prev + 0.5;     // 50→75% in ~25s (generating concepts batch 1)
+        if (prev < 92) return prev + 0.2;     // 75→92% in ~42s (generating concepts batch 2)
+        if (prev < 97) return prev + 0.05;    // 92→97% in ~50s (uploading + saving)
+        return prev;                           // stalls at 97%
       });
     }, 500);
 
@@ -180,7 +183,7 @@ function VisualizerFormInner() {
       const designIntent = mergeDesignIntent(prefs);
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 100000);
+      const timeoutId = setTimeout(() => controller.abort(), 150000); // 150s — matches server maxDuration + headroom
 
       const response = await fetch('/api/ai/visualize', {
         method: 'POST',

@@ -1,6 +1,6 @@
 /**
  * Invoice PDF Template
- * Professional PDF matching ConversionOS Demo's invoice format
+ * Professional PDF matching McCarty Squared's invoice format
  * Adapted from quote-template.tsx
  * [DEV-089]
  */
@@ -15,11 +15,11 @@ import {
 import type { Invoice, Payment, QuoteLineItem } from '@/types/database';
 
 const COLORS = {
-  primary: '#D32F2F',
+  primary: '#1565C0',
   secondary: '#1a1a1a',
   muted: '#666666',
   border: '#e5e5e5',
-  headerBg: '#D32F2F',
+  headerBg: '#1565C0',
   white: '#ffffff',
   success: '#16a34a',
 };
@@ -294,12 +294,12 @@ export function InvoicePdfDocument({ invoice, payments }: InvoicePdfProps) {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.logoSection}>
-            <Text style={{ fontSize: 20, fontFamily: 'Helvetica-Bold', color: COLORS.primary }}>ConversionOS Demo</Text>
+            <Text style={{ fontSize: 20, fontFamily: 'Helvetica-Bold', color: COLORS.primary }}>McCarty Squared</Text>
             <View style={styles.companyInfo}>
               <Text style={styles.companyAddress}>123 Innovation Drive</Text>
-              <Text style={styles.companyAddress}>Greater Ontario Area N0N 0N0</Text>
-              <Text style={styles.companyPhone}>Tel: (555) 123-4567</Text>
-              <Text style={styles.companyWebsite}>www.conversionosdemo.com</Text>
+              <Text style={styles.companyAddress}>London, ON N0N 0N0</Text>
+              <Text style={styles.companyPhone}>Tel: (226) 667-8940</Text>
+              <Text style={styles.companyWebsite}>www.mccartysquared.ca</Text>
             </View>
           </View>
 
@@ -342,7 +342,7 @@ export function InvoicePdfDocument({ invoice, payments }: InvoicePdfProps) {
           <View style={styles.paymentSection}>
             <Text style={styles.sectionLabel}>Payment Terms</Text>
             <Text style={styles.cellText}>50% Deposit Required</Text>
-            <Text style={styles.cellText}>E-Transfer: payments@conversionosdemo.com</Text>
+            <Text style={styles.cellText}>E-Transfer: payments@mccartysquared.ca</Text>
           </View>
         </View>
 
@@ -407,11 +407,11 @@ export function InvoicePdfDocument({ invoice, payments }: InvoicePdfProps) {
           <View style={styles.termsSection}>
             <Text style={styles.termsTitle}>Terms: 50% Deposit required to schedule work.</Text>
             <Text style={styles.termsText}>
-              Invoices payable upon receipt. Please make cheques payable to ConversionOS Demo Inc.
+              Invoices payable upon receipt. Please make cheques payable to McCarty Squared Inc.
               Finance Charges will be applied at a rate of 1.25% per month.
             </Text>
             <Text style={styles.termsText}>
-              E-Transfer payments to: payments@conversionosdemo.com
+              E-Transfer payments to: payments@mccartysquared.ca
             </Text>
             {payments.length > 0 && (
               <>

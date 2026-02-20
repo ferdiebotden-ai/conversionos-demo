@@ -60,11 +60,11 @@ export function GenerationLoading({
 
   // Calculate estimated time remaining based on progress
   const getTimeEstimate = (): string => {
-    if (progress >= 90) return 'Almost there...';
-    if (progress >= 70) return 'A few more seconds...';
-    if (progress >= 50) return 'About 15 seconds...';
-    if (progress >= 30) return 'About 30 seconds...';
-    return 'About 45 seconds...';
+    if (progress >= 92) return 'Finishing up...';
+    if (progress >= 75) return 'Generating final concepts...';
+    if (progress >= 50) return 'About 30 seconds...';
+    if (progress >= 20) return 'About 45 seconds...';
+    return 'About 60 seconds...';
   };
 
   return (
