@@ -8,8 +8,10 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { panelSpring } from '@/lib/animations';
 import { PhotoUpload } from './photo-upload';
 import { RoomTypeSelector, type RoomType, type RoomTypeSelection } from './room-type-selector';
 import { StyleSelector, type DesignStyle, type DesignStyleSelection } from './style-selector';
@@ -79,21 +81,23 @@ function VisualizerFormInner() {
     }
   }, [voiceTranscript]);
 
+  // Auto-scroll with offset — keeps the selected item visible above the fold
+  const scrollToWithOffset = useCallback((el: HTMLElement | null, offset = 120) => {
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }, []);
+
   // Auto-scroll: room → style, style → preferences
   const handleRoomTypeChange = useCallback((value: RoomTypeSelection) => {
     setFormData(prev => ({ ...prev, roomType: value }));
-    // Scroll to style section after a brief delay for the UI to update
-    setTimeout(() => {
-      styleSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 150);
-  }, []);
+    setTimeout(() => scrollToWithOffset(styleSectionRef.current), 150);
+  }, [scrollToWithOffset]);
 
   const handleStyleChange = useCallback((value: DesignStyleSelection) => {
     setFormData(prev => ({ ...prev, style: value }));
-    setTimeout(() => {
-      preferencesSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 150);
-  }, []);
+    setTimeout(() => scrollToWithOffset(preferencesSectionRef.current), 150);
+  }, [scrollToWithOffset]);
 
   // Run photo analysis async after upload
   const runPhotoAnalysis = useCallback(async (imageBase64: string) => {
@@ -438,16 +442,27 @@ function VisualizerFormInner() {
         />
       </section>
 
-      {/* Preferences Section (text + voice) */}
-      <section ref={preferencesSectionRef} className="py-6 border-t border-border">
-        <PreferencesSection
-          textValue={formData.textPreferences}
-          onTextChange={(v) => setFormData(prev => ({ ...prev, textPreferences: v }))}
-          voiceTranscript={formData.voiceTranscript}
-          voiceSummary={formData.voicePreferencesSummary}
-          onVoiceSummaryReady={handleVoiceSummaryReady}
-        />
-      </section>
+      {/* Preferences Section (text + voice) — animates in after style selection */}
+      <AnimatePresence>
+        {formData.style && (
+          <motion.section
+            ref={preferencesSectionRef}
+            className="py-6 border-t border-border"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
+            transition={panelSpring}
+          >
+            <PreferencesSection
+              textValue={formData.textPreferences}
+              onTextChange={(v) => setFormData(prev => ({ ...prev, textPreferences: v }))}
+              voiceTranscript={formData.voiceTranscript}
+              voiceSummary={formData.voicePreferencesSummary}
+              onVoiceSummaryReady={handleVoiceSummaryReady}
+            />
+          </motion.section>
+        )}
+      </AnimatePresence>
 
       {/* Selection Summary */}
       {canGenerate && (

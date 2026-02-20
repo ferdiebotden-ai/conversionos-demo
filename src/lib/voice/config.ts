@@ -63,6 +63,27 @@ export function isVoiceSupported(): boolean {
 }
 
 /**
+ * Query microphone permission state.
+ * Returns 'granted' | 'prompt' | 'denied' | 'unknown' (if Permissions API unsupported)
+ */
+export async function getMicrophonePermission(): Promise<
+  'granted' | 'prompt' | 'denied' | 'unknown'
+> {
+  try {
+    if (typeof navigator === 'undefined' || !navigator.permissions?.query) {
+      return 'unknown';
+    }
+    const result = await navigator.permissions.query({
+      name: 'microphone' as PermissionName,
+    });
+    return result.state as 'granted' | 'prompt' | 'denied';
+  } catch {
+    // Firefox and some browsers don't support microphone permission query
+    return 'unknown';
+  }
+}
+
+/**
  * Format duration in milliseconds to "M:SS"
  */
 export function formatDuration(ms: number): string {
