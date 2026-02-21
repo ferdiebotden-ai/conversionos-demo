@@ -5,7 +5,7 @@
  * Drag & drop zone with preview and tips
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +27,7 @@ export function PhotoUpload({ value, onChange, className }: PhotoUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const processFile = useCallback(
     async (file: File) => {
@@ -132,58 +133,69 @@ export function PhotoUpload({ value, onChange, className }: PhotoUploadProps) {
           </div>
         </div>
       ) : (
-        // Upload state
-        <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          className={cn(
-            'group relative rounded-xl border-2 border-dashed transition-colors',
-            'flex flex-col items-center justify-center py-12 px-6',
-            isDragging
-              ? 'border-primary bg-primary/5'
-              : 'border-border bg-muted/30 hover:border-primary/50 hover:bg-muted/50 active:border-primary active:bg-primary/5 active:ring-2 active:ring-primary/30',
-            isProcessing && 'opacity-50 pointer-events-none'
-          )}
-        >
+        // Upload state — hidden input + clickable zone (most reliable pattern)
+        <>
           <input
+            ref={fileInputRef}
             type="file"
             accept="image/*"
             onChange={handleFileSelect}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            className="hidden"
             disabled={isProcessing}
             aria-label="Upload room photo"
           />
-
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors bg-muted group-active:bg-primary/20">
-            {isProcessing ? (
-              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Upload className="w-8 h-8 transition-colors text-muted-foreground group-active:text-primary" />
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => fileInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                fileInputRef.current?.click();
+              }
+            }}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            className={cn(
+              'group rounded-xl border-2 border-dashed cursor-pointer transition-colors',
+              'flex flex-col items-center justify-center py-12 px-6',
+              isDragging
+                ? 'border-primary bg-primary/5'
+                : 'border-border bg-muted/30 hover:border-primary/50 hover:bg-muted/50 active:border-primary active:bg-primary/5 active:ring-2 active:ring-primary/30',
+              isProcessing && 'opacity-50 pointer-events-none'
             )}
-          </div>
+          >
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors bg-muted group-active:bg-primary/20">
+              {isProcessing ? (
+                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Upload className="w-8 h-8 transition-colors text-muted-foreground group-active:text-primary" />
+              )}
+            </div>
 
-          <p className="text-center">
-            <span className="font-medium">
-              {isProcessing ? 'Processing...' : 'Drop your image here'}
-            </span>
-            <br />
-            <span className="text-sm text-muted-foreground">
-              or click to browse
-            </span>
-          </p>
+            <p className="text-center">
+              <span className="font-medium">
+                {isProcessing ? 'Processing...' : 'Drop your image here'}
+              </span>
+              <br />
+              <span className="text-sm text-muted-foreground">
+                or click to browse
+              </span>
+            </p>
 
-          <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <ImageIcon className="w-3 h-3" />
-              JPG, PNG
-            </span>
-            <span className="flex items-center gap-1">
-              <Camera className="w-3 h-3" />
-              Max 20MB
-            </span>
+            <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <ImageIcon className="w-3 h-3" />
+                JPG, PNG
+              </span>
+              <span className="flex items-center gap-1">
+                <Camera className="w-3 h-3" />
+                Max 20MB
+              </span>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {error && (
