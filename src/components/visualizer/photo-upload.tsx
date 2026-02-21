@@ -140,7 +140,7 @@ export function PhotoUpload({ value, onChange, className }: PhotoUploadProps) {
             type="file"
             accept="image/*"
             onChange={handleFileSelect}
-            className="hidden"
+            className="sr-only"
             disabled={isProcessing}
             aria-label="Upload room photo"
           />
